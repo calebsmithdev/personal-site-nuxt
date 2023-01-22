@@ -1,0 +1,5 @@
+mutation AddClaps($claps: Int, $targetPostId: Int, $userId: String) {
+  clap(input: {claps: $claps, targetPostId: $targetPostId, userId: $userId}) {
+    claps
+  }
+}

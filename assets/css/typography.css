@@ -1,0 +1,91 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  @apply font-sans text-slate-300;
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4 {
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1, .h1 {
+  @apply mt-10 mb-5;
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+h2, .h2 {
+  @apply mt-10 mb-5;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+h3, .h3 {
+  @apply mt-10 mb-3;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+p {
+  @apply text-base mb-4;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a {
+  @apply transition duration-500 ease-in-out border-b border-transparent;
+}
+
+a:hover {
+  @apply no-underline;
+  border-color: currentColor;
+}
+
+ul {
+  @apply list-disc list-inside mb-4;
+}
+
+code:not([class*="language-"]) {
+  @apply bg-slate-700;
+
+  font-family: 'IBM Plex Mono', monospace;
+  position: relative;
+  display: inline;
+  padding: 3px 6px;
+  margin: 1px 3px;
+  border-radius: 3px;
+  box-decoration-break: clone;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.section-heading {
+  @apply mt-0;
+  
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  font-weight: 300;
+}
+
+.section-heading:after {
+  position: absolute;
+  top: 51%;
+  overflow: hidden;
+  width: 100%;
+  height: 1px;
+  content: '\a0';
+  background-color: currentColor;
+  margin-left: 2%;
+}

@@ -1,0 +1,5 @@
+query GetClaps($id: ID!) {
+   post(id: $id, idType: SLUG) {
+    totalClaps
+  }
+}

@@ -1,0 +1,27 @@
+query GetPost($id: ID!) {
+   post(id: $id, idType: SLUG) {
+    databaseId
+    slug
+    title
+    content
+    modified
+    date
+    seo {
+      title
+      metaDesc
+      twitterTitle
+      opengraphTitle
+      opengraphDescription
+      opengraphType
+      readingTime
+      canonical
+    }
+    terms {
+      nodes {
+        name
+        id
+        uri
+      }
+    }
+  }
+}

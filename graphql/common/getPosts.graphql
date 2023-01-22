@@ -1,0 +1,20 @@
+query GetPosts($categoryName: String = "", $first: Int = 100) {
+  posts(first: $first, where: {categoryName: $categoryName}) {
+    edges {
+      node {
+        id
+        slug
+        title
+        excerpt
+        date
+        terms {
+          nodes {
+            name
+            id
+            uri
+          }
+        }
+      }
+    }
+  }
+}
