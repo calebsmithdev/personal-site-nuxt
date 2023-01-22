@@ -17,7 +17,8 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@vueuse/nuxt'
   ],
   colorMode: {
     // preference: 'system', // default value of $colorMode.preference
