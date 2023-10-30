@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    container_name: ghcr.io/calebsmithdev/personal.nuxt
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    command: 'npm run start'

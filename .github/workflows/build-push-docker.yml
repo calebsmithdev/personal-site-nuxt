@@ -1,0 +1,30 @@
+name: "Docker: Build & Push"
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_and_push:
+    permissions:
+      packages: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.SERVER_ENV_PROD }}" > .env
+          cat .env
+
+      - name: Build image
+        run: docker compose -f docker-compose.prod.yml build
+
+      - name: Push image to Github Registry
+        run: docker compose -f docker-compose.prod.yml push
