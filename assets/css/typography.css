@@ -54,7 +54,7 @@ ul {
   @apply list-disc list-inside mb-4;
 }
 
-code:not([class*="language-"]) {
+/* code:not([class*="language-"]) {
   @apply bg-slate-700;
 
   font-family: 'IBM Plex Mono', monospace;
@@ -64,7 +64,7 @@ code:not([class*="language-"]) {
   margin: 1px 3px;
   border-radius: 3px;
   box-decoration-break: clone;
-}
+} */
 
 * {
   box-sizing: border-box;

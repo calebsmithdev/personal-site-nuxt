@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
+    'nuxt-content-assets',
     '@nuxt/content',
     '@vueuse/nuxt'
   ],
@@ -31,7 +32,6 @@ export default defineNuxtConfig({
   ],
   css: [
     '@/assets/css/typography.css',
-    '@/assets/css/code-editor-dark.css',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   families: {
@@ -39,9 +39,13 @@ export default defineNuxtConfig({
     Montserrat: [300, 500, 600],
     'IBM Plex Mono': [400]
   },
-  nitro: {
-    routes: {
-      '/blog/*': { swr: 10 * 60 } // Once on-demand each 10 minutes (via lambda)
+  content: {
+    highlight: {
+      theme: {
+        default: 'material-theme-lighter',
+        dark: 'material-theme-palenight'
+      },
+      langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'swift', 'php']
     }
   },
   build: {
