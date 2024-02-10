@@ -52,7 +52,7 @@ One you are done, save the changes. You are good to go!
 
 The upcoming popular SEO tool, All-In-One SEO, gives you a slightly better experience regardless of whether you pay for the plugin or not. First, navigate to All-In-One SEO -> Tools -> Robots.txt Editor, then you'll see a screen like the image below. I've pre-filled the row you want to add with the correct option for ChatGPT.
 
-![Visual reference in the AIOSEO Plugin](media/aioseo-demo.png)
+![Visual reference in the AIOSEO Plugin](/assets/img/blog/how-to-prevent-chatgpt-from-crawling-your-website-using-wordpress.png)
 
 ## Conclusion
 

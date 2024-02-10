@@ -18,7 +18,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
-    'nuxt-content-assets',
     '@nuxt/content',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
