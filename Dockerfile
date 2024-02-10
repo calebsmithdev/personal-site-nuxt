@@ -12,4 +12,5 @@ COPY . .
 EXPOSE 3000
 
 RUN npm run build
-CMD [ "npm", "run", "start" ]
+ENTRYPOINT ["node", ".output/server/index.mjs"]
+# CMD [ "npm", "run", "start" ]
