@@ -1,10 +1,10 @@
 ---
 title: 'Capturing media events with Plyr and Google Analytics'
 description: "Learn how to tag Google Analytics events using the Plyr media player Javascript package."
-# image: /assets/blog/v3-3.png
 date: 2023-04-13
-# last_updated: 2024-01-19
 categories: ['Javascript']
+sitemap:
+  lastmod: 2023-04-13
 ---
 
 Plyr is one of the best media player Javascript packages that I haven't used so far. It's great for handling video playback, as well as audio playback, with the added bonus of being very customizable! If you are using Plyr for your web app or marketing website, then naturally you will probably want to also capture some of the usage for your web analytics reports and see if people are actually consuming your content.

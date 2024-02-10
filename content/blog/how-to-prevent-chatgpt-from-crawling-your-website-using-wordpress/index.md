@@ -1,10 +1,10 @@
 ---
 title: 'How to prevent ChatGPT from crawling your website using WordPress'
 description: "ChatGPT is crawling the web and learning as it goes. What can you do to keep your content out of the training models?"
-# image: /assets/blog/v3-3.png
 date: 2023-11-05
-# last_updated: 2024-01-19
 categories: ['WordPress']
+sitemap:
+  lastmod: 2023-11-05
 ---
 
 With AI continuing to grow and ChatGPT continuing to be a driving force in the industry, it's important to understand what options you have to better protect your content. In this post, we are going to look at what you need to configure in WordPress to better protect your content. You can stay up to date on the latest changes on OpenAI's crawler by visiting their documentation here.

@@ -20,7 +20,9 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-content-assets',
     '@nuxt/content',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxtjs/sitemap',
+    'nuxt-simple-robots',
   ],
   colorMode: {
     // preference: 'system', // default value of $colorMode.preference
@@ -39,6 +41,7 @@ export default defineNuxtConfig({
     Poppins: [500, 700]
   },
   content: {
+    documentDriven: true,
     highlight: {
       theme: {
         default: 'material-theme-lighter',
@@ -46,6 +49,9 @@ export default defineNuxtConfig({
       },
       langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'swift', 'php']
     }
+  },
+  site: {
+    url: 'https://caleb-smith.dev',
   },
   build: {
     transpile: [

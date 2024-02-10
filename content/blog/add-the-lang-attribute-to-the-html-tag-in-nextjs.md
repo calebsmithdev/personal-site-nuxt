@@ -1,10 +1,10 @@
 ---
 title: 'Add the lang attribute to the HTML tag in NextJS'
 description: "One of the most common accessibility and HTML validation warnings are the missing lang tag on the HTML tag. Let's explore fixing that using NextJS."
-# image: /assets/blog/v3-3.png
 date: 2022-09-18
-# last_updated: 2024-01-19
 categories: ['NextJS']
+sitemap:
+  lastmod: 2022-09-18
 ---
 
 One of the most common accessibility and HTML validation warnings are the missing lang tag on the HTML tag. This tag is used to tell the user which language the page is written in and can help the browser better detect automatic translation. Here is an example of what that tag looks like:

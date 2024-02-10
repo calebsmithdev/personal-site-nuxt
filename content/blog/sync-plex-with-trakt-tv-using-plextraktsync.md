@@ -1,10 +1,10 @@
 ---
 title: 'Sync Plex with Trakt.tv using PlexTraktSync'
 description: "Use PlexTraktSync to automate your media consumption between Plex and Trakt.tv."
-# image: /assets/blog/v3-3.png
 date: 2022-09-30
-# last_updated: 2024-01-19
 categories: ['Home Server']
+sitemap:
+  lastmod: 2022-09-30
 ---
 
 As a big consumer of entertainment and data, one of my favorite tools out there is Trakt.tv, which allows me to keep track of movies and TV shows that I have watched. Since we use Plex for our home media server, it only made sense for me to find a way to keep that information in sync without any additional effort in my day-to-day workflow. Fortunately, there is an open source project out there that does the heavy lifting for me!

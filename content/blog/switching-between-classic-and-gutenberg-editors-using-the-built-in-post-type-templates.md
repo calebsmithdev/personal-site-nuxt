@@ -1,10 +1,10 @@
 ---
 title: 'Switching between Classic and Gutenberg editors using the built-in post type templates'
 description: "Improve your content editor experience by removing when the Gutenberg editor selectively when it's not needed."
-# image: /assets/blog/v3-3.png
 date: 2023-12-27
-# last_updated: 2024-01-19
 categories: ['WordPress']
+sitemap:
+  lastmod: 2023-12-27
 ---
 
 As a WordPress developer who regularly uses [Advanced Custom Fields](https://www.advancedcustomfields.com/), I occasionally run into an issue where I want to use the Gutenberg editor, but I sometimes want to have more rigid control of layout using ACF instead. I could handle this by creating two different custom post types and just disable the Gutenberg editor for one of them, but then I end up with different base slug paths and could also confuse content editors. So what's the solution? Let's use an add_filter to handle that process for us. In our use case, we will allow the default template to always use a Gutenberg editor, but more specific templates will use the Classic editor instead.
