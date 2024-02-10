@@ -1,10 +1,10 @@
 ---
 title: 'How to connect to your Steam Deck using FTP'
 description: "Adding/removing files in your Steam Deck doesn't have to be a pain. Let's see how we can smooth out the process."
-# image: /assets/blog/v3-3.png
 date: 2023-01-20
-# last_updated: 2024-01-19
 categories: ['Steam Deck']
+sitemap:
+  lastmod: 2023-01-20
 ---
 
 The [Steam Deck](https://store.steampowered.com/steamdeck) is one of the coolest gaming platforms to have came out recently and has been a nice system to play retro video games on. If you are looking to jump more into retro games, then your first hurdle will be "How do I get my ROMS onto the Steam Deck?" There are several ways to do it, but the easiest is just use the native FTP process.

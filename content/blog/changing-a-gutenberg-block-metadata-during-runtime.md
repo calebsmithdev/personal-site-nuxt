@@ -1,10 +1,10 @@
 ---
 title: 'Changing a Gutenberg block metadata during runtime'
 description: "Manipulating Gutenberg blocks at runtime is easy and sometimes necessary. Let's give it a try with the block_type_metadata filter."
-# image: /assets/blog/v3-3.png
 date: 2022-09-30
-# last_updated: 2024-01-19
 categories: ['WordPress']
+sitemap:
+  lastmod: 2022-09-30
 ---
 
 I have ran into at least one situation where I needed to modify either an ACF Block or a core Gutenberg block selectively during runtime, but keep the `blocks.json` structure the same since it applied to 90% of my use cases. This could be either removing or adding a supports option at a per post type level, or maybe adding new typography options during on what post type the user is using. Fortunately, this process is pretty easy to do using the `block_type_metadata` filter.

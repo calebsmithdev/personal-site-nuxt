@@ -1,10 +1,10 @@
 ---
 title: 'Improving your class structures with ACF Blocks'
 description: "Adapting Gutenberg classes into your ACF Blocks can be a pain. Let's look at ways to make that better."
-# image: /assets/blog/v3-3.png
 date: 2023-12-27
-# last_updated: 2024-01-19
 categories: ['WordPress']
+sitemap:
+  lastmod: 2023-12-27
 ---
 
 Advanced Custom Fields (ACF) is one of my favorite dev tools to use in a new theme, especially when I am working with the Gutenberg editor since the ACF Blocks are just so smooth to work with. If you are unfamiliar with ACF Blocks, I’d go check out this article first and get up to speed before we dive in.

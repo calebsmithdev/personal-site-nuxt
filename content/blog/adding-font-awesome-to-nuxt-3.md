@@ -1,10 +1,10 @@
 ---
 title: 'Adding Font Awesome to Nuxt 3'
 description: "Installing Font Awesome with Nuxt 3 is easy, but there a few gotchas that you may not be aware of."
-# image: /assets/blog/v3-3.png
 date: 2022-10-08
-# last_updated: 2024-01-19
 categories: ['Nuxt 3']
+sitemap:
+  lastmod: 2022-10-08
 ---
 
 Are you on the bleeding edge path of Nuxt and eager to use Font Awesome with Nuxt 3? Font Awesome has done a great job documenting the installation, but there a few missing steps you might run into with the latest version. You can find those instructions on the Font Awesome website, in case they change in the future.
