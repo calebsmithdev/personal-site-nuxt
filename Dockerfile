@@ -18,6 +18,7 @@ WORKDIR /app
 # Copy over build files from builder step
 COPY --from=builder /app/.output  app/.output
 COPY --from=builder /app/.nuxt  app/.nuxt
+COPY --from=builder /app/package.json  app/package.json
 
 # Expose the host and port 3000 to the server
 ENV HOST 0.0.0.0
