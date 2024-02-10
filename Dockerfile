@@ -10,17 +10,18 @@ RUN npm install
 ADD . /app
 RUN npm run build
 
-# start final image
+# Start final image
 FROM node:20-alpine
 
 WORKDIR /app
 
-# copy over build files from builder step
+# Copy over build files from builder step
 COPY --from=builder /app/.output  app/.output
 COPY --from=builder /app/.nuxt  app/.nuxt
 
-# expose the host and port 3000 to the server
+# Expose the host and port 3000 to the server
 ENV HOST 0.0.0.0
 EXPOSE 3000
 
-CMD [ "npm", "run", "start" ]
+# Run the build project with node
+ENTRYPOINT ["node", ".output/server/index.mjs"]
