@@ -86,4 +86,9 @@ const htmlContext = ref(null)
     top: 30px;
     position: sticky;
   }
+
+  :deep(iframe) {
+    width: 100%;
+    height: 395px;
+  }
 </style>
