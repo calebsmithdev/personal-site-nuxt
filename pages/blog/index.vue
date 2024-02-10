@@ -4,19 +4,19 @@
       <h2 class="mb-10 section-heading">
         All Blog Posts
       </h2>
-      <template v-for="post in posts.edges" :key="post.node.id">
-        <PostPreview :post="post.node" />
+      <template v-for="article in articles" :key="article._id">
+        <PostPreview :post="article" />
       </template>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import usePosts from '~~/nuxt-wp/usePosts'
-
-const { posts, refresh } = await usePosts()
+const { fetchList, articles } = useBlog()
 
 useHead({
   title: 'Blog'
 })
+
+await fetchList()
 </script>

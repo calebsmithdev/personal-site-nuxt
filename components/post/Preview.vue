@@ -1,33 +1,31 @@
 <template>
   <div class="pb-16">
     <div class="flex items-center pb-3 space-x-3">
-      <NuxtLink v-for="category in categories" :key="category.id" :to="category.uri" class="border-b-0">
+      <NuxtLink v-for="category in post.categories" :key="category" :to="category" class="border-b-0">
         <div class="uppercase py-1 px-3 border dark:border-white dark:text-white rounded text-xs">
-          {{ category.name }}
+          {{ category }}
         </div>
       </NuxtLink>
     </div>
-    <NuxtLink :to="`/blog/${post.slug}`">
+    <NuxtLink :to="post._path">
       <div class="">
-        <h3 class="font-medium mb-2 mt-0">
+        <h3 class="mb-2 mt-0">
           {{ post.title }}
         </h3>
-        <div class="mb-4" v-html="post.excerpt" />
-        <p class="font-medium">
-          Read More
-        </p>
+        <div class="text-sm mb-3 uppercase font-heading">{{ dayjs(post.date).format('MMMM D, YYYY') }}</div>
+        <div class="mb-4">{{ post.description }}</div>
       </div>
     </NuxtLink>
   </div>
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
+
 const props = defineProps({
   post: {
     type: Object,
     default: () => ({})
   }
 })
-
-const categories = computed(() => props.post.terms.nodes)
 </script>

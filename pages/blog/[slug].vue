@@ -1,15 +1,15 @@
 <template>
   <div class="container flex space-x-16">
     <div class="w-full md:w-9/12">
-      <h1>{{ post.title }}</h1>
+      <h1>{{ article?.title }}</h1>
       <div class="flex items-center space-x-3 mb-10">
         <div class="modified-date">
-          Posted on {{ dayjs(post.date).format('MMMM D, YYYY') }}
+          Posted on {{ dayjs(article?.date).format('MMMM D, YYYY') }}
         </div>
         <div class="flex items-center space-x-3">
-          <NuxtLink v-for="category in categories" :key="category.id" :to="category.uri" class="border-b-0">
+          <NuxtLink v-for="category in article?.categories" :key="category" :to="category" class="border-b-0">
             <div class="uppercase py-1 px-3 border dark:border-white dark:text-white rounded text-xs">
-              {{ category.name }}
+              {{ category }}
             </div>
           </NuxtLink>
         </div>
@@ -17,10 +17,10 @@
 
       <div id="full-content" ref="htmlContext">
         <h2 id="introduction" class="m-0 p-0" />
-        <div v-html="post.content" />
+        <ContentRenderer v-if="article && article.body" :value="article" />
       </div>
 
-      <div class="flex items-center justify-between">
+      <!-- <div class="flex items-center justify-between">
         <div>
           <p class="mb-1 text-sm text-slate-400 uppercase">
             Last updated
@@ -29,15 +29,11 @@
             {{ dayjs(post.modified).format('MMMM D, YYYY') }}
           </p>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="w-full md:w-3/12">
       <div class="sidebar">
-        <PostTableOfContents :post="post" :html-context="htmlContext" />
-        <p class="text-lg font-bold mt-10">
-          Like what you've read?
-        </p>
-        <BlogPostClapper :post="post" />
+        <!-- <PostTableOfContents :post="post" :html-context="htmlContext" /> -->
       </div>
     </div>
   </div>
@@ -45,46 +41,52 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import Prism from 'prismjs'
-import usePost from '~~/nuxt-wp/usePost'
+import type { BlogArticle } from '../../types'
 
-const { post, refresh } = await usePost()
-const categories = computed(() => post.value.terms.nodes)
+const route = useRoute()
+
+const { data: article } = await useAsyncData(route.path, () => queryContent<BlogArticle>(route.path).findOne())
+if (!article.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
+}
 
 useHead({
-  title: post.value.seo.title,
+  title: article.value.title,
   titleTemplate: '',
   meta: [
-    { name: 'og:title', content: post.value.seo.opengraphTitle },
-    { name: 'og:description', content: post.value.seo.opengraphDescription },
-    { name: 'og:type', content: post.value.seo.opengraphType },
+    { name: 'og:title', content: article.value.title },
+    { name: 'og:description', content: article.value.description },
+    { name: 'og:type', content: 'blog' },
     { name: 'og:locale', content: 'en_US' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:creator', content: '@CalebSmithDev' },
     { name: 'twitter:site', content: '@CalebSmithDev' },
-    { name: 'description', content: post.value.seo.metaDesc }
+    { name: 'description', content: article.value.description }
   ],
   link: [
-    { rel: 'canonical', href: post.value.seo.canonical }
+    { rel: 'canonical', href: 'https://caleb-smith.dev' + route.path }
   ]
 })
 
 const htmlContext = ref(null)
-
-onMounted(() => {
-  setTimeout(() => {
-    Prism.highlightAll()
-  }, 50)
-})
 </script>
 
 <style scoped>
   :deep(a) {
+    border-color: transparent;
+  }
+
+  :deep(a):hover {
     border-color: currentColor;
   }
 
   .sidebar {
     top: 30px;
     position: sticky;
+  }
+
+  :deep(iframe) {
+    width: 100%;
+    height: 395px;
   }
 </style>

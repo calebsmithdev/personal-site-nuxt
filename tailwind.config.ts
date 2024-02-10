@@ -24,7 +24,8 @@ export default <Config> {
       center: true,
     },
     fontFamily: {
-      'sans': ['Inter', ...defaultTheme.fontFamily.sans],
+      'sans': ['Lora', ...defaultTheme.fontFamily.sans],
+      'heading': ['Poppins', ...defaultTheme.fontFamily.sans],
     },
     extend: {}
   },
