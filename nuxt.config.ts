@@ -54,6 +54,7 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: [
+      'tslib',
       '@apollo/client',
       'ts-invariant/process',
       '@fortawesome/fontawesome-svg-core',
