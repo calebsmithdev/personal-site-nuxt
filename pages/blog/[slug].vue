@@ -49,26 +49,24 @@ const { data: article } = await useAsyncData(route.path, () => queryContent<Blog
 if (!article.value) {
   throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
 }
-// import Prism from 'prismjs'
-// import usePost from '~~/nuxt-wp/usePost'
 
-// useHead({
-//   title: post.value.seo.title,
-//   titleTemplate: '',
-//   meta: [
-//     { name: 'og:title', content: post.value.seo.opengraphTitle },
-//     { name: 'og:description', content: post.value.seo.opengraphDescription },
-//     { name: 'og:type', content: post.value.seo.opengraphType },
-//     { name: 'og:locale', content: 'en_US' },
-//     { name: 'twitter:card', content: 'summary_large_image' },
-//     { name: 'twitter:creator', content: '@CalebSmithDev' },
-//     { name: 'twitter:site', content: '@CalebSmithDev' },
-//     { name: 'description', content: post.value.seo.metaDesc }
-//   ],
-//   link: [
-//     { rel: 'canonical', href: post.value.seo.canonical }
-//   ]
-// })
+useHead({
+  title: article.value.title,
+  titleTemplate: '',
+  meta: [
+    { name: 'og:title', content: article.value.title },
+    { name: 'og:description', content: article.value.description },
+    { name: 'og:type', content: 'blog' },
+    { name: 'og:locale', content: 'en_US' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:creator', content: '@CalebSmithDev' },
+    { name: 'twitter:site', content: '@CalebSmithDev' },
+    { name: 'description', content: article.value.description }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://caleb-smith.dev' + route.path }
+  ]
+})
 
 const htmlContext = ref(null)
 </script>
