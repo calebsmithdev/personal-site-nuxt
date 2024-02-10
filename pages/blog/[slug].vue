@@ -75,6 +75,10 @@ const htmlContext = ref(null)
 
 <style scoped>
   :deep(a) {
+    border-color: transparent;
+  }
+
+  :deep(a):hover {
     border-color: currentColor;
   }
 

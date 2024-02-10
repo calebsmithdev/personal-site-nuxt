@@ -9,9 +9,9 @@ h1, .h1,
 h2, .h2,
 h3, .h3,
 h4, .h4 {
-  font-weight: 600;
+  @apply font-heading;
+  font-weight: 700;
   margin-bottom: 15px;
-  font-family: 'Montserrat', sans-serif;
 }
 
 h1, .h1 {
@@ -76,7 +76,7 @@ ul {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  font-weight: 300;
+  font-weight: 700;
 }
 
 .section-heading:after {

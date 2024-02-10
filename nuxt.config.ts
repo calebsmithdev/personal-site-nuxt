@@ -35,9 +35,8 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   families: {
-    Inter: [300, 400, 500, 700],
-    Montserrat: [300, 500, 600],
-    'IBM Plex Mono': [400]
+    Lora: [500],
+    Poppins: [500, 700]
   },
   content: {
     highlight: {

@@ -9,14 +9,11 @@
     </div>
     <NuxtLink :to="post._path">
       <div class="">
-        <h3 class="font-medium mb-1 mt-0">
+        <h3 class="mb-2 mt-0">
           {{ post.title }}
         </h3>
-        <div class="text-sm mb-3">{{ dayjs(post.date).format('MMMM D, YYYY') }}</div>
-        <div class="mb-4" v-html="post.description" />
-        <p class="font-medium">
-          Read More
-        </p>
+        <div class="text-sm mb-3 uppercase font-heading">{{ dayjs(post.date).format('MMMM D, YYYY') }}</div>
+        <div class="mb-4">{{ post.description }}</div>
       </div>
     </NuxtLink>
   </div>
