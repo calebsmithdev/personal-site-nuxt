@@ -40,7 +40,7 @@ export default defineNuxtConfig({
     Poppins: [500, 700]
   },
   content: {
-    documentDriven: true,
+    documentDriven: false,
     highlight: {
       theme: {
         default: 'material-theme-lighter',
