@@ -2,7 +2,19 @@ import type { RouterConfig } from '@nuxt/schema'
 
 // https://router.vuejs.org/api/#routeroptions
 export default <RouterConfig> {
-  scrollBehavior () {
+  scrollBehavior (to, _from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: 32,
+        behavior: 'smooth'
+      }
+    }
+
     return { top: 0 }
   }
 }

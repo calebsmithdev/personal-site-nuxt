@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
 
 useHead({
   titleTemplate: (titleChunk) => {
@@ -17,16 +17,16 @@ useHead({
   viewport: 'width=device-width, initial-scale=1',
   charset: 'utf-8',
   bodyAttrs: {
-    class: 'bg-gray-900'
+    class: 'site-body'
   },
   meta: [
-    { name: 'description', content: route.meta.description ?? 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.' },
+    { name: 'description', content: defaultDescription },
 
     // Facebook
     { name: 'og:url', content: 'https://caleb-smith.dev' },
-    { name: 'og:title', content: `${route.meta.title} | Caleb Smith` },
-    { name: 'og:description', content: route.meta.description ?? 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.' },
-    { name: 'og:type', content: route.meta.ogType ?? 'website' },
+    { name: 'og:title', content: 'Full Stack Web Developer | Caleb Smith' },
+    { name: 'og:description', content: defaultDescription },
+    { name: 'og:type', content: 'website' },
     { name: 'og:locale', content: 'en_US' },
 
     // Twitter
