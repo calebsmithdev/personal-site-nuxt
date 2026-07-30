@@ -43,7 +43,7 @@
     "@nuxtjs/sitemap": "^8.3.2",
     "@vueuse/nuxt": "^14.4.0",
     "axios": "^1.19.0",
-    "better-sqlite3": "^13.0.2",
+    "better-sqlite3": "^12.11.1",
     "dayjs": "^1.11.21",
     "prismjs": "^1.30.0",
     "sitemap": "^9.0.1",
