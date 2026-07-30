@@ -1,15 +1,4 @@
-const legacyGoogleFontsConfig = {
-  buildModules: [
-    '@nuxtjs/google-fonts'
-  ],
-  families: {
-    Lora: [500],
-    Poppins: [500, 700]
-  }
-}
-
 export default defineNuxtConfig({
-  ...legacyGoogleFontsConfig,
   runtimeConfig: {
     public: {
       googleAnalyticsId: ''
@@ -34,6 +23,9 @@ export default defineNuxtConfig({
     fallback: 'dark'
   },
   css: [
+    '@fontsource/lora/500.css',
+    '@fontsource/poppins/500.css',
+    '@fontsource/poppins/700.css',
     '@/assets/css/typography.css',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
