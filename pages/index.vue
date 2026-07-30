@@ -23,13 +23,28 @@
       </div>
 
       <div class="hero-media">
-        <img
-          src="~/assets/img/homepage-homelab-v1.png"
-          alt="An illustrated homelab workspace with a server rack, laptop, network storage, and connected infrastructure symbols"
-          width="1536"
-          height="1024"
-          fetchpriority="high"
-        >
+        <picture>
+          <source
+            type="image/avif"
+            srcset="/images/homepage-homelab/hero-640.avif 640w, /images/homepage-homelab/hero-1024.avif 1024w, /images/homepage-homelab/hero-1536.avif 1536w"
+            sizes="(max-width: 1023px) 100vw, 48vw"
+          >
+          <source
+            type="image/webp"
+            srcset="/images/homepage-homelab/hero-640.webp 640w, /images/homepage-homelab/hero-1024.webp 1024w, /images/homepage-homelab/hero-1536.webp 1536w"
+            sizes="(max-width: 1023px) 100vw, 48vw"
+          >
+          <img
+            src="/images/homepage-homelab/hero-1536.jpg"
+            srcset="/images/homepage-homelab/hero-640.jpg 640w, /images/homepage-homelab/hero-1024.jpg 1024w, /images/homepage-homelab/hero-1536.jpg 1536w"
+            sizes="(max-width: 1023px) 100vw, 48vw"
+            alt="An illustrated homelab workspace with a server rack, laptop, network storage, and connected infrastructure symbols"
+            width="1536"
+            height="1024"
+            fetchpriority="high"
+            decoding="async"
+          >
+        </picture>
       </div>
     </section>
 

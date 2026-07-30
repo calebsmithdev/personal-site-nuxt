@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "assets:hero": "node scripts/generate-homepage-hero.mjs",
     "build": "nuxi build",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build",
     "dev": "nuxi dev",
@@ -26,6 +27,7 @@
     "happy-dom": "^20.11.1",
     "nuxt": "^3.10.1",
     "nuxt-simple-robots": "^4.0.0-rc.14",
+    "sharp": "^0.35.3",
     "typescript": "~5.6.3",
     "vitest": "^4.1.10",
     "vue-tsc": "^3.3.8"
