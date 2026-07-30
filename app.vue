@@ -14,12 +14,12 @@ useHead({
   htmlAttrs: {
     lang: 'en'
   },
-  viewport: 'width=device-width, initial-scale=1',
-  charset: 'utf-8',
   bodyAttrs: {
     class: 'site-body'
   },
   meta: [
+    { charset: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { name: 'description', content: defaultDescription },
 
     // Facebook

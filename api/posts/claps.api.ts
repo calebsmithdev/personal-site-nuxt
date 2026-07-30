@@ -31,7 +31,7 @@ export default async function useClaps () {
   const route = useRoute()
 
   const { data: post, refresh } = await useAsyncData(`claps-${route.params.postSlug}`, async () => {
-    return await apiGetClaps(route.params.postSlug)
+    return await apiGetClaps(String(route.params.postSlug))
   })
 
   return {

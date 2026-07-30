@@ -1,16 +1,16 @@
-import { Config } from 'tailwindcss'
-import defaultTheme  from 'tailwindcss/defaultTheme'
+import type { Config } from 'tailwindcss'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
-export default <Config> {
+export default {
   darkMode: ['class'],
   content: [
-    `components/**/*.{vue,js}`,
-    `layouts/**/*.vue`,
-    `pages/**/*.vue`,
-    `composables/**/*.{js,ts}`,
-    `plugins/**/*.{js,ts}`,
-    `App.{js,ts,vue}`,
-    `app.{js,ts,vue}`
+    'components/**/*.{vue,js}',
+    'layouts/**/*.vue',
+    'pages/**/*.vue',
+    'composables/**/*.{js,ts}',
+    'plugins/**/*.{js,ts}',
+    'App.{js,ts,vue}',
+    'app.{js,ts,vue}'
   ],
   theme: {
     screens: {
@@ -21,12 +21,12 @@ export default <Config> {
     },
     container: {
       padding: '2rem',
-      center: true,
+      center: true
     },
     fontFamily: {
-      'sans': ['Lora', ...defaultTheme.fontFamily.sans],
-      'heading': ['Poppins', ...defaultTheme.fontFamily.sans],
+      sans: ['Lora', ...defaultTheme.fontFamily.sans],
+      heading: ['Poppins', ...defaultTheme.fontFamily.sans]
     },
     extend: {}
-  },
-}
+  }
+} satisfies Config

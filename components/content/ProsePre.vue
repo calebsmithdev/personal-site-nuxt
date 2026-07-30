@@ -53,12 +53,12 @@ let copiedTimer: ReturnType<typeof setTimeout> | undefined
 const copyCode = async () => {
   await navigator.clipboard.writeText(props.code)
   copied.value = true
-  if (copiedTimer) clearTimeout(copiedTimer)
+  if (copiedTimer) { clearTimeout(copiedTimer) }
   copiedTimer = setTimeout(() => { copied.value = false }, 1800)
 }
 
 onBeforeUnmount(() => {
-  if (copiedTimer) clearTimeout(copiedTimer)
+  if (copiedTimer) { clearTimeout(copiedTimer) }
 })
 </script>
 

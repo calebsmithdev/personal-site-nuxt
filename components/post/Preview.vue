@@ -35,6 +35,10 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../ArrowRightIcon.vue'
 import type { BlogArticle } from '../../types'
 
+defineOptions({
+  name: 'PostPreview'
+})
+
 dayjs.extend(utc)
 
 defineProps<{

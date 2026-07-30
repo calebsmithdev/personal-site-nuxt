@@ -1,5 +1,17 @@
 import graphql from '@rollup/plugin-graphql'
+
+const legacyGoogleFontsConfig = {
+  buildModules: [
+    '@nuxtjs/google-fonts'
+  ],
+  families: {
+    Lora: [500],
+    Poppins: [500, 700]
+  }
+}
+
 export default defineNuxtConfig({
+  ...legacyGoogleFontsConfig,
   imports: {
     dirs: ['graphql']
   },
@@ -21,24 +33,17 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
-    'nuxt-simple-robots',
+    'nuxt-simple-robots'
   ],
   colorMode: {
     // preference: 'system', // default value of $colorMode.preference
     preference: 'dark',
     fallback: 'dark'
   },
-  buildModules: [
-    '@nuxtjs/google-fonts'
-  ],
   css: [
     '@/assets/css/typography.css',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  families: {
-    Lora: [500],
-    Poppins: [500, 700]
-  },
   content: {
     documentDriven: false,
     highlight: {
@@ -50,7 +55,7 @@ export default defineNuxtConfig({
     }
   },
   site: {
-    url: 'https://caleb-smith.dev',
+    url: 'https://caleb-smith.dev'
   },
   build: {
     transpile: [

@@ -41,7 +41,9 @@
         <div class="corner corner-bottom-right" aria-hidden="true" />
 
         <div class="featured-index">
-          <p class="section-label">Latest field note</p>
+          <p class="section-label">
+            Latest field note
+          </p>
           <span class="article-number" aria-hidden="true">01</span>
         </div>
 
@@ -153,11 +155,11 @@ const dateTime = (date: Date | string) => dayjs(date).utc().format('YYYY-MM-DD')
 const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 const categoryIcons: Record<string, IconDefinition> = {
   'Advanced Custom Fields (ACF)': faWordpressSimple,
-  'Javascript': faJsSquare,
-  'Kubernetes': faDharmachakra,
-  'Proxmox': faCube,
-  'SwiftUI': faSwift,
-  'WordPress': faWordpressSimple
+  Javascript: faJsSquare,
+  Kubernetes: faDharmachakra,
+  Proxmox: faCube,
+  SwiftUI: faSwift,
+  WordPress: faWordpressSimple
 }
 const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
 </script>

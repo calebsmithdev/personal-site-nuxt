@@ -123,10 +123,11 @@ dayjs.extend(utc)
 const route = useRoute()
 const { fetchList, articles } = useBlog()
 
-const { data: article } = await useAsyncData(route.path, () => queryContent<BlogArticle>(route.path).findOne())
-if (!article.value) {
+const { data: articleData } = await useAsyncData(route.path, () => queryContent<BlogArticle>(route.path).findOne())
+if (!articleData.value) {
   throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
 }
+const article = computed(() => articleData.value as BlogArticle)
 
 await fetchList()
 
@@ -145,10 +146,10 @@ const tocLinks = computed<TocLink[]>(() => {
 })
 
 const countWords = (node: ContentNode | ContentNode[] | undefined): number => {
-  if (!node) return 0
-  if (Array.isArray(node)) return node.reduce((total, child) => total + countWords(child), 0)
-  if (node.tag === 'pre') return 0
-  if (node.type === 'text' && node.value) return node.value.trim().split(/\s+/).filter(Boolean).length
+  if (!node) { return 0 }
+  if (Array.isArray(node)) { return node.reduce((total, child) => total + countWords(child), 0) }
+  if (node.tag === 'pre') { return 0 }
+  if (node.type === 'text' && node.value) { return node.value.trim().split(/\s+/).filter(Boolean).length }
   return countWords(node.children)
 }
 
@@ -162,11 +163,11 @@ const dateTime = (date: Date | string) => dayjs(date).utc().format('YYYY-MM-DD')
 const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 const categoryIcons: Record<string, IconDefinition> = {
   'Advanced Custom Fields (ACF)': faWordpressSimple,
-  'Javascript': faJsSquare,
-  'Kubernetes': faDharmachakra,
-  'Proxmox': faCube,
-  'SwiftUI': faSwift,
-  'WordPress': faWordpressSimple
+  Javascript: faJsSquare,
+  Kubernetes: faDharmachakra,
+  Proxmox: faCube,
+  SwiftUI: faSwift,
+  WordPress: faWordpressSimple
 }
 const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
 

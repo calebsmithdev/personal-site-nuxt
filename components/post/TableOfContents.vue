@@ -37,7 +37,7 @@ let observer: IntersectionObserver | undefined
 onMounted(() => {
   observer = new IntersectionObserver((entries) => {
     const visibleHeading = entries.find(entry => entry.isIntersecting)
-    if (visibleHeading?.target.id) currentItem.value = visibleHeading.target.id
+    if (visibleHeading?.target.id) { currentItem.value = visibleHeading.target.id }
   }, {
     rootMargin: '-12% 0px -72% 0px',
     threshold: 0
@@ -45,7 +45,7 @@ onMounted(() => {
 
   props.links.forEach((link) => {
     const heading = document.getElementById(link.id)
-    if (heading) observer?.observe(heading)
+    if (heading) { observer?.observe(heading) }
   })
 })
 
