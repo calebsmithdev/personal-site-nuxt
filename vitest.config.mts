@@ -31,7 +31,11 @@ export default defineConfig({
         test: {
           name: 'e2e',
           environment: 'node',
-          include: ['test/e2e/**/*.spec.ts']
+          include: ['test/e2e/**/*.spec.ts'],
+          fileParallelism: false,
+          sequence: {
+            groupOrder: 1
+          }
         }
       }
     ]
