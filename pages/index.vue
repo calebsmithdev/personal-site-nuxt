@@ -145,6 +145,14 @@ import type { BlogArticle } from '../types'
 
 dayjs.extend(utc)
 
+const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
+
+useSiteSeo({
+  title: 'Full Stack Web Developer',
+  description: defaultDescription,
+  path: '/'
+})
+
 const { fetchList, articles } = useBlog()
 
 await fetchList()

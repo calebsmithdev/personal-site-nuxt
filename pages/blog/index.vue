@@ -27,15 +27,12 @@
 
 <script setup lang="ts">
 const { fetchList, articles } = useBlog()
+const description = 'Practical field notes from Caleb Smith on web development, infrastructure, Kubernetes, WordPress, and SwiftUI.'
 
-useHead({
+useSiteSeo({
   title: 'Writing',
-  meta: [
-    {
-      name: 'description',
-      content: 'Practical field notes from Caleb Smith on web development, infrastructure, Kubernetes, WordPress, and SwiftUI.'
-    }
-  ]
+  description,
+  path: '/blog'
 })
 
 await fetchList()

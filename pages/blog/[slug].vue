@@ -154,22 +154,12 @@ const categoryIcons: Record<string, IconDefinition> = {
 }
 const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
 
-useHead({
-  title: article.value.title,
-  titleTemplate: '',
-  meta: [
-    { property: 'og:title', content: article.value.title },
-    { property: 'og:description', content: article.value.description },
-    { property: 'og:type', content: 'article' },
-    { property: 'og:locale', content: 'en_US' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:creator', content: '@CalebSmithDev' },
-    { name: 'twitter:site', content: '@CalebSmithDev' },
-    { name: 'description', content: article.value.description }
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://caleb-smith.dev' + route.path }
-  ]
+useSiteSeo({
+  title: article.value.title!,
+  description: article.value.description!,
+  path: route.path,
+  type: 'article',
+  absoluteTitle: true
 })
 </script>
 
