@@ -103,19 +103,14 @@ import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import type { BlogArticle } from '../../types'
+import { getArticlePosition, getReadingMinutes } from '../../utils/article'
+import type { ContentNode } from '../../utils/article'
 
 interface TocLink {
   id: string
   depth: number
   text: string
   children?: TocLink[]
-}
-
-interface ContentNode {
-  type?: string
-  tag?: string
-  value?: string
-  children?: ContentNode[]
 }
 
 dayjs.extend(utc)
@@ -131,31 +126,19 @@ const article = computed(() => articleData.value as BlogArticle)
 
 await fetchList()
 
-const currentIndex = computed(() => articles.value.findIndex(item => item._path === article.value?._path))
-const articleNumber = computed(() => String(Math.max(0, currentIndex.value) + 1).padStart(2, '0'))
-const newerArticle = computed(() => currentIndex.value > 0 ? articles.value[currentIndex.value - 1] : null)
-const olderArticle = computed(() => (
-  currentIndex.value >= 0 && currentIndex.value < articles.value.length - 1
-    ? articles.value[currentIndex.value + 1]
-    : null
-))
+const articlePosition = computed(() => getArticlePosition(articles.value, article.value?._path))
+const articleNumber = computed(() => articlePosition.value.displayNumber)
+const newerArticle = computed(() => articlePosition.value.newer)
+const olderArticle = computed(() => articlePosition.value.older)
 
 const tocLinks = computed<TocLink[]>(() => {
   const body = article.value?.body as { toc?: { links?: TocLink[] } } | undefined
   return body?.toc?.links ?? []
 })
 
-const countWords = (node: ContentNode | ContentNode[] | undefined): number => {
-  if (!node) { return 0 }
-  if (Array.isArray(node)) { return node.reduce((total, child) => total + countWords(child), 0) }
-  if (node.tag === 'pre') { return 0 }
-  if (node.type === 'text' && node.value) { return node.value.trim().split(/\s+/).filter(Boolean).length }
-  return countWords(node.children)
-}
-
 const readingMinutes = computed(() => {
   const body = article.value?.body as ContentNode | undefined
-  return Math.max(1, Math.ceil(countWords(body) / 220))
+  return getReadingMinutes(body)
 })
 
 const formatDate = (date: Date | string) => dayjs(date).utc().format('MMMM D, YYYY')
