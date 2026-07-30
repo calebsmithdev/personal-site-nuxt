@@ -5,10 +5,13 @@
     </p>
 
     <ol class="toc-list">
-      <li v-for="link in links" :key="link.id">
+      <li v-for="link in flatLinks" :key="link.id">
         <a
           :href="`#${link.id}`"
-          :class="{ 'is-active': link.id === currentItem }"
+          :class="{
+            'is-active': link.id === currentItem,
+            'toc-link-depth-3': link.depth === 3
+          }"
           :aria-current="link.id === currentItem ? 'location' : undefined"
           @click="currentItem = link.id"
         >
@@ -31,7 +34,13 @@ const props = defineProps<{
   links: TocLink[]
 }>()
 
-const currentItem = ref(props.links[0]?.id ?? '')
+const flattenLinks = (links: TocLink[]): TocLink[] => links.flatMap(link => [
+  link,
+  ...flattenLinks(link.children ?? [])
+])
+
+const flatLinks = computed(() => flattenLinks(props.links))
+const currentItem = ref(flatLinks.value[0]?.id ?? '')
 let observer: IntersectionObserver | undefined
 
 onMounted(() => {
@@ -43,7 +52,7 @@ onMounted(() => {
     threshold: 0
   })
 
-  props.links.forEach((link) => {
+  flatLinks.value.forEach((link) => {
     const heading = document.getElementById(link.id)
     if (heading) { observer?.observe(heading) }
   })
@@ -90,6 +99,11 @@ onBeforeUnmount(() => observer?.disconnect())
   line-height: 1.45;
 }
 
+.toc-list a.toc-link-depth-3 {
+  padding-left: 2.35rem;
+  font-size: 0.82rem;
+}
+
 .toc-list a::before {
   position: absolute;
   top: 0.55rem;
@@ -131,6 +145,11 @@ onBeforeUnmount(() => observer?.disconnect())
   .toc-list a {
     padding: 0.45rem 0;
     font-size: 0.8rem;
+    overflow-wrap: anywhere;
+  }
+
+  .toc-list a.toc-link-depth-3 {
+    padding-left: 1rem;
   }
 
   .toc-list a::before {

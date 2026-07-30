@@ -31,6 +31,11 @@ export default defineNuxtConfig({
   ],
   content: {
     documentDriven: false,
+    markdown: {
+      toc: {
+        depth: 3
+      }
+    },
     highlight: {
       theme: {
         default: 'material-theme-lighter',

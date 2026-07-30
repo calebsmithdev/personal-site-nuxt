@@ -8,14 +8,20 @@ describe('TableOfContents', () => {
     vi.unstubAllGlobals()
   })
 
-  it('observes and renders only top-level headings', async () => {
+  it('renders and observes nested headings in document order', async () => {
     const observe = vi.fn()
     const disconnect = vi.fn()
     let observerOptions: IntersectionObserverInit | undefined
+    let observerCallback: IntersectionObserverCallback | undefined
+    let observerInstance: IntersectionObserver | undefined
+    let observerCount = 0
 
     class FakeIntersectionObserver {
-      constructor (_callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+      constructor (callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+        observerCallback = callback
         observerOptions = options
+        observerInstance = this as unknown as IntersectionObserver
+        observerCount += 1
       }
 
       observe = observe
@@ -26,8 +32,13 @@ describe('TableOfContents', () => {
 
     vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver)
 
-    for (const id of ['first-heading', 'first-child', 'second-heading', 'second-child']) {
-      const heading = document.createElement('h2')
+    for (const [id, tag] of [
+      ['first-heading', 'h2'],
+      ['first-child', 'h3'],
+      ['second-heading', 'h2'],
+      ['second-child', 'h3']
+    ] as const) {
+      const heading = document.createElement(tag)
       heading.id = id
       heading.dataset.characterizationHeading = ''
       document.body.append(heading)
@@ -58,23 +69,51 @@ describe('TableOfContents', () => {
 
     const links = wrapper.findAll('a')
 
-    expect(links.map(link => link.text())).toEqual(['First heading', 'Second heading'])
-    expect(wrapper.text()).not.toContain('First nested heading')
-    expect(wrapper.text()).not.toContain('Second nested heading')
-    expect(observe).toHaveBeenCalledTimes(2)
+    expect(links.map(link => link.text())).toEqual([
+      'First heading',
+      'First nested heading',
+      'Second heading',
+      'Second nested heading'
+    ])
+    expect(new Set(links.map(link => link.attributes('href'))).size).toBe(4)
+    expect(wrapper.find('a[href="#first-child"]').classes()).toContain('toc-link-depth-3')
+    expect(wrapper.find('a[href="#second-child"]').classes()).toContain('toc-link-depth-3')
+    expect(observerCount).toBe(1)
+    expect(observe).toHaveBeenCalledTimes(4)
     expect(observe.mock.calls.map(([heading]) => heading.id)).toEqual([
       'first-heading',
-      'second-heading'
+      'first-child',
+      'second-heading',
+      'second-child'
     ])
     expect(observerOptions).toEqual({
       rootMargin: '-12% 0px -72% 0px',
       threshold: 0
     })
+    expect(wrapper.findAll('[aria-current="location"]')).toHaveLength(1)
+    expect(wrapper.find('a[href="#first-heading"]').attributes('aria-current')).toBe('location')
 
-    await links[1].trigger('click')
+    const nestedHeading = document.getElementById('second-child')
+    if (!observerCallback || !observerInstance || !nestedHeading) {
+      throw new Error('Expected the nested heading and observer to be initialized')
+    }
+    const headingBounds = nestedHeading.getBoundingClientRect()
+    observerCallback?.([
+      {
+        time: 0,
+        isIntersecting: true,
+        intersectionRatio: 1,
+        target: nestedHeading,
+        boundingClientRect: headingBounds,
+        intersectionRect: headingBounds,
+        rootBounds: null
+      }
+    ], observerInstance)
+    await wrapper.vm.$nextTick()
 
-    expect(links[0].attributes('aria-current')).toBeUndefined()
-    expect(links[1].attributes('aria-current')).toBe('location')
+    expect(wrapper.findAll('[aria-current="location"]')).toHaveLength(1)
+    expect(wrapper.find('a[href="#first-heading"]').attributes('aria-current')).toBeUndefined()
+    expect(wrapper.find('a[href="#second-child"]').attributes('aria-current')).toBe('location')
 
     wrapper.unmount()
 
