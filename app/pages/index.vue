@@ -11,7 +11,7 @@
         </p>
 
         <div class="hero-actions">
-          <NuxtLink v-if="featuredArticle" :to="featuredArticle._path" class="button button-primary">
+          <NuxtLink v-if="featuredArticle" :to="featuredArticle.path" class="button button-primary">
             <span>Read the latest article</span>
             <span aria-hidden="true" class="button-arrow"><ArrowRightIcon /></span>
           </NuxtLink>
@@ -64,7 +64,7 @@
 
         <article class="featured-copy">
           <h2 id="featured-heading" class="featured-title">
-            <NuxtLink :to="featuredArticle._path">
+            <NuxtLink :to="featuredArticle.path">
               {{ featuredArticle.title }}
             </NuxtLink>
           </h2>
@@ -85,7 +85,7 @@
           </p>
         </article>
 
-        <NuxtLink :to="featuredArticle._path" class="article-arrow" :aria-label="`Read ${featuredArticle.title}`">
+        <NuxtLink :to="featuredArticle.path" class="article-arrow" :aria-label="`Read ${featuredArticle.title}`">
           <span aria-hidden="true"><ArrowRightIcon /></span>
         </NuxtLink>
       </div>
@@ -97,12 +97,12 @@
       </h2>
 
       <ol class="article-list">
-        <li v-for="(article, index) in recentArticles" :key="article._id" class="article-row">
+        <li v-for="(article, index) in recentArticles" :key="article.id" class="article-row">
           <span class="article-number row-number" aria-hidden="true">{{ String(index + 2).padStart(2, '0') }}</span>
 
           <article class="article-row-copy">
             <h3 class="article-row-title">
-              <NuxtLink :to="article._path">
+              <NuxtLink :to="article.path">
                 {{ article.title }}
               </NuxtLink>
             </h3>
@@ -119,7 +119,7 @@
             </div>
           </article>
 
-          <NuxtLink :to="article._path" class="article-arrow" :aria-label="`Read ${article.title}`">
+          <NuxtLink :to="article.path" class="article-arrow" :aria-label="`Read ${article.title}`">
             <span aria-hidden="true"><ArrowRightIcon /></span>
           </NuxtLink>
         </li>
@@ -141,7 +141,7 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../components/ArrowRightIcon.vue'
-import type { BlogArticle } from '../types'
+import type { BlogArticleSummary } from '../types'
 
 dayjs.extend(utc)
 
@@ -164,8 +164,8 @@ const recentArticlePaths = [
   '/blog/improving-your-class-structures-with-acf-blocks',
   '/blog/capturing-media-events-with-plyr'
 ]
-const recentArticles = computed<BlogArticle[]>(() => {
-  const articleByPath = new Map(articles.value.map(article => [article._path, article]))
+const recentArticles = computed<BlogArticleSummary[]>(() => {
+  const articleByPath = new Map(articles.value.map(article => [article.path, article]))
 
   return recentArticlePaths.flatMap((path) => {
     const article = articleByPath.get(path)

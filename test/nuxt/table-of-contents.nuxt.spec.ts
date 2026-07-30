@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import TableOfContents from '../../components/post/TableOfContents.vue'
+import TableOfContents from '../../app/components/post/TableOfContents.vue'
 
 describe('TableOfContents', () => {
   afterEach(() => {

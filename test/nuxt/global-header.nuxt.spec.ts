@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import GlobalHeader from '../../components/GlobalHeader.vue'
+import GlobalHeader from '../../app/components/GlobalHeader.vue'
 
 describe('GlobalHeader', () => {
   it('links the primary navigation to home and writing', async () => {

@@ -17,7 +17,7 @@
 
     <section class="site-shell article-index" aria-label="All articles">
       <ol>
-        <li v-for="(article, index) in articles" :key="article._id">
+        <li v-for="(article, index) in articles" :key="article.id">
           <PostPreview :post="article" :index="index + 1" />
         </li>
       </ol>

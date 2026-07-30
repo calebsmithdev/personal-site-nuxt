@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  compatibilityDate: '2026-07-29',
   runtimeConfig: {
     public: {
       googleAnalyticsId: ''
@@ -13,9 +14,10 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@nuxt/content',
+    '@nuxt/eslint',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
-    'nuxt-simple-robots'
+    '@nuxtjs/robots'
   ],
   colorMode: {
     // preference: 'system', // default value of $colorMode.preference
@@ -30,18 +32,19 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   content: {
-    documentDriven: false,
-    markdown: {
-      toc: {
-        depth: 3
+    build: {
+      markdown: {
+        toc: {
+          depth: 3
+        },
+        highlight: {
+          theme: {
+            default: 'material-theme-lighter',
+            dark: 'material-theme-palenight'
+          },
+          langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'swift', 'php']
+        }
       }
-    },
-    highlight: {
-      theme: {
-        default: 'material-theme-lighter',
-        dark: 'material-theme-palenight'
-      },
-      langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'swift', 'php']
     }
   },
   site: {

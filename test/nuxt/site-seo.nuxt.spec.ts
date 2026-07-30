@@ -1,6 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useSiteSeo } from '../../composables/useSiteSeo'
+import { useSiteSeo } from '../../app/composables/useSiteSeo'
 
 const mocks = vi.hoisted(() => ({
   useHead: vi.fn(),

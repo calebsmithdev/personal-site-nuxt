@@ -4,7 +4,7 @@
 
     <div class="post-copy">
       <h2>
-        <NuxtLink :to="post._path">
+        <NuxtLink :to="post.path">
           {{ post.title }}
         </NuxtLink>
       </h2>
@@ -22,7 +22,7 @@
       <p>{{ post.description }}</p>
     </div>
 
-    <NuxtLink :to="post._path" class="post-arrow" :aria-label="`Read ${post.title}`">
+    <NuxtLink :to="post.path" class="post-arrow" :aria-label="`Read ${post.title}`">
       <span aria-hidden="true"><ArrowRightIcon /></span>
     </NuxtLink>
   </article>
@@ -33,7 +33,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../ArrowRightIcon.vue'
-import type { BlogArticle } from '../../types'
+import type { BlogArticleSummary } from '../../types'
 
 defineOptions({
   name: 'PostPreview'
@@ -42,7 +42,7 @@ defineOptions({
 dayjs.extend(utc)
 
 defineProps<{
-  post: BlogArticle
+  post: BlogArticleSummary
   index: number
 }>()
 

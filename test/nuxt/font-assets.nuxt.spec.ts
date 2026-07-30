@@ -26,7 +26,7 @@ describe('font asset configuration', () => {
 
     expect(cssSection).not.toBeNull()
 
-    const cssEntries = [...cssSection![1].matchAll(/['"]([^'"]+)['"]/g)]
+    const cssEntries = [...(cssSection?.[1] ?? '').matchAll(/['"]([^'"]+)['"]/g)]
       .map(match => match[1])
 
     expect(cssEntries).toEqual([
@@ -39,7 +39,7 @@ describe('font asset configuration', () => {
   })
 
   it('keeps the typography variables mapped to Poppins and Lora', async () => {
-    const typography = await readFile(projectFile('assets/css/typography.css'), 'utf8')
+    const typography = await readFile(projectFile('app/assets/css/typography.css'), 'utf8')
 
     expect(typography).toMatch(/--font-heading:\s*'Poppins'/)
     expect(typography).toMatch(/--font-serif:\s*'Lora'/)

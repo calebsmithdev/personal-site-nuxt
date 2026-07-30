@@ -66,7 +66,7 @@
           <nav v-if="newerArticle || olderArticle" class="article-navigation" aria-label="Adjacent articles">
             <NuxtLink
               v-if="newerArticle"
-              :to="newerArticle._path"
+              :to="newerArticle.path"
               class="adjacent-link adjacent-link-newer"
             >
               <span aria-hidden="true" class="adjacent-arrow adjacent-arrow-left"><ArrowRightIcon /></span>
@@ -78,7 +78,7 @@
 
             <NuxtLink
               v-if="olderArticle"
-              :to="olderArticle._path"
+              :to="olderArticle.path"
               class="adjacent-link adjacent-link-older"
             >
               <span>
@@ -104,7 +104,6 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import type { BlogArticle } from '../../types'
 import { getArticlePosition, getReadingMinutes } from '../../utils/article'
-import type { ContentNode } from '../../utils/article'
 
 interface TocLink {
   id: string
@@ -118,7 +117,10 @@ dayjs.extend(utc)
 const route = useRoute()
 const { fetchList, articles } = useBlog()
 
-const { data: articleData } = await useAsyncData(route.path, () => queryContent<BlogArticle>(route.path).findOne())
+const { data: articleData } = await useAsyncData(
+  route.path,
+  () => queryCollection('blog').path(route.path).first()
+)
 if (!articleData.value) {
   throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
 }
@@ -126,7 +128,7 @@ const article = computed(() => articleData.value as BlogArticle)
 
 await fetchList()
 
-const articlePosition = computed(() => getArticlePosition(articles.value, article.value?._path))
+const articlePosition = computed(() => getArticlePosition(articles.value, article.value?.path))
 const articleNumber = computed(() => articlePosition.value.displayNumber)
 const newerArticle = computed(() => articlePosition.value.newer)
 const olderArticle = computed(() => articlePosition.value.older)
@@ -137,8 +139,7 @@ const tocLinks = computed<TocLink[]>(() => {
 })
 
 const readingMinutes = computed(() => {
-  const body = article.value?.body as ContentNode | undefined
-  return getReadingMinutes(body)
+  return getReadingMinutes(article.value?.body)
 })
 
 const formatDate = (date: Date | string) => dayjs(date).utc().format('MMMM D, YYYY')

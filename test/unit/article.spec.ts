@@ -3,7 +3,7 @@ import {
   countWords,
   getArticlePosition,
   getReadingMinutes
-} from '../../utils/article'
+} from '../../app/utils/article'
 
 describe('article helpers', () => {
   describe('countWords', () => {
@@ -45,6 +45,18 @@ describe('article helpers', () => {
         ]
       })).toBe(4)
     })
+
+    it('counts Content 3 minimark trees while excluding preformatted tuples', () => {
+      expect(countWords({
+        type: 'minimark',
+        value: [
+          ['p', {}, 'one two'],
+          ['div', {}, ['span', {}, 'three']],
+          ['pre', {}, ['code', {}, 'do not count this code']],
+          'four'
+        ]
+      })).toBe(4)
+    })
   })
 
   describe('getReadingMinutes', () => {
@@ -68,9 +80,9 @@ describe('article helpers', () => {
 
   describe('getArticlePosition', () => {
     const articles = [
-      { _path: '/blog/newest', title: 'Newest' },
-      { _path: '/blog/middle', title: 'Middle' },
-      { _path: '/blog/oldest', title: 'Oldest' }
+      { path: '/blog/newest', title: 'Newest' },
+      { path: '/blog/middle', title: 'Middle' },
+      { path: '/blog/oldest', title: 'Oldest' }
     ]
 
     it('positions the first article with only an older neighbor', () => {

@@ -4,7 +4,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 
 const root = process.cwd()
-const sourcePath = resolve(root, 'assets/img/homepage-homelab-v1.png')
+const sourcePath = resolve(root, 'app/assets/img/homepage-homelab-v1.png')
 const outputDirectory = resolve(root, 'public/images/homepage-homelab')
 const widths = [640, 1024, 1536] as const
 const formats = ['avif', 'webp', 'jpg'] as const
@@ -17,6 +17,17 @@ const alt =
   'An illustrated homelab workspace with a server rack, laptop, network storage, and connected infrastructure symbols'
 
 describe('homepage hero assets', () => {
+  it('generates derivatives from the Nuxt 4 app asset', async () => {
+    const generator = await readFile(resolve(root, 'scripts/generate-homepage-hero.mjs'), 'utf8')
+
+    expect(generator).toContain(
+      "new URL('../app/assets/img/homepage-homelab-v1.png', import.meta.url)"
+    )
+    expect(generator).not.toContain(
+      "new URL('../assets/img/homepage-homelab-v1.png', import.meta.url)"
+    )
+  })
+
   it('provides all requested local formats, dimensions, and aspect ratios', async () => {
     for (const width of widths) {
       for (const format of formats) {
@@ -43,7 +54,7 @@ describe('homepage hero assets', () => {
   })
 
   it('declares a responsive, eager, high-priority picture contract', async () => {
-    const homepage = await readFile(resolve(root, 'pages/index.vue'), 'utf8')
+    const homepage = await readFile(resolve(root, 'app/pages/index.vue'), 'utf8')
     const picture = homepage.match(/<picture>[\s\S]*?<\/picture>/)?.[0]
 
     expect(picture).toBeDefined()

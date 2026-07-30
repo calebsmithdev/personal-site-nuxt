@@ -3,7 +3,7 @@ import { relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 
-const source = fileURLToPath(new URL('../assets/img/homepage-homelab-v1.png', import.meta.url))
+const source = fileURLToPath(new URL('../app/assets/img/homepage-homelab-v1.png', import.meta.url))
 const outputDirectory = fileURLToPath(new URL('../public/images/homepage-homelab/', import.meta.url))
 const widths = [640, 1024, 1536]
 const formats = [
