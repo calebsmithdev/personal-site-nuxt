@@ -1,5 +1,0 @@
-query GetCategory($id: ID = "") {
-  category(id: $id, idType: SLUG) {
-    name
-  }
-}

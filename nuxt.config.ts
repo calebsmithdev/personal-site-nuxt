@@ -1,5 +1,3 @@
-import graphql from '@rollup/plugin-graphql'
-
 const legacyGoogleFontsConfig = {
   buildModules: [
     '@nuxtjs/google-fonts'
@@ -12,17 +10,12 @@ const legacyGoogleFontsConfig = {
 
 export default defineNuxtConfig({
   ...legacyGoogleFontsConfig,
-  imports: {
-    dirs: ['graphql']
-  },
   runtimeConfig: {
     public: {
-      wordpressBaseUrl: '',
       googleAnalyticsId: ''
     }
   },
   vite: {
-    plugins: [graphql()],
     define: {
       __DEV__: (process.env.NODE_ENV === 'development').toString()
     }
@@ -60,8 +53,6 @@ export default defineNuxtConfig({
   build: {
     transpile: [
       'tslib',
-      '@apollo/client',
-      'ts-invariant/process',
       '@fortawesome/fontawesome-svg-core',
       '@fortawesome/free-brands-svg-icons',
       '@fortawesome/free-regular-svg-icons',
