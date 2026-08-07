@@ -37,6 +37,7 @@ The site is available at <http://localhost:3000>.
 | --- | --- |
 | `npm run dev` | Start the Nuxt development server. |
 | `npm run build` | Build the production Node/Nitro server into `.output/`. |
+| `npm run deploy` | Generate the static site and deploy it to Cloudflare Workers Static Assets. |
 | `npm run generate` | Prerender the static site into `.output/public/`. |
 | `npm run preview` | Preview the latest Nuxt output locally; run `npm run build` first when validating the Node server output. |
 | `npm run start` | Run the built Node server from `.output/server/index.mjs`; requires `npm run build` first. |
@@ -127,4 +128,30 @@ npm run generate
 
 Use `npm run preview` after `npm run build` to validate the production server locally. See the official [Nuxt deployment documentation](https://nuxt.com/docs/4.x/getting-started/deployment) for the output models supported by Nuxt.
 
-This repository does not use or publish container images. Its GitHub Actions workflow verifies changes but does not automate a production deployment, and no hosting vendor is selected by repository configuration.
+## Cloudflare deployment
+
+The production site is deployed as a static Cloudflare Worker. `wrangler.jsonc`
+publishes `.output/public/` and attaches the `caleb-smith.dev` custom domain;
+there is no runtime origin or homelab tunnel involved.
+
+For a local authenticated deployment:
+
+```bash
+npm run deploy
+```
+
+For Cloudflare Workers Builds, connect this GitHub repository and use:
+
+- Build command: `npm run generate`
+- Deploy command: `npx wrangler@4.120.0 deploy`
+- Production branch: `main`
+
+The repository does not contain Cloudflare credentials. If using an external
+CI provider instead of Workers Builds, store `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` as provider secrets. The token should be scoped only to
+the target account and Worker deployment permissions.
+
+Before the first custom-domain deployment, remove the existing
+`caleb-smith.dev` tunnel DNS record. Wrangler will create the Worker custom
+domain and its DNS record. Keep the tunnel route available until the new
+Worker has been verified, then remove the old homelab origin configuration.
