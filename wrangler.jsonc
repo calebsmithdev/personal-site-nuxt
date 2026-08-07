@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "caleb-smith-dev",
+  "compatibility_date": "2026-08-07",
+  "assets": {
+    "directory": ".output/public",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "routes": [
+    {
+      "pattern": "caleb-smith.dev",
+      "custom_domain": true
+    }
+  ]
+}
