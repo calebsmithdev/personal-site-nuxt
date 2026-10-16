@@ -2,11 +2,11 @@
 
 ## Project
 
-This is Caleb Smith's Nuxt 4 personal site. Use Node.js 22 (from `.nvmrc`) and npm. Treat `package-lock.json` as authoritative.
+This is Caleb Smith's Nuxt 4 personal site. Use Node.js 26 (from `.nvmrc`) and npm. Treat `package-lock.json` as authoritative.
 
 ## Setup
 
-1. Confirm `node --version` reports Node 22.
+1. Confirm `node --version` reports Node 26.
 2. Run `npm ci` after a fresh checkout or whenever `package-lock.json` changes.
 3. Copy `.env.example` to `.env` only when local analytics configuration is needed. Never commit `.env` or credentials.
 4. Start the site with `npm run dev`; the default URL is `http://localhost:3000`.
