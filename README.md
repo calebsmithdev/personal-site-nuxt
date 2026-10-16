@@ -4,7 +4,7 @@ This repository contains the portfolio and Markdown-backed writing site for Cale
 
 ## Requirements
 
-- Node.js 22, matching `.nvmrc`
+- Node.js 26, matching `.nvmrc`
 - npm
 
 `package-lock.json` is the authoritative dependency lockfile. If you use nvm, run `nvm use` from the repository root before installing dependencies or running project commands.
