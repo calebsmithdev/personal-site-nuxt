@@ -11,19 +11,12 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode',
     '@nuxt/content',
     '@nuxt/eslint',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots'
   ],
-  colorMode: {
-    // preference: 'system', // default value of $colorMode.preference
-    preference: 'dark',
-    fallback: 'dark'
-  },
   css: [
     '@fontsource/lora/500.css',
     '@fontsource/poppins/500.css',
@@ -38,10 +31,7 @@ export default defineNuxtConfig({
           depth: 3
         },
         highlight: {
-          theme: {
-            default: 'material-theme-lighter',
-            dark: 'material-theme-palenight'
-          },
+          theme: 'material-theme-palenight',
           langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'swift', 'php']
         }
       }
