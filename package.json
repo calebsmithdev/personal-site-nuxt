@@ -18,8 +18,6 @@
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/test-utils": "^4.3.4",
-    "@nuxtjs/color-mode": "^4.0.1",
-    "@nuxtjs/tailwindcss": "^6.14.0",
     "@vue/test-utils": "^2.5.1",
     "eslint": "^10.13.0",
     "happy-dom": "^21.0.3",
