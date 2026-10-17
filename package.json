@@ -21,7 +21,6 @@
     "eslint": "^10.13.0",
     "happy-dom": "^21.0.3",
     "nuxt": "^4.6.2",
-    "sharp": "^0.35.5",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vitest": "^5.0.5",
     "vue-tsc": "^3.3.13"
