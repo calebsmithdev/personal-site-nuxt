@@ -64,7 +64,7 @@ const notes = computed(() => props.articles.slice(0, 3).map(article => ({
   path: article.path,
   title: article.title,
   slug: article.path.split('/').pop() ?? article.path,
-  date: dayjs(article.date).utc().format('YYYY-MM-DD')
+  date: dayjs.utc(article.date).format('YYYY-MM-DD')
 })))
 </script>
 
@@ -173,6 +173,10 @@ const notes = computed(() => props.articles.slice(0, 3).map(article => ({
 
 .notes a:hover {
   color: var(--color-accent);
+}
+
+.notes:focus-within {
+  animation: none;
 }
 
 .caret {
