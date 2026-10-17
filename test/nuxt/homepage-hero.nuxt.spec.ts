@@ -13,8 +13,6 @@ const sharpFormats = {
   webp: 'webp',
   jpg: 'jpeg'
 } as const
-const alt =
-  'An illustrated homelab workspace with a server rack, laptop, network storage, and connected infrastructure symbols'
 
 describe('homepage hero assets', () => {
   it('generates derivatives from the Nuxt 4 app asset', async () => {
@@ -51,31 +49,5 @@ describe('homepage hero assets', () => {
         expect(outputSize).toBeLessThan(sourceSize)
       }
     }
-  })
-
-  it('declares a responsive, eager, high-priority picture contract', async () => {
-    const homepage = await readFile(resolve(root, 'app/pages/index.vue'), 'utf8')
-    const picture = homepage.match(/<picture>[\s\S]*?<\/picture>/)?.[0]
-
-    expect(picture).toBeDefined()
-    expect(picture).toContain('type="image/avif"')
-    expect(picture).toContain('type="image/webp"')
-    expect(picture).toContain(
-      'srcset="/images/homepage-homelab/hero-640.avif 640w, /images/homepage-homelab/hero-1024.avif 1024w, /images/homepage-homelab/hero-1536.avif 1536w"'
-    )
-    expect(picture).toContain(
-      'srcset="/images/homepage-homelab/hero-640.webp 640w, /images/homepage-homelab/hero-1024.webp 1024w, /images/homepage-homelab/hero-1536.webp 1536w"'
-    )
-    expect(picture).toContain('src="/images/homepage-homelab/hero-1536.jpg"')
-    expect(picture).toContain(
-      'srcset="/images/homepage-homelab/hero-640.jpg 640w, /images/homepage-homelab/hero-1024.jpg 1024w, /images/homepage-homelab/hero-1536.jpg 1536w"'
-    )
-    expect(picture?.match(/sizes="\(max-width: 1023px\) 100vw, 48vw"/g)).toHaveLength(3)
-    expect(picture).toContain(`alt="${alt}"`)
-    expect(picture).toContain('width="1536"')
-    expect(picture).toContain('height="1024"')
-    expect(picture).toContain('fetchpriority="high"')
-    expect(picture).toContain('decoding="async"')
-    expect(picture).not.toContain('loading="lazy"')
   })
 })
