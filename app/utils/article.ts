@@ -1,4 +1,8 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import type { MarkdownRoot, MinimarkElement, MinimarkNode } from '@nuxt/content'
+
+dayjs.extend(utc)
 
 export interface ContentNode {
   type?: string
@@ -74,3 +78,8 @@ export const getHomepageArticles = <Article>(
   featured: articles[0],
   recent: articles.slice(1, 1 + recentCount)
 })
+
+// Content stores date-only strings. Parse them as UTC so every timezone renders the same calendar day.
+export const formatArticleDate = (date: Date | string): string => dayjs.utc(date).format('MMMM D, YYYY')
+
+export const articleDateTime = (date: Date | string): string => dayjs.utc(date).format('YYYY-MM-DD')

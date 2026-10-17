@@ -27,9 +27,9 @@
             </p>
 
             <div class="article-meta">
-              <time :datetime="dateTime(article.date)">
+              <time :datetime="articleDateTime(article.date)">
                 <FaIcon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
-                <span>{{ formatDate(article.date) }}</span>
+                <span>{{ formatArticleDate(article.date) }}</span>
               </time>
 
               <span
@@ -95,8 +95,6 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
@@ -104,7 +102,7 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import FaIcon from '../../components/FaIcon.vue'
 import type { BlogArticle } from '../../types'
-import { getArticlePosition, getReadingMinutes } from '../../utils/article'
+import { articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
 
 interface TocLink {
   id: string
@@ -112,8 +110,6 @@ interface TocLink {
   text: string
   children?: TocLink[]
 }
-
-dayjs.extend(utc)
 
 const route = useRoute()
 const { fetchList, articles } = useBlog()
@@ -143,8 +139,6 @@ const readingMinutes = computed(() => {
   return getReadingMinutes(article.value?.body)
 })
 
-const formatDate = (date: Date | string) => dayjs(date).utc().format('MMMM D, YYYY')
-const dateTime = (date: Date | string) => dayjs(date).utc().format('YYYY-MM-DD')
 const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 const categoryIcons: Record<string, IconDefinition> = {
   'Advanced Custom Fields (ACF)': faWordpressSimple,
