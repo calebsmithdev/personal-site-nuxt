@@ -81,7 +81,7 @@ The optional `image` field is a string. The optional `tags` field is an array of
 
 Article images live under `app/assets/img/`. Reference a local blog image in Markdown as `/assets/img/blog/<filename>`; the custom `ProseImg` component resolves that source through the application asset graph and applies lazy loading with asynchronous decoding.
 
-Fonts are self-hosted with Fontsource. The application loads Lora 500 and Poppins 500 and 700 before the site typography stylesheet.
+Fonts are self-hosted with Fontsource. The application loads Lora 500, Poppins 500 and 700, and IBM Plex Mono 400 and 500 before the site typography stylesheet. IBM Plex Mono is used for labels, metadata, and code.
 
 ## SEO and analytics
 
