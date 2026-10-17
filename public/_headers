@@ -1,5 +1,0 @@
-/_nuxt/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/favicons/*
-  Cache-Control: public, max-age=604800

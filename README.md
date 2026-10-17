@@ -1,153 +1,204 @@
-# Caleb Smith personal site
+<div align="center">
 
-This repository contains the portfolio and Markdown-backed writing site for Caleb Smith. It is built with [Nuxt 4](https://nuxt.com/docs/4.x/getting-started/installation/) and [Nuxt Content 3](https://content.nuxt.com/docs/getting-started/installation), with server-rendered route metadata, generated static assets, and a typed content collection.
+# caleb-smith.dev
 
-## Requirements
+The personal site and Markdown-powered blog of Caleb Smith.
 
-- Node.js 26, matching `.nvmrc`
-- npm
+[![CI](https://github.com/calebsmithdev/personal-site-nuxt/actions/workflows/ci.yml/badge.svg)](https://github.com/calebsmithdev/personal-site-nuxt/actions/workflows/ci.yml)
+![Nuxt 4](https://img.shields.io/badge/Nuxt-4-00DC82?logo=nuxt&logoColor=white)
+![Nuxt Content 3](https://img.shields.io/badge/Nuxt_Content-3-00DC82?logo=nuxt&logoColor=white)
+![Node.js 26](https://img.shields.io/badge/Node.js-26-5FA04E?logo=nodedotjs&logoColor=white)
+![Laravel Cloud](https://img.shields.io/badge/Hosted_on-Laravel_Cloud-FF2D20?logo=laravel&logoColor=white)
 
-`package-lock.json` is the authoritative dependency lockfile. If you use nvm, run `nvm use` from the repository root before installing dependencies or running project commands.
+**[Visit the site →](https://caleb-smith.dev)**
 
-## Local setup
+<br>
 
-Install the locked dependencies:
+<img src=".github/assets/homepage.png" alt="The caleb-smith.dev homepage: a headline reading 'I build dependable software and write down what I learn.' beside a terminal window listing recent field notes" width="900">
+
+</div>
+
+---
+
+## Contents
+
+- [Overview](#overview)
+- [Quick start](#quick-start)
+- [Commands](#commands)
+- [Project structure](#project-structure)
+- [Writing an article](#writing-an-article)
+- [Images and fonts](#images-and-fonts)
+- [SEO and analytics](#seo-and-analytics)
+- [Testing and CI](#testing-and-ci)
+- [Build and deployment](#build-and-deployment)
+
+## Overview
+
+The site has three routes:
+
+| Route | Page |
+| --- | --- |
+| `/` | Homepage with an animated terminal hero and the latest articles |
+| `/blog` | Index of every article |
+| `/blog/<slug>` | An article, with a table of contents and syntax-highlighted code blocks that can be copied |
+
+### Stack
+
+| Area | Tools |
+| --- | --- |
+| Framework | [Nuxt 4](https://nuxt.com/docs/4.x/getting-started/installation), Vue 3, TypeScript |
+| Content | [Nuxt Content 3](https://content.nuxt.com/docs/getting-started/installation), a typed `blog` collection backed by SQLite (`better-sqlite3`) |
+| SEO | `@nuxtjs/sitemap`, `@nuxtjs/robots`, route-level metadata in `useSiteSeo` |
+| Styling | Hand-written CSS, self-hosted Fontsource fonts, Font Awesome icons |
+| Analytics | Google Analytics through `vue-gtag`, enabled only when configured |
+| Quality | ESLint, `vue-tsc`, Vitest with `@nuxt/test-utils` |
+| Hosting | [Laravel Cloud](https://cloud.laravel.com) |
+
+## Quick start
+
+> [!NOTE]
+> You need **Node.js 26** (pinned in `.nvmrc`) and **npm**. If you use nvm, run `nvm use` from the repository root first.
 
 ```bash
-npm ci
+npm ci        # install the exact dependencies in package-lock.json
+npm run dev   # start the dev server at http://localhost:3000
 ```
 
-Analytics is optional. To configure it locally, copy the value-free example and set the public analytics ID in `.env`:
+`package-lock.json` is the authoritative lockfile. After installing, npm runs `postinstall` (`nuxi prepare`) to generate Nuxt's types.
+
+Analytics is optional. To try it locally, copy the example file and fill in the ID:
 
 ```bash
 cp .env.example .env
 ```
 
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The site is available at <http://localhost:3000>.
-
 ## Commands
 
-| Command | Purpose |
+| Command | What it does |
 | --- | --- |
-| `npm run dev` | Start the Nuxt development server. |
-| `npm run build` | Build the production Node/Nitro server into `.output/`. |
-| `npm run deploy` | Generate the static site and deploy it to Cloudflare Workers Static Assets. |
-| `npm run generate` | Prerender the static site into `.output/public/`. |
-| `npm run preview` | Preview the latest Nuxt output locally; run `npm run build` first when validating the Node server output. |
-| `npm run start` | Run the built Node server from `.output/server/index.mjs`; requires `npm run build` first. |
-| `npm run lint` | Lint the repository with ESLint. |
-| `npm run typecheck` | Run Nuxt's TypeScript checks. |
-| `npm run test` | Run the Vitest unit, Nuxt-environment, and end-to-end projects. |
-| `npm run check` | Run lint, typecheck, tests, and the production build in sequence. |
-| `npm run postinstall` | Generate Nuxt types with `nuxi prepare`; npm runs this automatically after installation. |
+| `npm run dev` | Starts the Nuxt development server. |
+| `npm run check` | Runs lint, typecheck, tests, and the production build in that order. **CI runs this same command.** |
+| `npm run lint` | Lints the repository with ESLint. |
+| `npm run typecheck` | Runs Nuxt's TypeScript checks. |
+| `npm run test` | Runs the Vitest `unit`, `nuxt`, and `e2e` projects. |
+| `npm run generate` | Prerenders the static site into `.output/public/`. |
+| `npm run build` | Builds the Node/Nitro server into `.output/`. |
+| `npm run preview` | Previews the latest build locally. |
+| `npm run start` | Runs the built server from `.output/server/index.mjs`. Run `npm run build` first. |
 
 ## Project structure
 
-| Path | Purpose |
-| --- | --- |
-| `app/` | Nuxt application entry point, routes, layouts, components, composables, plugins, styles, and source images. |
-| `content/blog/` | Markdown source for the blog collection. |
-| `content.config.ts` | Typed Content 3 collection and frontmatter validation. |
-| `public/` | Files served as-is, including favicons. |
-| `test/` | Vitest unit, Nuxt-environment, and end-to-end tests. |
-| `.github/workflows/` | GitHub Actions verification workflow. |
+```text
+.
+├── app/
+│   ├── assets/          # CSS, the profile image, and article images
+│   ├── components/      # Header, footer, hero terminal, and article components
+│   │   └── content/     # ProseImg and ProsePre overrides for Markdown rendering
+│   ├── composables/     # useBlog, useSiteSeo, useAsset
+│   ├── layouts/         # Default layout
+│   ├── pages/           # /, /blog, /blog/[slug]
+│   ├── plugins/         # Optional Google Analytics plugin
+│   └── utils/           # Article helpers such as date formatting
+├── content/blog/        # Article Markdown files
+├── public/              # Favicons and other files served as-is
+├── test/
+│   ├── unit/            # Node unit tests
+│   ├── nuxt/            # Component and composable tests in the Nuxt environment
+│   └── e2e/             # Tests that render real routes
+├── content.config.ts    # Typed blog collection and frontmatter schema
+└── nuxt.config.ts       # Modules, fonts, Markdown highlighting, site URL
+```
 
 ## Writing an article
 
-The `blog` collection reads `content/blog/**/*.md`. A file at `content/blog/example-article.md` maps to `/blog/example-article`; nested directories add the same path segments beneath `/blog`.
+Add a Markdown file to `content/blog/`. The file path sets the URL:
 
-Every article must provide non-empty `title` and `description` strings, a `date` in `YYYY-MM-DD` format, at least one non-empty `categories` entry, and a `sitemap.lastmod` date in the same format:
+```text
+content/blog/example-article.md   →   /blog/example-article
+content/blog/nuxt/routing.md      →   /blog/nuxt/routing
+```
+
+Every article starts with frontmatter. `content.config.ts` validates it:
 
 ```yaml
 ---
-title: 'Article title'
-description: 'One-sentence summary.'
-date: 2026-07-29
-categories: ['Nuxt']
+title: 'Article title'              # required, non-empty
+description: 'One-sentence summary.' # required, non-empty
+date: 2026-07-29                     # required, YYYY-MM-DD
+categories: ['Nuxt']                 # required, at least one entry
+tags: ['vue', 'routing']             # optional, array of strings
+image: '/assets/img/blog/cover.png'  # optional, string
 sitemap:
-  lastmod: 2026-07-29
+  lastmod: 2026-07-29                # required, YYYY-MM-DD
 ---
+
+Write the article body in Markdown here.
 ```
 
-The optional `image` field is a string. The optional `tags` field is an array of strings. Write the article body as Markdown below the frontmatter.
+> [!TIP]
+> When you edit a published article, update `sitemap.lastmod` so the sitemap reports the change.
+
+Code blocks are highlighted with the `material-theme-palenight` theme. The supported languages are listed in `nuxt.config.ts`. Headings down to level 3 appear in the table of contents.
 
 ## Images and fonts
 
-Article images live under `app/assets/img/`. Reference a local blog image in Markdown as `/assets/img/blog/<filename>`; the custom `ProseImg` component resolves that source through the application asset graph and applies lazy loading with asynchronous decoding.
+**Images.** Put article images in `app/assets/img/blog/` and reference them in Markdown as `/assets/img/blog/<filename>`. The `ProseImg` component resolves that path through the asset pipeline and adds `loading="lazy"` and `decoding="async"`.
 
-Fonts are self-hosted with Fontsource. The application loads Lora 500, Poppins 500 and 700, and IBM Plex Mono 400 and 500 before the site typography stylesheet. IBM Plex Mono is used for labels, metadata, and code.
+**Fonts.** Fontsource provides self-hosted fonts, loaded before `app/assets/css/typography.css`:
+
+| Font | Weights | Used for |
+| --- | --- | --- |
+| Lora | 500 | Body text |
+| Poppins | 500, 700 | Headings |
+| IBM Plex Mono | 400, 500 | Labels, metadata, and code |
 
 ## SEO and analytics
 
-The homepage, blog index, and article routes each define route-specific titles, descriptions, canonical URLs, Open Graph metadata, and Twitter metadata. Canonical URLs use `https://caleb-smith.dev`; route types are `website` for the homepage and blog index and `article` for articles. The sitemap and robots output use the same configured site origin.
+The homepage, blog index, and article pages each set their own title, description, canonical URL, Open Graph tags, and Twitter tags.
 
-Google Analytics is optional. Set the public runtime key in `.env` only when analytics should be enabled:
+- Canonical URLs, the sitemap, and `robots.txt` all use the site origin `https://caleb-smith.dev` from `nuxt.config.ts`.
+- The homepage and blog index have the Open Graph type `website`. Articles have the type `article`.
+
+Google Analytics is **optional**. Set the public runtime key in `.env` to turn it on:
 
 ```dotenv
 NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=
 ```
 
-When the value is empty, the analytics plugin does not initialize.
+If the value is empty, the analytics plugin doesn't start and no tracking code loads.
 
-## Verification and CI
+## Testing and CI
 
-Run the same local quality gate used by CI:
+Before you open a pull request, run the same check that CI runs:
 
 ```bash
 npm run check
 ```
 
-Vitest is split into Node unit tests, Nuxt-environment component/composable tests, and Node end-to-end route tests. The GitHub Actions workflow runs on pull requests and pushes to `main`, reads Node from `.nvmrc`, restores the npm cache, runs `npm ci`, and then runs `npm run check`. The workflow has read-only repository contents permission and cancels superseded runs for the same workflow and ref.
+Vitest has three projects:
 
-Generated Content and test-tool files under `.data/` and `.nuxtrc` are ignored.
+| Project | Files | Environment |
+| --- | --- | --- |
+| `unit` | `test/unit/**/*.spec.ts` | Node |
+| `nuxt` | `test/nuxt/**/*.nuxt.spec.ts` | Nuxt, through `@nuxt/test-utils` |
+| `e2e` | `test/e2e/**/*.spec.ts` | Node, files run one at a time |
+
+The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes to `main`. It reads the Node version from `.nvmrc`, caches npm, runs `npm ci`, and then runs `npm run check`. It has read-only access to repository contents, and a new run cancels any older run on the same ref.
+
+Git ignores generated output in `.nuxt/`, `.output/`, `.data/`, and `.nuxtrc`. Don't edit those files by hand.
 
 ## Build and deployment
 
-For a Node/Nitro server, build and start the application:
+Production runs on **[Laravel Cloud](https://cloud.laravel.com)** at `caleb-smith.dev`. The build and deploy settings live in the Laravel Cloud dashboard, not in this repository.
 
-```bash
-npm run build
-npm run start
-```
+Nuxt can produce two kinds of output:
 
-For compatible static hosting, generate the prerendered site and publish the contents of `.output/public/`:
+| Output | Commands | Result |
+| --- | --- | --- |
+| Node/Nitro server | `npm run build`, then `npm run start` | A server in `.output/server/index.mjs` |
+| Static site | `npm run generate` | Prerendered files in `.output/public/` |
 
-```bash
-npm run generate
-```
+Use `npm run preview` after a build to try the production output locally. The [Nuxt deployment docs](https://nuxt.com/docs/4.x/getting-started/deployment) list every output format Nuxt supports.
 
-Use `npm run preview` after `npm run build` to validate the production server locally. See the official [Nuxt deployment documentation](https://nuxt.com/docs/4.x/getting-started/deployment) for the output models supported by Nuxt.
-
-## Cloudflare deployment
-
-The production site is deployed as a static Cloudflare Worker. `wrangler.jsonc`
-publishes `.output/public/` and attaches the `caleb-smith.dev` custom domain;
-there is no runtime origin or homelab tunnel involved.
-
-For a local authenticated deployment:
-
-```bash
-npm run deploy
-```
-
-For Cloudflare Workers Builds, connect this GitHub repository and use:
-
-- Build command: `npm run generate`
-- Deploy command: `npx wrangler@4.120.0 deploy`
-- Production branch: `main`
-
-The repository does not contain Cloudflare credentials. If using an external
-CI provider instead of Workers Builds, store `CLOUDFLARE_API_TOKEN` and
-`CLOUDFLARE_ACCOUNT_ID` as provider secrets. The token should be scoped only to
-the target account and Worker deployment permissions.
-
-Before the first custom-domain deployment, remove the existing
-`caleb-smith.dev` tunnel DNS record. Wrangler will create the Worker custom
-domain and its DNS record. Keep the tunnel route available until the new
-Worker has been verified, then remove the old homelab origin configuration.
+> [!IMPORTANT]
+> This repository contains no hosting credentials. Keep tokens and account IDs in the hosting provider's secret settings, never in tracked files.
