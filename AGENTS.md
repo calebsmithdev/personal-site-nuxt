@@ -17,9 +17,8 @@ This is Caleb Smith's Nuxt 4 personal site. Use Node.js 26 (from `.nvmrc`) and n
 - Keep changes scoped. Do not refactor unrelated code or update dependencies unless the task requires it.
 - Follow the existing Nuxt, Vue, TypeScript, and ESLint patterns.
 - Keep blog frontmatter compatible with `content.config.ts`.
-- Regenerate homepage hero derivatives with `npm run assets:hero` only when the canonical hero image changes.
 - Do not run `npm run deploy`, modify Cloudflare domains, or add deployment credentials unless explicitly requested.
-- Do not hand-edit generated output in `.nuxt/`, `.output/`, `.data/`, or `public/images/homepage-homelab/`.
+- Do not hand-edit generated output in `.nuxt/`, `.output/`, or `.data/`.
 
 ## Verification
 

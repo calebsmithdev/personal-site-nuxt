@@ -45,7 +45,6 @@ The site is available at <http://localhost:3000>.
 | `npm run typecheck` | Run Nuxt's TypeScript checks. |
 | `npm run test` | Run the Vitest unit, Nuxt-environment, and end-to-end projects. |
 | `npm run check` | Run lint, typecheck, tests, and the production build in sequence. |
-| `npm run assets:hero` | Regenerate the responsive homepage hero derivatives with Sharp. |
 | `npm run postinstall` | Generate Nuxt types with `nuxi prepare`; npm runs this automatically after installation. |
 
 ## Project structure
@@ -55,8 +54,7 @@ The site is available at <http://localhost:3000>.
 | `app/` | Nuxt application entry point, routes, layouts, components, composables, plugins, styles, and source images. |
 | `content/blog/` | Markdown source for the blog collection. |
 | `content.config.ts` | Typed Content 3 collection and frontmatter validation. |
-| `public/` | Files served as-is, including favicons and generated responsive hero images. |
-| `scripts/` | Deterministic asset-generation scripts. |
+| `public/` | Files served as-is, including favicons. |
 | `test/` | Vitest unit, Nuxt-environment, and end-to-end tests. |
 | `.github/workflows/` | GitHub Actions verification workflow. |
 
@@ -82,8 +80,6 @@ The optional `image` field is a string. The optional `tags` field is an array of
 ## Images and fonts
 
 Article images live under `app/assets/img/`. Reference a local blog image in Markdown as `/assets/img/blog/<filename>`; the custom `ProseImg` component resolves that source through the application asset graph and applies lazy loading with asynchronous decoding.
-
-The canonical homepage hero is `app/assets/img/homepage-homelab-v1.png`. Run `npm run assets:hero` to generate its 640, 1024, and 1536 pixel AVIF, WebP, and JPEG derivatives under `public/images/homepage-homelab/`. The generator expects the canonical source to be 1536 by 1024 pixels and produces deterministic output.
 
 Fonts are self-hosted with Fontsource. The application loads Lora 500 and Poppins 500 and 700 before the site typography stylesheet.
 
