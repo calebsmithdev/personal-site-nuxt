@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
+  articleDateTime,
   countWords,
+  formatArticleDate,
   getArticlePosition,
   getHomepageArticles,
   getReadingMinutes
@@ -145,6 +147,32 @@ describe('article helpers', () => {
         featured: undefined,
         recent: []
       })
+    })
+  })
+
+  describe('article dates', () => {
+    const originalTimezone = process.env.TZ
+
+    afterEach(() => {
+      process.env.TZ = originalTimezone
+    })
+
+    it.each(['UTC', 'America/Chicago', 'Asia/Tokyo', 'Pacific/Kiritimati'])(
+      'keeps a Content date on the same calendar day in %s',
+      (timezone) => {
+        process.env.TZ = timezone
+
+        expect(formatArticleDate('2025-04-16')).toBe('April 16, 2025')
+        expect(articleDateTime('2025-04-16')).toBe('2025-04-16')
+      }
+    )
+
+    it('formats Date values by their UTC calendar day', () => {
+      process.env.TZ = 'Asia/Tokyo'
+      const date = new Date('2023-12-27T00:00:00.000Z')
+
+      expect(formatArticleDate(date)).toBe('December 27, 2023')
+      expect(articleDateTime(date)).toBe('2023-12-27')
     })
   })
 })

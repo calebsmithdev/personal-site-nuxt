@@ -10,9 +10,9 @@
       </h2>
 
       <div class="post-meta">
-        <time :datetime="dateTime(post.date)">
+        <time :datetime="articleDateTime(post.date)">
           <FaIcon :icon="faCalendar" aria-hidden="true" />
-          <span>{{ formatDate(post.date) }}</span>
+          <span>{{ formatArticleDate(post.date) }}</span>
         </time>
         <span v-for="category in post.categories" :key="category" class="post-category">
           {{ displayCategory(category) }}
@@ -29,26 +29,21 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../ArrowRightIcon.vue'
 import FaIcon from '../FaIcon.vue'
 import type { BlogArticleSummary } from '../../types'
+import { articleDateTime, formatArticleDate } from '../../utils/article'
 
 defineOptions({
   name: 'PostPreview'
 })
-
-dayjs.extend(utc)
 
 defineProps<{
   post: BlogArticleSummary
   index: number
 }>()
 
-const formatDate = (date: Date | string) => dayjs(date).utc().format('MMMM D, YYYY')
-const dateTime = (date: Date | string) => dayjs(date).utc().format('YYYY-MM-DD')
 const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 </script>
 

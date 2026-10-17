@@ -48,11 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import type { BlogArticleSummary } from '../types'
-
-dayjs.extend(utc)
+import { articleDateTime } from '../utils/article'
 
 const props = defineProps<{
   articles: BlogArticleSummary[]
@@ -64,7 +61,7 @@ const notes = computed(() => props.articles.slice(0, 3).map(article => ({
   path: article.path,
   title: article.title,
   slug: article.path.split('/').pop() ?? article.path,
-  date: dayjs.utc(article.date).format('YYYY-MM-DD')
+  date: articleDateTime(article.date)
 })))
 </script>
 

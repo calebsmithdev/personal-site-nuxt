@@ -49,9 +49,9 @@
           </h2>
 
           <div class="article-meta">
-            <time :datetime="dateTime(featuredArticle.date)">
+            <time :datetime="articleDateTime(featuredArticle.date)">
               <FaIcon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
-              <span>{{ formatDate(featuredArticle.date) }}</span>
+              <span>{{ formatArticleDate(featuredArticle.date) }}</span>
             </time>
             <span v-for="category in featuredArticle.categories" :key="category" class="article-category">
               <FaIcon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
@@ -87,9 +87,9 @@
             </h3>
 
             <div class="article-meta">
-              <time :datetime="dateTime(article.date)">
+              <time :datetime="articleDateTime(article.date)">
                 <FaIcon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
-                <span>{{ formatDate(article.date) }}</span>
+                <span>{{ formatArticleDate(article.date) }}</span>
               </time>
               <span v-for="category in article.categories" :key="category" class="article-category">
                 <FaIcon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
@@ -113,8 +113,6 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
@@ -122,9 +120,7 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../components/ArrowRightIcon.vue'
 import FaIcon from '../components/FaIcon.vue'
 import HeroTerminal from '../components/HeroTerminal.vue'
-import { getHomepageArticles } from '../utils/article'
-
-dayjs.extend(utc)
+import { articleDateTime, formatArticleDate, getHomepageArticles } from '../utils/article'
 
 const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
 
@@ -142,8 +138,6 @@ const homepageArticles = computed(() => getHomepageArticles(articles.value))
 const featuredArticle = computed(() => homepageArticles.value.featured)
 const recentArticles = computed(() => homepageArticles.value.recent)
 
-const formatDate = (date: Date | string) => dayjs(date).utc().format('MMMM D, YYYY')
-const dateTime = (date: Date | string) => dayjs(date).utc().format('YYYY-MM-DD')
 const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 const categoryIcons: Record<string, IconDefinition> = {
   'Advanced Custom Fields (ACF)': faWordpressSimple,
