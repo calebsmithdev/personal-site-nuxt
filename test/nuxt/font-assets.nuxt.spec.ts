@@ -33,8 +33,7 @@ describe('font asset configuration', () => {
       '@fontsource/lora/500.css',
       '@fontsource/poppins/500.css',
       '@fontsource/poppins/700.css',
-      '@/assets/css/typography.css',
-      '@fortawesome/fontawesome-svg-core/styles.css'
+      '@/assets/css/typography.css'
     ])
   })
 

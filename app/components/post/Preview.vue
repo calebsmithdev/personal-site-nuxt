@@ -11,7 +11,7 @@
 
       <div class="post-meta">
         <time :datetime="dateTime(post.date)">
-          <font-awesome-icon :icon="faCalendar" aria-hidden="true" />
+          <FaIcon :icon="faCalendar" aria-hidden="true" />
           <span>{{ formatDate(post.date) }}</span>
         </time>
         <span v-for="category in post.categories" :key="category" class="post-category">
@@ -33,6 +33,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../ArrowRightIcon.vue'
+import FaIcon from '../FaIcon.vue'
 import type { BlogArticleSummary } from '../../types'
 
 defineOptions({

@@ -28,7 +28,7 @@
 
             <div class="article-meta">
               <time :datetime="dateTime(article.date)">
-                <font-awesome-icon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
+                <FaIcon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
                 <span>{{ formatDate(article.date) }}</span>
               </time>
 
@@ -37,12 +37,12 @@
                 :key="category"
                 class="article-category"
               >
-                <font-awesome-icon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
+                <FaIcon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
                 <span>{{ displayCategory(category) }}</span>
               </span>
 
               <span class="reading-time">
-                <font-awesome-icon :icon="faClock" class="meta-icon" aria-hidden="true" />
+                <FaIcon :icon="faClock" class="meta-icon" aria-hidden="true" />
                 <span>{{ readingMinutes }} min read</span>
               </span>
             </div>
@@ -102,6 +102,7 @@ import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
+import FaIcon from '../../components/FaIcon.vue'
 import type { BlogArticle } from '../../types'
 import { getArticlePosition, getReadingMinutes } from '../../utils/article'
 

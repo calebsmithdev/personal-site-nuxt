@@ -71,11 +71,11 @@
 
           <div class="article-meta">
             <time :datetime="dateTime(featuredArticle.date)">
-              <font-awesome-icon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
+              <FaIcon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
               <span>{{ formatDate(featuredArticle.date) }}</span>
             </time>
             <span v-for="category in featuredArticle.categories" :key="category" class="article-category">
-              <font-awesome-icon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
+              <FaIcon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
               <span>{{ displayCategory(category) }}</span>
             </span>
           </div>
@@ -109,11 +109,11 @@
 
             <div class="article-meta">
               <time :datetime="dateTime(article.date)">
-                <font-awesome-icon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
+                <FaIcon :icon="faCalendar" class="meta-icon" aria-hidden="true" />
                 <span>{{ formatDate(article.date) }}</span>
               </time>
               <span v-for="category in article.categories" :key="category" class="article-category">
-                <font-awesome-icon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
+                <FaIcon :icon="categoryIcon(category)" class="meta-icon" aria-hidden="true" />
                 <span>{{ displayCategory(category) }}</span>
               </span>
             </div>
@@ -141,6 +141,7 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../components/ArrowRightIcon.vue'
+import FaIcon from '../components/FaIcon.vue'
 import type { BlogArticleSummary } from '../types'
 
 dayjs.extend(utc)

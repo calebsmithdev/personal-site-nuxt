@@ -21,8 +21,7 @@ export default defineNuxtConfig({
     '@fontsource/lora/500.css',
     '@fontsource/poppins/500.css',
     '@fontsource/poppins/700.css',
-    '@/assets/css/typography.css',
-    '@fortawesome/fontawesome-svg-core/styles.css'
+    '@/assets/css/typography.css'
   ],
   content: {
     build: {
@@ -40,15 +39,8 @@ export default defineNuxtConfig({
   site: {
     url: 'https://caleb-smith.dev'
   },
-  build: {
-    transpile: [
-      'tslib',
-      '@fortawesome/fontawesome-svg-core',
-      '@fortawesome/free-brands-svg-icons',
-      '@fortawesome/free-regular-svg-icons',
-      '@fortawesome/free-solid-svg-icons',
-      '@fortawesome/vue-fontawesome'
-    ]
+  features: {
+    inlineStyles: true
   },
   experimental: {
     writeEarlyHints: false
