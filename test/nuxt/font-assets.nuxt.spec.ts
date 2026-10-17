@@ -17,6 +17,7 @@ describe('font asset configuration', () => {
 
     expect(packageJson.dependencies).toHaveProperty('@fontsource/lora')
     expect(packageJson.dependencies).toHaveProperty('@fontsource/poppins')
+    expect(packageJson.dependencies).toHaveProperty('@fontsource/ibm-plex-mono')
     expect(packageJson.devDependencies).not.toHaveProperty('@nuxtjs/google-fonts')
   })
 
@@ -33,14 +34,17 @@ describe('font asset configuration', () => {
       '@fontsource/lora/500.css',
       '@fontsource/poppins/500.css',
       '@fontsource/poppins/700.css',
+      '@fontsource/ibm-plex-mono/400.css',
+      '@fontsource/ibm-plex-mono/500.css',
       '@/assets/css/typography.css'
     ])
   })
 
-  it('keeps the typography variables mapped to Poppins and Lora', async () => {
+  it('keeps the typography variables mapped to Poppins, Lora, and IBM Plex Mono', async () => {
     const typography = await readFile(projectFile('app/assets/css/typography.css'), 'utf8')
 
     expect(typography).toMatch(/--font-heading:\s*'Poppins'/)
     expect(typography).toMatch(/--font-serif:\s*'Lora'/)
+    expect(typography).toMatch(/--font-mono:\s*'IBM Plex Mono'/)
   })
 })

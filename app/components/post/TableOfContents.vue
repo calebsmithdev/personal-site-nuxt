@@ -70,10 +70,10 @@ onBeforeUnmount(() => observer?.disconnect())
 .toc-heading {
   margin: 0 0 2rem;
   color: var(--color-accent);
-  font-family: var(--font-heading);
+  font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 

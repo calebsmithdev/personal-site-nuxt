@@ -234,10 +234,10 @@ useSiteSeo({
 
 .field-note-label,
 .field-note-number {
-  font-family: var(--font-heading);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -283,8 +283,8 @@ useSiteSeo({
   gap: 1rem 0;
   margin-top: clamp(1.75rem, 3vw, 2.5rem);
   color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
 }
 
 .article-meta > * {
@@ -395,7 +395,7 @@ useSiteSeo({
   color: var(--color-cyan);
   background: var(--color-surface);
   border: 1px solid var(--color-rule);
-  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.88em;
 }
 
@@ -488,10 +488,10 @@ useSiteSeo({
 .adjacent-label {
   margin-bottom: 0.55rem;
   color: var(--color-accent);
-  font-family: var(--font-heading);
+  font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
