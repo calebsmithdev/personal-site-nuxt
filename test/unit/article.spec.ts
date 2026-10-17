@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   countWords,
   getArticlePosition,
+  getHomepageArticles,
   getReadingMinutes
 } from '../../app/utils/article'
 
@@ -118,6 +119,31 @@ describe('article helpers', () => {
         displayNumber: '01',
         newer: null,
         older: null
+      })
+    })
+  })
+
+  describe('getHomepageArticles', () => {
+    const articles = ['01', '02', '03', '04', '05', '06'].map(number => ({ path: `/blog/${number}` }))
+
+    it('features the newest article and lists the next four', () => {
+      expect(getHomepageArticles(articles)).toEqual({
+        featured: articles[0],
+        recent: articles.slice(1, 5)
+      })
+    })
+
+    it('returns every remaining article when there are fewer than four', () => {
+      expect(getHomepageArticles(articles.slice(0, 3))).toEqual({
+        featured: articles[0],
+        recent: articles.slice(1, 3)
+      })
+    })
+
+    it('handles an empty article list', () => {
+      expect(getHomepageArticles([])).toEqual({
+        featured: undefined,
+        recent: []
       })
     })
   })

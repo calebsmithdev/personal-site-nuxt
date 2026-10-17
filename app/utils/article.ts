@@ -66,3 +66,11 @@ export const getArticlePosition = <Article extends PathBearingArticle>(
     older: index >= 0 && index < articles.length - 1 ? articles[index + 1] : null
   }
 }
+
+export const getHomepageArticles = <Article>(
+  articles: readonly Article[],
+  recentCount = 4
+) => ({
+  featured: articles[0],
+  recent: articles.slice(1, 1 + recentCount)
+})
