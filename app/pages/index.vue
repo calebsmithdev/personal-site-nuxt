@@ -23,28 +23,7 @@
       </div>
 
       <div class="hero-media">
-        <picture>
-          <source
-            type="image/avif"
-            srcset="/images/homepage-homelab/hero-640.avif 640w, /images/homepage-homelab/hero-1024.avif 1024w, /images/homepage-homelab/hero-1536.avif 1536w"
-            sizes="(max-width: 1023px) 100vw, 48vw"
-          >
-          <source
-            type="image/webp"
-            srcset="/images/homepage-homelab/hero-640.webp 640w, /images/homepage-homelab/hero-1024.webp 1024w, /images/homepage-homelab/hero-1536.webp 1536w"
-            sizes="(max-width: 1023px) 100vw, 48vw"
-          >
-          <img
-            src="/images/homepage-homelab/hero-1536.jpg"
-            srcset="/images/homepage-homelab/hero-640.jpg 640w, /images/homepage-homelab/hero-1024.jpg 1024w, /images/homepage-homelab/hero-1536.jpg 1536w"
-            sizes="(max-width: 1023px) 100vw, 48vw"
-            alt="An illustrated homelab workspace with a server rack, laptop, network storage, and connected infrastructure symbols"
-            width="1536"
-            height="1024"
-            fetchpriority="high"
-            decoding="async"
-          >
-        </picture>
+        <HeroTerminal :articles="articles" />
       </div>
     </section>
 
@@ -142,6 +121,7 @@ import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../components/ArrowRightIcon.vue'
 import FaIcon from '../components/FaIcon.vue'
+import HeroTerminal from '../components/HeroTerminal.vue'
 import { getHomepageArticles } from '../utils/article'
 
 dayjs.extend(utc)
@@ -294,14 +274,6 @@ const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
   bottom: -0.65rem;
   border-right: 1px solid var(--color-accent);
   border-bottom: 1px solid var(--color-accent);
-}
-
-.hero-media img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  border-radius: 0.2rem;
 }
 
 @media (max-height: 800px) and (min-width: 1024px) {
@@ -560,11 +532,6 @@ const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
   .button {
     width: 100%;
     min-height: 4rem;
-  }
-
-  .hero-media {
-    width: calc(100% + 2rem);
-    margin-left: -1rem;
   }
 
   .featured-frame {
