@@ -142,7 +142,7 @@ import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../components/ArrowRightIcon.vue'
 import FaIcon from '../components/FaIcon.vue'
-import type { BlogArticleSummary } from '../types'
+import { getHomepageArticles } from '../utils/article'
 
 dayjs.extend(utc)
 
@@ -158,21 +158,9 @@ const { fetchList, articles } = useBlog()
 
 await fetchList()
 
-const featuredArticle = computed(() => articles.value[0])
-const recentArticlePaths = [
-  '/blog/hiding-field-labels-with-advanced-custom-fields-acf',
-  '/blog/previewing-layouts-with-navigation-in-swiftui',
-  '/blog/improving-your-class-structures-with-acf-blocks',
-  '/blog/capturing-media-events-with-plyr'
-]
-const recentArticles = computed<BlogArticleSummary[]>(() => {
-  const articleByPath = new Map(articles.value.map(article => [article.path, article]))
-
-  return recentArticlePaths.flatMap((path) => {
-    const article = articleByPath.get(path)
-    return article ? [article] : []
-  })
-})
+const homepageArticles = computed(() => getHomepageArticles(articles.value))
+const featuredArticle = computed(() => homepageArticles.value.featured)
+const recentArticles = computed(() => homepageArticles.value.recent)
 
 const formatDate = (date: Date | string) => dayjs(date).utc().format('MMMM D, YYYY')
 const dateTime = (date: Date | string) => dayjs(date).utc().format('YYYY-MM-DD')
