@@ -157,13 +157,23 @@ video {
   --color-surface: #0b1d31;
   --color-text: #f5eee4;
   --color-muted: #c3ccd5;
-  --color-subtle: #667588;
-  --color-number: #415067;
+  --color-subtle: #708196;
+  --color-number: #526582;
   --color-rule: #35465a;
   --color-accent: #ff8a65;
   --color-cyan: #67d7ec;
   --font-heading: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif: 'Lora', Georgia, Cambria, 'Times New Roman', serif;
+}
+
+/* Sizing for FaIcon, matching the Font Awesome base icon rule. */
+.svg-inline--fa {
+  box-sizing: content-box;
+  display: inline-block;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+  width: 1.25em;
 }
 
 html {
