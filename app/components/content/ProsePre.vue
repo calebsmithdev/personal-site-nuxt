@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
   padding: 0.55rem 0.85rem 0.55rem 1.2rem;
   color: var(--color-cyan);
   border-bottom: 1px solid var(--color-rule);
-  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1;
 }
@@ -115,7 +115,7 @@ pre {
   overflow-x: auto;
   color: var(--color-text);
   background: transparent !important;
-  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-family: var(--font-mono);
   line-height: 1.65;
   tab-size: 2;
 }

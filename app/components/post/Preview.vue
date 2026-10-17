@@ -99,8 +99,8 @@ const displayCategory = (category: string) => category === 'Javascript' ? 'JavaS
   gap: 0.6rem 0;
   margin-top: 1.1rem;
   color: var(--color-muted);
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
 }
 
 .post-meta > * {

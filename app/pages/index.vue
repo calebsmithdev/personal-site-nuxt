@@ -386,11 +386,11 @@ const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
 .section-label {
   margin: 0;
   color: var(--color-accent);
-  font-family: var(--font-heading);
+  font-family: var(--font-mono);
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.2;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -428,8 +428,8 @@ const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
   gap: 0.6rem 0;
   margin-top: 1.35rem;
   color: var(--color-muted);
-  font-family: var(--font-heading);
-  font-size: 0.93rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
   line-height: 1.35;
 }
 
@@ -639,7 +639,7 @@ const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
   }
 
   .article-meta {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .article-meta > * + * {

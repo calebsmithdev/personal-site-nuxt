@@ -21,6 +21,8 @@ export default defineNuxtConfig({
     '@fontsource/lora/500.css',
     '@fontsource/poppins/500.css',
     '@fontsource/poppins/700.css',
+    '@fontsource/ibm-plex-mono/400.css',
+    '@fontsource/ibm-plex-mono/500.css',
     '@/assets/css/typography.css'
   ],
   content: {
