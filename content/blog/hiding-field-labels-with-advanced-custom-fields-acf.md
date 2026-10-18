@@ -17,7 +17,7 @@ Let's check out the different options to make this happen! Note: All of the code
 
 The first option is using filters in PHP to add a new settings option to your fields to toggle the feature off/on as needed. This is generally my preferred method since everyone knows what the setting does, it's always present (you won't forget how to use it later), and easy to comprehend for no developers who are just needing to create data structures with ACF.
 
-![Preview of the updated Presentation UI](/assets/img/blog/63-01-20240411-hide-field-labels-01.png)
+![Preview of the updated Presentation UI](/assets/img/blog/63-01-20240411-hide-field-labels-01.png){width="1119" height="590"}
 
 Let's look at this code snippet:
 
@@ -59,7 +59,7 @@ The second function handles the output of the field. For this, we are checking t
 
 The second option is to add a class for the WordPress admin only that can be added to a field directly in the ACF "class" settings option. This is acceptable, but requires you and your ACF devs to remember that the class exists and to use it when you need it. Generally speaking, I prefer to have all of my options laid out and easy to configure, but handling this with classes is just as easy and may be preferred with your project.
 
-![Preview of the updated Presentation UI](/assets/img/blog/63-01-20240411-hide-field-labels-02.png)
+![Preview of the updated Presentation UI](/assets/img/blog/63-01-20240411-hide-field-labels-02.png){width="1099" height="565"}
 
 Let's take a look at some code on how to achieve this:
 
