@@ -32,7 +32,7 @@
         <ul class="line output notes" style="--step: 5">
           <li v-for="note in notes" :key="note.path">
             <time :datetime="note.date">{{ note.date }}</time>
-            <NuxtLink :to="note.path" :aria-label="note.title">
+            <NuxtLink :to="note.path" :aria-label="`${note.slug}: ${note.title}`">
               {{ note.slug }}
             </NuxtLink>
           </li>
@@ -161,6 +161,7 @@ const notes = computed(() => props.articles.slice(0, 3).map(article => ({
 
 .notes a {
   min-width: 0;
+  min-height: 24px;
   overflow: hidden;
   color: var(--color-cyan);
   border: 0;

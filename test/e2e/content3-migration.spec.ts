@@ -104,6 +104,34 @@ describe('Content 3 route migration', () => {
     expect(imageResponse.headers.get('content-type')).toContain('image/png')
   })
 
+  it.each([
+    '/blog/hiding-field-labels-with-advanced-custom-fields-acf',
+    localImageArticlePath
+  ])('reserves the intrinsic image aspect ratios on %s', async (path) => {
+    const response = await fetch(path)
+    const html = await response.text()
+    const articleBody = html.match(/<article id="full-content"[\s\S]*?<\/article>/)?.[0] ?? ''
+    const images = articleBody.match(/<img\b[^>]*>/gi) ?? []
+
+    expect(response.status).toBe(200)
+    expect(images).toHaveLength(path === localImageArticlePath ? 1 : 2)
+
+    for (const image of images) {
+      const src = getAttribute(image, 'src')
+      expect(src).toMatch(/^\/_nuxt\/.+\.png$/)
+      const imageResponse = await fetch(src!)
+      const bytes = Buffer.from(await imageResponse.arrayBuffer())
+
+      expect(imageResponse.status).toBe(200)
+      // The PNG IHDR stores the intrinsic width and height at bytes 16 and 20.
+      expect(getAttribute(image, 'width')).toBe(String(bytes.readUInt32BE(16)))
+      expect(getAttribute(image, 'height')).toBe(String(bytes.readUInt32BE(20)))
+      expect(getAttribute(image, 'loading')).toBe('lazy')
+      expect(getAttribute(image, 'decoding')).toBe('async')
+      expect(getAttribute(image, 'alt')).toBeTruthy()
+    }
+  })
+
   it('retains canonical and Open Graph metadata on a migrated article', async () => {
     const response = await fetch(articlePath)
     const html = await response.text()

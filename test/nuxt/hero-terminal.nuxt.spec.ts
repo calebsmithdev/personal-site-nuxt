@@ -50,10 +50,14 @@ describe('HeroTerminal', () => {
       '/blog/third-note'
     ])
     expect(notes.map(note => note.find('a').attributes('aria-label'))).toEqual([
-      'Newest note',
-      'Second note',
-      'Third note'
+      'newest-note: Newest note',
+      'second-note: Second note',
+      'third-note: Third note'
     ])
+    for (const note of notes) {
+      const link = note.find('a')
+      expect(link.attributes('aria-label')).toContain(link.text())
+    }
     expect(wrapper.text()).toContain('head -3')
   })
 
@@ -83,6 +87,12 @@ describe('HeroTerminal', () => {
     const reducedMotion = component.match(/@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}/)?.[1]
 
     expect(reducedMotion).toMatch(/\.line,\s*\.typed,\s*\.caret\s*\{\s*animation: none;/)
+  })
+
+  it('gives adjacent field note links a minimum 24px target height', async () => {
+    const component = await readFile(resolve(process.cwd(), 'app/components/HeroTerminal.vue'), 'utf8')
+
+    expect(component).toMatch(/\.notes a \{[^}]*min-height: 24px;/)
   })
 
   it('reveals the field note links as soon as one receives keyboard focus', async () => {
