@@ -11,6 +11,7 @@ await setup({
 interface ArticleFixture {
   slug: string
   title: string
+  lastmod: string
 }
 
 const contentDirectory = fileURLToPath(new URL('../../content/blog', import.meta.url))
@@ -21,14 +22,20 @@ const articleFixtures: ArticleFixture[] = await Promise.all(
     .map(async (file) => {
       const source = await readFile(fileURLToPath(new URL(`../../content/blog/${file}`, import.meta.url)), 'utf8')
       const title = source.match(/^title:\s*(['"])(.*?)\1$/m)?.[2]
+      const lastmod = source.match(/^sitemap:\s*\n\s+lastmod:\s*(\d{4}-\d{2}-\d{2})\s*$/m)?.[1]
 
       if (!title) {
         throw new Error(`Expected ${file} to have a quoted title`)
       }
 
+      if (!lastmod) {
+        throw new Error(`Expected ${file} to have a sitemap.lastmod date`)
+      }
+
       return {
         slug: basename(file, '.md'),
-        title
+        title,
+        lastmod
       }
     })
 )
@@ -42,6 +49,38 @@ const getAttribute = (tag: string, attribute: string) => {
 }
 
 describe('Content 3 route migration', () => {
+  it('keeps sitemap article URLs and their frontmatter modification dates', async () => {
+    const response = await fetch('/sitemap.xml')
+    const xml = await response.text()
+    const entries = (xml.match(/<url>[\s\S]*?<\/url>/g) ?? []).map(entry => ({
+      loc: entry.match(/<loc>(.*?)<\/loc>/)?.[1],
+      lastmod: entry.match(/<lastmod>(.*?)<\/lastmod>/)?.[1]
+    }))
+
+    expect(response.status).toBe(200)
+    expect(entries).toHaveLength(articleFixtures.length + 2)
+    expect(entries).toContainEqual({ loc: `${siteOrigin}/`, lastmod: undefined })
+    expect(entries).toContainEqual({ loc: `${siteOrigin}/blog`, lastmod: undefined })
+
+    for (const { slug, lastmod } of articleFixtures) {
+      expect(entries).toContainEqual({ loc: `${siteOrigin}/blog/${slug}`, lastmod })
+    }
+    for (const { loc } of entries) {
+      expect(loc).toBeDefined()
+      expect(loc?.slice(siteOrigin.length)).not.toContain('//')
+    }
+  })
+
+  it('advertises the canonical sitemap without blocking all crawlers', async () => {
+    const response = await fetch('/robots.txt')
+    const robots = await response.text()
+
+    expect(response.status).toBe(200)
+    expect(robots).toContain('User-agent: *')
+    expect(robots).toContain(`Sitemap: ${siteOrigin}/sitemap.xml`)
+    expect(robots).not.toMatch(/^Disallow:[ \t]*\/[ \t]*$/m)
+  })
+
   it('discovers the complete twelve-article collection', () => {
     expect(articleFixtures).toHaveLength(12)
   })
