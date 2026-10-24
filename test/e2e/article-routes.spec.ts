@@ -3,7 +3,8 @@ import { fetch, setup } from '@nuxt/test-utils/e2e'
 import { describe, expect, it } from 'vitest'
 
 await setup({
-  rootDir: fileURLToPath(new URL('../..', import.meta.url))
+  rootDir: fileURLToPath(new URL('../..', import.meta.url)),
+  env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: '' }
 })
 
 const siteOrigin = 'https://caleb-smith.dev'
