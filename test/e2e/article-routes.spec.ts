@@ -51,7 +51,7 @@ const getHead = (html: string) => {
   return head ?? ''
 }
 
-const getTags = (head: string, tagName: 'link' | 'meta') => {
+const getTags = (head: string, tagName: 'link' | 'meta' | 'script') => {
   return head.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) ?? []
 }
 
@@ -75,6 +75,28 @@ const expectUniqueMeta = (
 }
 
 describe('article routes', () => {
+  it('keeps analytics code out of unconfigured page scripts and resource hints', async () => {
+    const response = await fetch('/')
+    const head = getHead(await response.text())
+    const scriptHints = getTags(head, 'link').filter((tag) => {
+      const rel = getAttribute(tag, 'rel')
+      return rel === 'modulepreload' ||
+        (getAttribute(tag, 'as') === 'script' && (rel === 'preload' || rel === 'prefetch'))
+    })
+    const scriptPaths = [...new Set([
+      ...getTags(head, 'script').map(tag => getAttribute(tag, 'src')),
+      ...scriptHints.map(tag => getAttribute(tag, 'href'))
+    ].filter((path): path is string => Boolean(path)))]
+
+    expect(scriptPaths.length).toBeGreaterThan(0)
+    await Promise.all(scriptPaths.map(async (path) => {
+      expect(path).toMatch(/^\/_nuxt\//)
+      const scriptResponse = await fetch(path)
+      expect(scriptResponse.status).toBe(200)
+      expect(await scriptResponse.text()).not.toContain('googletagmanager.com')
+    }))
+  })
+
   it('renders a known article document', async () => {
     const response = await fetch(articlePath)
     const html = await response.text()

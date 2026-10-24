@@ -5,6 +5,17 @@ export default defineNuxtConfig({
       googleAnalyticsId: ''
     }
   },
+  hooks: {
+    'build:manifest': (manifest) => {
+      // Keep optional analytics out of automatic preload and prefetch requests.
+      for (const [id, entry] of Object.entries(manifest)) {
+        if (id.includes('/vue-gtag/')) {
+          entry.preload = false
+          entry.prefetch = false
+        }
+      }
+    }
+  },
   vite: {
     define: {
       __DEV__: (process.env.NODE_ENV === 'development').toString()
