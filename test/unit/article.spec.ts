@@ -1,6 +1,10 @@
+import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
+import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   articleDateTime,
+  categoryIcon,
+  displayCategory,
   countWords,
   formatArticleDate,
   getArticlePosition,
@@ -174,5 +178,25 @@ describe('article helpers', () => {
       expect(formatArticleDate(date)).toBe('December 27, 2023')
       expect(articleDateTime(date)).toBe('2023-12-27')
     })
+  })
+})
+
+describe('article categories', () => {
+  it('formats the legacy Javascript label while preserving other category names', () => {
+    expect(displayCategory('Javascript')).toBe('JavaScript')
+    expect(displayCategory('SwiftUI')).toBe('SwiftUI')
+    expect(displayCategory('New category')).toBe('New category')
+  })
+
+  it.each([
+    ['Advanced Custom Fields (ACF)', faWordpressSimple],
+    ['Javascript', faJsSquare],
+    ['Kubernetes', faDharmachakra],
+    ['Proxmox', faCube],
+    ['SwiftUI', faSwift],
+    ['WordPress', faWordpressSimple],
+    ['New category', faCube]
+  ])('keeps the existing icon for %s', (category, icon) => {
+    expect(categoryIcon(category)).toBe(icon)
   })
 })

@@ -85,6 +85,7 @@ cp .env.example .env
 | `npm run generate` | Prerenders the static site into `.output/public/`. |
 | `npm run build` | Builds the Node/Nitro server into `.output/`. |
 | `npm run preview` | Previews the latest build locally. |
+| `npm run social-image` | Renders the default social card in `public/social/` from its HTML template. |
 | `npm run start` | Runs the built server from `.output/server/index.mjs`. Run `npm run build` first. |
 
 ## Project structure
@@ -101,7 +102,8 @@ cp .env.example .env
 │   ├── plugins/         # Optional Google Analytics plugin
 │   └── utils/           # Article helpers such as date formatting
 ├── content/blog/        # Article Markdown files
-├── public/              # Favicons and other files served as-is
+├── public/              # Favicons, the social card, and other files served as-is
+├── scripts/             # Social card template and renderer
 ├── test/
 │   ├── unit/            # Node unit tests
 │   ├── nuxt/            # Component and composable tests in the Nuxt environment
@@ -129,7 +131,8 @@ description: 'One-sentence summary.' # required, non-empty
 date: 2026-07-29                     # required, YYYY-MM-DD
 categories: ['Nuxt']                 # required, at least one entry
 tags: ['vue', 'routing']             # optional, array of strings
-image: '/assets/img/blog/cover.png'  # optional, string
+image: '/social/blog/cover.png'      # optional social image: a path starting with / or an https:// URL
+imageAlt: 'What the image shows'     # optional, defaults to the title
 sitemap:
   lastmod: 2026-07-29                # required, YYYY-MM-DD
 ---
@@ -154,12 +157,18 @@ Code blocks are highlighted with the `material-theme-palenight` theme. The suppo
 | Poppins | 500, 700 | Headings |
 | IBM Plex Mono | 400, 500 | Labels, metadata, and code |
 
+For repeatable article-heading performance experiments, see the
+[LCP lab and findings](docs/performance/article-lcp.md). Its font controls run in
+a local benchmark server and do not change the site's typography.
+
 ## SEO and analytics
 
 The homepage, blog index, and article pages each set their own title, description, canonical URL, Open Graph tags, and Twitter tags.
 
 - Canonical URLs, the sitemap, and `robots.txt` all use the site origin `https://caleb-smith.dev` from `nuxt.config.ts`.
 - The homepage and blog index have the Open Graph type `website`. Articles have the type `article`.
+- Every page sends the default social card, `public/social/default.png` (1200×630), as `og:image` and `twitter:image`, with its dimensions and alt text. An article's `image` frontmatter replaces the card for that article. Point it at a file in `public/` (a stable URL), an `/assets/img/...` path, or an `https://` URL. Dimensions aren't known for replacements, so they aren't sent. Use a 1200×630 image for the best previews.
+- The default card is rendered from `scripts/social-image/default.html` with the site's fonts and colors. After you edit the template, run `npm run social-image` to render the PNG again. The script needs a local Chrome or Chromium (`CHROME_PATH`, or a Playwright-installed Chromium).
 
 Google Analytics is **optional**. Set the public runtime key in `.env` to turn it on:
 
@@ -189,6 +198,8 @@ The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes 
 
 After the Vitest projects and Nitro build pass, CI runs `npm run generate` and `npm run test:generated`. The latter uses Node's test runner to read the exact home, blog index, and article HTML and payload files in `.output/public/`, plus `sitemap.xml` and `robots.txt`. Expected article routes come from `content/blog/**/*.md`, so an article the prerender crawler fails to discover still fails validation. These checks also protect canonical URLs and sitemap modification dates, and make no requests to the live site or other external services. The existing server e2e tests remain useful for Nitro behavior; they do not establish how production hosting serves missing routes.
 
+The [GitHub security baseline](docs/github-security.md) documents repository protections and read-only API commands for verifying their live state. These settings are managed on GitHub, separately from tracked workflow configuration.
+
 Git ignores generated output in `.nuxt/`, `.output/`, `.data/`, and `.nuxtrc`. Don't edit those files by hand.
 
 ## Build and deployment
@@ -207,6 +218,8 @@ Nuxt can produce two kinds of output:
 Use `npm run preview` after a build to try the production output locally. The [Nuxt deployment docs](https://nuxt.com/docs/4.x/getting-started/deployment) list every output format Nuxt supports.
 
 `npm run check` finishes with static output because generation follows the Nitro build. Run `npm run build` again before `npm run start` when testing the server output. For static output, deploy `.output/public/` after `npm run generate`; runtime Nitro handlers are unavailable in that artifact. Confirm the actual Laravel Cloud build command, start command (if any), and served directory before selecting either mode or removing either CI validation path. Serving rules and HTTP status codes still need separate verification on the deployed host.
+
+Hashed `/_nuxt/*` JS, CSS, fonts, and images should use `Cache-Control: public, max-age=31536000, immutable`; HTML and mutable `/_nuxt/builds/latest.json` must keep a short browser TTL or require revalidation. See the [deployment cache policy](docs/deployment-cache-policy.md) for the scoped Laravel Cloud change, current production findings, and the repeatable `node scripts/check-asset-cache.mjs` audit. Static hosting must apply these response headers; changing Nuxt route rules alone does not configure the edge.
 
 > [!IMPORTANT]
 > This repository contains no hosting credentials. Keep tokens and account IDs in the hosting provider's secret settings, never in tracked files.
