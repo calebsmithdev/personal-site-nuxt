@@ -95,14 +95,11 @@
 </template>
 
 <script setup lang="ts">
-import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons'
-import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import FaIcon from '../../components/FaIcon.vue'
 import type { BlogArticle } from '../../types'
-import { articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
+import { categoryIcon, displayCategory, articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
 
 interface TocLink {
   id: string
@@ -138,17 +135,6 @@ const tocLinks = computed<TocLink[]>(() => {
 const readingMinutes = computed(() => {
   return getReadingMinutes(article.value?.body)
 })
-
-const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
-const categoryIcons: Record<string, IconDefinition> = {
-  'Advanced Custom Fields (ACF)': faWordpressSimple,
-  Javascript: faJsSquare,
-  Kubernetes: faDharmachakra,
-  Proxmox: faCube,
-  SwiftUI: faSwift,
-  WordPress: faWordpressSimple
-}
-const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
 
 useSiteSeo({
   title: article.value.title!,

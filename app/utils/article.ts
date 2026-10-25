@@ -1,3 +1,6 @@
+import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
+import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import type { MarkdownRoot, MinimarkElement, MinimarkNode } from '@nuxt/content'
@@ -83,3 +86,14 @@ export const getHomepageArticles = <Article>(
 export const formatArticleDate = (date: Date | string): string => dayjs.utc(date).format('MMMM D, YYYY')
 
 export const articleDateTime = (date: Date | string): string => dayjs.utc(date).format('YYYY-MM-DD')
+
+export const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
+const categoryIcons: Record<string, IconDefinition> = {
+  'Advanced Custom Fields (ACF)': faWordpressSimple,
+  Javascript: faJsSquare,
+  Kubernetes: faDharmachakra,
+  Proxmox: faCube,
+  SwiftUI: faSwift,
+  WordPress: faWordpressSimple
+}
+export const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
