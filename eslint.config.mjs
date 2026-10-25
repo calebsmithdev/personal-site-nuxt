@@ -5,7 +5,6 @@ export default withNuxt({
     '@typescript-eslint/no-unused-vars': ['error', {
       args: 'all',
       argsIgnorePattern: '^_'
-    }],
-    'vue/no-v-html': 'off'
+    }]
   }
 })
