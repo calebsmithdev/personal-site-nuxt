@@ -1,5 +1,11 @@
+import { securityHeaders } from './config/security-headers'
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-07-29',
+  // Static hosting must apply these headers at the host/edge; see README.
+  routeRules: {
+    '/**': { headers: securityHeaders }
+  },
   runtimeConfig: {
     public: {
       googleAnalyticsId: ''

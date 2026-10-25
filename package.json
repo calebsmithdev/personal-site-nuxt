@@ -8,6 +8,7 @@
     "generate": "nuxi generate",
     "lint": "eslint .",
     "preview": "nuxi preview",
+    "security:headers": "node scripts/print-security-headers.ts",
     "social-image": "node scripts/generate-social-image.mjs",
     "postinstall": "nuxi prepare",
     "start": "node .output/server/index.mjs",

@@ -7,6 +7,8 @@ await setup({
   // Configure prerendered pages too; env applies only when the server starts.
   nuxtConfig: { runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } } },
   env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'G-TEST12345' },
+  // Exercise live SSR: prerendered HTML predates the server-only test env.
+  nuxtConfig: { routeRules: { '/**': { prerender: false } } },
   captureServerLogs: true
 })
 
