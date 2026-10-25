@@ -199,6 +199,8 @@ The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes 
 
 After the Vitest projects and Nitro build pass, CI runs `npm run generate` and `npm run test:generated`. The latter uses Node's test runner to read the exact home, blog index, and article HTML and payload files in `.output/public/`, plus `sitemap.xml` and `robots.txt`. Expected article routes come from `content/blog/**/*.md`, so an article the prerender crawler fails to discover still fails validation. These checks also protect canonical URLs and sitemap modification dates, and make no requests to the live site or other external services. The existing server e2e tests remain useful for Nitro behavior; they do not establish how production hosting serves missing routes.
 
+See the [dependency advisory triage](docs/security/dependency-triage.md) for the current security findings, evidence limits, and commands to reassess them.
+
 The [GitHub security baseline](docs/github-security.md) documents repository protections and read-only API commands for verifying their live state. These settings are managed on GitHub, separately from tracked workflow configuration.
 
 Git ignores generated output in `.nuxt/`, `.output/`, `.data/`, and `.nuxtrc`. Don't edit those files by hand.

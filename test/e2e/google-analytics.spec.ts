@@ -4,10 +4,11 @@ import { describe, expect, it } from 'vitest'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
+  // Configure the fixture at build time and when its server starts.
   env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'G-TEST12345' },
-  // Configure analytics at build time too, while keeping requests on live SSR.
   nuxtConfig: {
     runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } },
+    // Exercise live SSR instead of prerendered HTML.
     routeRules: { '/**': { prerender: false } }
   },
   captureServerLogs: true

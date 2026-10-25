@@ -13,7 +13,7 @@ const nestedTitle = 'Nested routing fixture'
 const newestArticlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 
 try {
-  await Promise.all(['app', 'config', 'content', 'public', 'server', 'nuxt.config.ts', 'content.config.ts', 'package.json', 'tsconfig.json']
+  await Promise.all(['app', 'content', 'public', 'server', 'config', 'nuxt.config.ts', 'content.config.ts', 'package.json', 'tsconfig.json']
     .map(file => cp(join(projectRoot, file), join(fixtureRoot, file), { recursive: true })))
   await symlink(join(projectRoot, 'node_modules'), join(fixtureRoot, 'node_modules'), 'dir')
   await mkdir(join(fixtureRoot, 'content/blog/nuxt'), { recursive: true })
