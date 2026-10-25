@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
+  // Configure prerendered pages too; env applies only when the server starts.
+  nuxtConfig: { runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } } },
   env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'G-TEST12345' },
   captureServerLogs: true
 })
