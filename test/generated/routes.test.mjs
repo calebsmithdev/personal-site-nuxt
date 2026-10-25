@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict'
 import { readFile, readdir } from 'node:fs/promises'
-import { test } from 'node:test'
+import { after, test } from 'node:test'
+import { Window } from 'happy-dom'
+
+const window = new Window()
+const parser = new window.DOMParser()
+after(() => window.happyDOM.close())
 
 const siteOrigin = 'https://caleb-smith.dev'
 const contentDirectory = new URL('../../content/blog/', import.meta.url)
@@ -53,7 +58,8 @@ for (const route of routes) {
       const body = html.match(/<article\b[^>]*\bid="full-content"[^>]*>([\s\S]*?)<\/article>/)?.[1]
       assert.ok(body, `${route.path} must have an article body`)
       assert.match(body, /<(?:p|h[1-6]|pre|ul|ol|blockquote|table)\b/, `${route.path} must have rendered Markdown`)
-      assert.ok(body.replace(/<!--[\s\S]*?-->|<[^>]*>/g, '').trim(), `${route.path} must have article text`)
+      const document = parser.parseFromString(body, 'text/html')
+      assert.ok(document.body.textContent.trim(), `${route.path} must have article text`)
     }
 
     const payload = await readOutput(`${directory}_payload.json`)
