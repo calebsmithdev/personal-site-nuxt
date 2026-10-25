@@ -142,6 +142,8 @@ useSiteSeo({
   description: article.value.description!,
   path: route.path,
   type: 'article',
+  datePublished: article.value.date,
+  dateModified: article.value.sitemap.lastmod,
   absoluteTitle: true,
   image: articleSocialImage(article.value, useAsset)
 })
