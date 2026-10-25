@@ -97,7 +97,7 @@ cp .env.example .env
 │   │   └── content/     # ProseImg and ProsePre overrides for Markdown rendering
 │   ├── composables/     # useBlog, useSiteSeo, useAsset
 │   ├── layouts/         # Default layout
-│   ├── pages/           # /, /blog, /blog/[slug]
+│   ├── pages/           # /, /blog, /blog/[...slug]
 │   ├── plugins/         # Optional Google Analytics plugin
 │   └── utils/           # Article helpers such as date formatting
 ├── content/blog/        # Article Markdown files
