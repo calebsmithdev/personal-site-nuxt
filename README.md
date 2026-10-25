@@ -211,5 +211,7 @@ Nuxt can produce two kinds of output:
 
 Use `npm run preview` after a build to try the production output locally. The [Nuxt deployment docs](https://nuxt.com/docs/4.x/getting-started/deployment) list every output format Nuxt supports.
 
+Hashed `/_nuxt/*` JS, CSS, fonts, and images should use `Cache-Control: public, max-age=31536000, immutable`; HTML and mutable `/_nuxt/builds/latest.json` must keep a short browser TTL or require revalidation. See the [deployment cache policy](docs/deployment-cache-policy.md) for the scoped Laravel Cloud change, current production findings, and the repeatable `node scripts/check-asset-cache.mjs` audit. Static hosting must apply these response headers; changing Nuxt route rules alone does not configure the edge.
+
 > [!IMPORTANT]
 > This repository contains no hosting credentials. Keep tokens and account IDs in the hosting provider's secret settings, never in tracked files.
