@@ -246,10 +246,10 @@ describe('structured metadata', () => {
     const head = createHead()
     head.push(mocks.useHead.mock.calls[0]?.[0])
     const { headTags } = await renderSSRHead(head)
-    const scripts = headTags.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g) ?? []
+    const scripts = [...headTags.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
     expect(scripts).toHaveLength(1)
     expect(headTags).not.toContain('<script>alert')
-    const rendered = JSON.parse(scripts[0]!.replace(/^<script[^>]*>|<\/script>$/g, ''))
+    const rendered = JSON.parse(scripts[0]![1]!)
     expect(rendered['@graph'][1].headline).toBe(title)
     expect(rendered['@graph'][1].description).toBe(description)
   })

@@ -96,9 +96,9 @@ describe('Content 3 route migration', () => {
     expect(html).toContain(title)
     expect(html).toMatch(/<article\b[^>]*\bid="full-content"/)
 
-    const scripts = html.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g) ?? []
+    const scripts = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
     expect(scripts).toHaveLength(1)
-    const data = JSON.parse(scripts[0]!.replace(/^<script[^>]*>|<\/script>$/g, ''))
+    const data = JSON.parse(scripts[0]![1]!)
     expect(data['@context']).toBe('https://schema.org')
     expect(data['@graph']).toContainEqual(expect.objectContaining({
       '@type': 'BlogPosting',

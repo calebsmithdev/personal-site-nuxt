@@ -121,9 +121,9 @@ describe('route metadata', () => {
   it('renders the home Person and WebSite with the existing identity links', async () => {
     const html = await (await fetch('/')).text()
     const head = getHead(html)
-    const scripts = head.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g) ?? []
+    const scripts = [...head.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
     expect(scripts).toHaveLength(1)
-    const data = JSON.parse(scripts[0]!.replace(/^<script[^>]*>|<\/script>$/g, ''))
+    const data = JSON.parse(scripts[0]![1]!)
     const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/i)?.[0] ?? ''
     const identityLinks = (footer.match(/<a\b[^>]*>/gi) ?? [])
       .map(tag => getAttribute(tag, 'href'))
