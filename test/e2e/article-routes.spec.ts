@@ -118,6 +118,40 @@ describe('article routes', () => {
 })
 
 describe('route metadata', () => {
+  it('renders the home Person and WebSite with the existing identity links', async () => {
+    const html = await (await fetch('/')).text()
+    const head = getHead(html)
+    const scripts = head.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g) ?? []
+    expect(scripts).toHaveLength(1)
+    const data = JSON.parse(scripts[0]!.replace(/^<script[^>]*>|<\/script>$/g, ''))
+    const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/i)?.[0] ?? ''
+    const identityLinks = (footer.match(/<a\b[^>]*>/gi) ?? [])
+      .map(tag => getAttribute(tag, 'href'))
+      .filter(href => href?.startsWith('https://'))
+    expect(data['@graph'][0].sameAs).toEqual(identityLinks)
+    expect(data).toEqual({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Person', '@id': `${siteOrigin}/#person`, name: 'Caleb Smith', url: `${siteOrigin}/`,
+          sameAs: ['https://github.com/calebsmithdev', 'https://www.linkedin.com/in/calebsmithdev/']
+        },
+        {
+          '@type': 'WebSite', '@id': `${siteOrigin}/#website`, url: `${siteOrigin}/`, name: 'Caleb Smith',
+          description: defaultDescription, author: { '@id': `${siteOrigin}/#person` }
+        }
+      ]
+    })
+  })
+
+  it('does not label the blog index or missing article as a BlogPosting', async () => {
+    for (const path of ['/blog', '/blog/__missing-structured-data__']) {
+      const response = await fetch(path)
+      expect(response.status).toBe(path === '/blog' ? 200 : 404)
+      expect(await response.text()).not.toContain('application/ld+json')
+    }
+  })
+
   it.each(routeMetadata)('renders unique metadata for $path', async (metadata) => {
     const response = await fetch(metadata.path)
     const html = await response.text()

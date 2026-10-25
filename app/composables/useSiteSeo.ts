@@ -1,14 +1,21 @@
 import type { UseSeoMetaInput } from '@unhead/vue'
 import { defaultSocialImage, type SocialImage } from '../utils/site'
 
-export interface SiteSeoOptions {
+export type SiteSeoOptions = {
   title: string
   description: string
   path: string
-  type?: 'website' | 'article'
   absoluteTitle?: boolean
   image?: SocialImage
-}
+} & ({
+  type: 'article'
+  datePublished: string
+  dateModified: string
+} | {
+  type?: 'website'
+  datePublished?: never
+  dateModified?: never
+})
 
 type SiteSeoMetaInput = UseSeoMetaInput & {
   twitterDomain: string
@@ -26,7 +33,9 @@ export const useSiteSeo = ({
   path,
   type = 'website',
   absoluteTitle = false,
-  image = defaultSocialImage
+  image = defaultSocialImage,
+  datePublished,
+  dateModified
 }: SiteSeoOptions) => {
   const origin = useSiteConfig().url.replace(/\/+$/, '')
   const url = `${origin}${normalizePath(path)}`
@@ -58,6 +67,44 @@ export const useSiteSeo = ({
 
   useSeoMeta(seoMeta)
 
+  const person = {
+    '@type': 'Person',
+    '@id': `${origin}/#person`,
+    name: 'Caleb Smith',
+    url: `${origin}/`,
+    sameAs: [
+      'https://github.com/calebsmithdev',
+      'https://www.linkedin.com/in/calebsmithdev/'
+    ]
+  }
+  const graph = type === 'article'
+    ? [person, {
+        '@type': 'BlogPosting',
+        '@id': `${url}#blogposting`,
+        url,
+        headline: title,
+        description,
+        datePublished,
+        dateModified,
+        mainEntityOfPage: { '@id': url },
+        author: { '@id': person['@id'] },
+        image: imageUrl
+      }]
+    : normalizePath(path) === '/'
+      ? [person, {
+          '@type': 'WebSite',
+          '@id': `${origin}/#website`,
+          url,
+          name: 'Caleb Smith',
+          description,
+          author: { '@id': person['@id'] }
+        }]
+      : []
+
+  // A literal '<' could close the script element even inside a JSON string.
+  const structuredData = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })
+    .replace(/</g, '\\u003c')
+
   const titleHead = absoluteTitle
     ? { title, titleTemplate: '' }
     : { title }
@@ -66,6 +113,9 @@ export const useSiteSeo = ({
     ...titleHead,
     link: [
       { rel: 'canonical', href: url }
-    ]
+    ],
+    script: graph.length
+      ? [{ key: 'site-structured-data', type: 'application/ld+json', innerHTML: structuredData }]
+      : []
   })
 }

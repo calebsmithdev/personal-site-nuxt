@@ -11,6 +11,7 @@ await setup({
 interface ArticleFixture {
   slug: string
   title: string
+  date: string
   lastmod: string
 }
 
@@ -23,18 +24,20 @@ const articleFixtures: ArticleFixture[] = await Promise.all(
       const source = await readFile(fileURLToPath(new URL(`../../content/blog/${file}`, import.meta.url)), 'utf8')
       const title = source.match(/^title:\s*(['"])(.*?)\1$/m)?.[2]
       const lastmod = source.match(/^sitemap:\s*\n\s+lastmod:\s*(\d{4}-\d{2}-\d{2})\s*$/m)?.[1]
+      const date = source.match(/^date:\s*(\d{4}-\d{2}-\d{2})\s*$/m)?.[1]
 
       if (!title) {
         throw new Error(`Expected ${file} to have a quoted title`)
       }
 
-      if (!lastmod) {
-        throw new Error(`Expected ${file} to have a sitemap.lastmod date`)
+      if (!lastmod || !date) {
+        throw new Error(`Expected ${file} to have publication and sitemap.lastmod dates`)
       }
 
       return {
         slug: basename(file, '.md'),
         title,
+        date,
         lastmod
       }
     })
@@ -85,13 +88,32 @@ describe('Content 3 route migration', () => {
     expect(articleFixtures).toHaveLength(12)
   })
 
-  it.each(articleFixtures)('renders $slug from the typed blog collection', async ({ slug, title }) => {
+  it.each(articleFixtures)('renders $slug from the typed blog collection', async ({ slug, title, date, lastmod }) => {
     const response = await fetch(`/blog/${slug}`)
     const html = await response.text()
 
     expect(response.status).toBe(200)
     expect(html).toContain(title)
     expect(html).toMatch(/<article\b[^>]*\bid="full-content"/)
+
+    const scripts = html.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g) ?? []
+    expect(scripts).toHaveLength(1)
+    const data = JSON.parse(scripts[0]!.replace(/^<script[^>]*>|<\/script>$/g, ''))
+    expect(data['@context']).toBe('https://schema.org')
+    expect(data['@graph']).toContainEqual(expect.objectContaining({
+      '@type': 'BlogPosting',
+      headline: title,
+      datePublished: date,
+      dateModified: lastmod,
+      mainEntityOfPage: { '@id': `${siteOrigin}/blog/${slug}` },
+      author: { '@id': `${siteOrigin}/#person` }
+    }))
+    expect(data['@graph']).toContainEqual(expect.objectContaining({
+      '@type': 'Person', '@id': `${siteOrigin}/#person`, name: 'Caleb Smith'
+    }))
+    const posting = data['@graph'].find((node: { '@type': string }) => node['@type'] === 'BlogPosting')
+    const imageMeta = (html.match(/<meta\b[^>]*>/g) ?? []).find(tag => getAttribute(tag, 'property') === 'og:image')
+    expect(posting.image).toBe(getAttribute(imageMeta!, 'content'))
   })
 
   it.each([
