@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { fetch, setup } from '@nuxt/test-utils/e2e'
 import { describe, expect, it } from 'vitest'
 import { defaultSocialImage } from '../../app/utils/site'
+import { securityHeaders } from '../../config/security-headers'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
@@ -79,6 +80,29 @@ const expectUniqueMeta = (
 }
 
 describe('article routes', () => {
+  it.each([
+    '/',
+    '/blog',
+    '/blog/how-to-connect-to-your-steam-deck-using-ftp',
+    '/blog/__missing-security-header-article__',
+    '/robots.txt'
+  ])('serves report-only CSP and Permissions-Policy on %s', async (path) => {
+    const response = await fetch(path)
+
+    expect(response.status).toBe(path.includes('__missing-') ? 404 : 200)
+    for (const [name, value] of Object.entries(securityHeaders)) {
+      expect(response.headers.get(name)).toBe(value)
+    }
+    // Nitro already hardens its error documents with an enforcing CSP.
+    expect(response.headers.get('Content-Security-Policy')).toBe(
+      response.status === 404 ? "script-src 'none'; frame-ancestors 'none';" : null
+    )
+
+    if (path.endsWith('using-ftp')) {
+      expect(await response.text()).toContain('https://www.youtube.com/embed/')
+    }
+  })
+
   it('keeps analytics code out of unconfigured page scripts and resource hints', async () => {
     const response = await fetch('/')
     const head = getHead(await response.text())

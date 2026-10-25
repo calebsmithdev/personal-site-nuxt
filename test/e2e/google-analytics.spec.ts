@@ -5,12 +5,10 @@ import { describe, expect, it } from 'vitest'
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
   env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'G-TEST12345' },
-  // Exercise request-time SSR with the server's runtime-only analytics ID.
-  // Prerendered pages would retain the empty ID from the preceding build.
+  // Configure analytics at build time too, while keeping requests on live SSR.
   nuxtConfig: {
-    nitro: {
-      prerender: { ignore: ['/'] }
-    }
+    runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } },
+    routeRules: { '/**': { prerender: false } }
   },
   captureServerLogs: true
 })

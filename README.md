@@ -31,6 +31,7 @@ The personal site and Markdown-powered blog of Caleb Smith.
 - [SEO and analytics](#seo-and-analytics)
 - [Testing and CI](#testing-and-ci)
 - [Build and deployment](#build-and-deployment)
+- [Security headers](#security-headers)
 
 ## Overview
 
@@ -98,7 +99,7 @@ cp .env.example .env
 │   │   └── content/     # ProseImg and ProsePre overrides for Markdown rendering
 │   ├── composables/     # useBlog, useSiteSeo, useAsset
 │   ├── layouts/         # Default layout
-│   ├── pages/           # /, /blog, /blog/[slug]
+│   ├── pages/           # /, /blog, /blog/[...slug]
 │   ├── plugins/         # Optional Google Analytics plugin
 │   └── utils/           # Article helpers such as date formatting
 ├── content/blog/        # Article Markdown files
@@ -223,3 +224,28 @@ Hashed `/_nuxt/*` JS, CSS, fonts, and images should use `Cache-Control: public, 
 
 > [!IMPORTANT]
 > This repository contains no hosting credentials. Keep tokens and account IDs in the hosting provider's secret settings, never in tracked files.
+
+## Security headers
+
+The versioned policy lives in [`config/security-headers.ts`](config/security-headers.ts). `nuxt.config.ts` applies it to all routes served by the Node/Nitro build. Print the exact header names and single-line values for review or host configuration with Node 26:
+
+```bash
+npm run --silent security:headers
+```
+
+The policy starts with **`Content-Security-Policy-Report-Only`**, which does not block resources. It allows Nuxt's inline payload/importmap scripts, inline styles, self-hosted fonts/images, data images, same-origin Cloudflare `/cdn-cgi/` scripts, and the existing YouTube iframe. `'wasm-unsafe-eval'` permits Nuxt Content's client-side SQLite WebAssembly compilation without allowing JavaScript `eval`. GA script, connection and image origins are permitted regardless of configuration so one policy works with analytics enabled or disabled. This permission does not load GA or enable tracking; the optional analytics plugin still requires `NUXT_PUBLIC_GOOGLE_ANALYTICS_ID`.
+
+`Permissions-Policy: camera=(), microphone=(), geolocation=()` disables those unused features in supporting browsers, including child frames. It leaves the YouTube player's other feature permissions alone. HSTS is not changed: HTTPS support for every subdomain has not been verified.
+
+### Apply at the static host separately
+
+`npm run generate` produces files, not a running Nitro server. **Nuxt route rules do not make a static host send these headers.** The production header configuration remains in the Laravel Cloud dashboard or the edge that serves those files; this repository has no authenticated dashboard access or deployment configuration to update it. The public response checked on 2026-10-24 still lacked CSP and Permissions-Policy. Merging this policy alone must not be treated as live protection.
+
+For the operator applying the policy:
+
+1. Run `npm run --silent security:headers` and copy both exact name/value pairs into the serving host/edge's response-header configuration for all paths, including article pages and errors. Use **Report-Only**, not the enforcing `Content-Security-Policy` name. Keep the existing HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and `X-Frame-Options` settings.
+2. Verify actual GET response headers on the homepage, `/blog`, `/blog/how-to-connect-to-your-steam-deck-using-ftp`, and a missing article. For example, `curl -sS -D - -o /dev/null https://caleb-smith.dev/`. Compare the two values against the printed policy and confirm the new application policy remains report-only. Nitro already supplies a separate restrictive enforcing CSP on its error responses; preserve that framework behavior.
+3. In a browser, inspect CSP diagnostics during client-side navigation from the blog index to an article and between articles, loading the YouTube player, and testing both configured and unconfigured analytics builds. Check Cloudflare-injected scripts on the real edge as well. The GA allowlist covers basic GA4; if Google Signals or advertising features are configured, review their extra origins against observed requests before expanding it. No report collector or `Reporting-Endpoints` is configured: there is no centralized violation collection, so header presence alone does not establish that the policy is clean.
+4. Keep [issue #22](https://github.com/calebsmithdev/personal-site-nuxt/issues/22) open until the host application and live verification are complete. Tighten inline script allowances with hashes/nonces and consider enforcement only in a separate reviewed change after observing the policy on production traffic. A future collector requires a real endpoint and a separate reporting/privacy decision.
+
+For local server verification, run `npm run build`, start it with `PORT=4022 npm run start`, then inspect GET response headers at `http://localhost:4022/`. This checks the built server only, not production static hosting. The [MDN report-only header reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy-Report-Only) explains reporting configuration and why this header cannot be supplied through an HTML meta tag.
