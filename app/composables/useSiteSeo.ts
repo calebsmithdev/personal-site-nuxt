@@ -1,4 +1,5 @@
 import type { UseSeoMetaInput } from '@unhead/vue'
+import { defaultSocialImage, type SocialImage } from '../utils/site'
 
 export interface SiteSeoOptions {
   title: string
@@ -6,6 +7,7 @@ export interface SiteSeoOptions {
   path: string
   type?: 'website' | 'article'
   absoluteTitle?: boolean
+  image?: SocialImage
 }
 
 type SiteSeoMetaInput = UseSeoMetaInput & {
@@ -23,10 +25,19 @@ export const useSiteSeo = ({
   description,
   path,
   type = 'website',
-  absoluteTitle = false
+  absoluteTitle = false,
+  image = defaultSocialImage
 }: SiteSeoOptions) => {
   const origin = useSiteConfig().url.replace(/\/+$/, '')
   const url = `${origin}${normalizePath(path)}`
+  const imageUrl = new URL(image.src, `${origin}/`).href
+  const ogImage = {
+    url: imageUrl,
+    ...(imageUrl.startsWith('https://') && { secureUrl: imageUrl }),
+    ...(image.type && { type: image.type }),
+    ...(image.width && image.height && { width: image.width, height: image.height }),
+    alt: image.alt
+  }
   const seoMeta: SiteSeoMetaInput = {
     description,
     ogTitle: title,
@@ -34,13 +45,15 @@ export const useSiteSeo = ({
     ogType: type,
     ogLocale: 'en_US',
     ogUrl: url,
+    ogImage,
     twitterCard: 'summary_large_image',
     twitterCreator: '@CalebSmithDev',
     twitterSite: '@CalebSmithDev',
     twitterDomain: new URL(origin).hostname,
     twitterTitle: title,
     twitterDescription: description,
-    twitterUrl: url
+    twitterUrl: url,
+    twitterImage: { url: imageUrl, alt: image.alt }
   }
 
   useSeoMeta(seoMeta)

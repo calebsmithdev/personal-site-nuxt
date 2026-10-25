@@ -84,6 +84,7 @@ cp .env.example .env
 | `npm run generate` | Prerenders the static site into `.output/public/`. |
 | `npm run build` | Builds the Node/Nitro server into `.output/`. |
 | `npm run preview` | Previews the latest build locally. |
+| `npm run social-image` | Renders the default social card in `public/social/` from its HTML template. |
 | `npm run start` | Runs the built server from `.output/server/index.mjs`. Run `npm run build` first. |
 
 ## Project structure
@@ -100,7 +101,8 @@ cp .env.example .env
 │   ├── plugins/         # Optional Google Analytics plugin
 │   └── utils/           # Article helpers such as date formatting
 ├── content/blog/        # Article Markdown files
-├── public/              # Favicons and other files served as-is
+├── public/              # Favicons, the social card, and other files served as-is
+├── scripts/             # Social card template and renderer
 ├── test/
 │   ├── unit/            # Node unit tests
 │   ├── nuxt/            # Component and composable tests in the Nuxt environment
@@ -127,7 +129,8 @@ description: 'One-sentence summary.' # required, non-empty
 date: 2026-07-29                     # required, YYYY-MM-DD
 categories: ['Nuxt']                 # required, at least one entry
 tags: ['vue', 'routing']             # optional, array of strings
-image: '/assets/img/blog/cover.png'  # optional, string
+image: '/social/blog/cover.png'      # optional social image: a path starting with / or an https:// URL
+imageAlt: 'What the image shows'     # optional, defaults to the title
 sitemap:
   lastmod: 2026-07-29                # required, YYYY-MM-DD
 ---
@@ -158,6 +161,8 @@ The homepage, blog index, and article pages each set their own title, descriptio
 
 - Canonical URLs, the sitemap, and `robots.txt` all use the site origin `https://caleb-smith.dev` from `nuxt.config.ts`.
 - The homepage and blog index have the Open Graph type `website`. Articles have the type `article`.
+- Every page sends the default social card, `public/social/default.png` (1200×630), as `og:image` and `twitter:image`, with its dimensions and alt text. An article's `image` frontmatter replaces the card for that article. Point it at a file in `public/` (a stable URL), an `/assets/img/...` path, or an `https://` URL. Dimensions aren't known for replacements, so they aren't sent. Use a 1200×630 image for the best previews.
+- The default card is rendered from `scripts/social-image/default.html` with the site's fonts and colors. After you edit the template, run `npm run social-image` to render the PNG again. The script needs a local Chrome or Chromium (`CHROME_PATH`, or a Playwright-installed Chromium).
 
 Google Analytics is **optional**. Set the public runtime key in `.env` to turn it on:
 
