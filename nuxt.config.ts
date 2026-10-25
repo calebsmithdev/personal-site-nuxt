@@ -22,15 +22,9 @@ export default defineNuxtConfig({
       }
     }
   },
-  vite: {
-    define: {
-      __DEV__: (process.env.NODE_ENV === 'development').toString()
-    }
-  },
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
-    '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots'
   ],
@@ -57,6 +51,13 @@ export default defineNuxtConfig({
   },
   site: {
     url: 'https://caleb-smith.dev'
+  },
+  nitro: {
+    prerender: {
+      // Discover rendered image URLs in Node builds as well as generate output.
+      routes: ['/blog'],
+      crawlLinks: true
+    }
   },
   features: {
     inlineStyles: true

@@ -8,8 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         tagId: config.public.googleAnalyticsId,
         appName: 'Caleb Smith',
         pageTracker: {
-          router,
-          useScreenview: true
+          router
         }
       }))
     }).catch((error) => {

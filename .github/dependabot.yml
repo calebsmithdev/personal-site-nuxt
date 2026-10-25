@@ -4,3 +4,16 @@ updates:
     directory: /
     schedule:
       interval: weekly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    open-pull-requests-limit: 5
+    groups:
+      nuxt:
+        patterns: ["nuxt", "@nuxt/*", "@nuxtjs/*"]
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]

@@ -33,7 +33,7 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../ArrowRightIcon.vue'
 import FaIcon from '../FaIcon.vue'
 import type { BlogArticleSummary } from '../../types'
-import { articleDateTime, formatArticleDate } from '../../utils/article'
+import { displayCategory, articleDateTime, formatArticleDate } from '../../utils/article'
 
 defineOptions({
   name: 'PostPreview'
@@ -43,8 +43,6 @@ defineProps<{
   post: BlogArticleSummary
   index: number
 }>()
-
-const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 </script>
 
 <style scoped>

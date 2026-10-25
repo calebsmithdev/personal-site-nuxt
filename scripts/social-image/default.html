@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>caleb-smith.dev social card</title>
+    <style>
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 500;
+        src: url('../../node_modules/@fontsource/poppins/files/poppins-latin-500-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 700;
+        src: url('../../node_modules/@fontsource/poppins/files/poppins-latin-700-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Lora';
+        font-weight: 500;
+        src: url('../../node_modules/@fontsource/lora/files/lora-latin-500-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-weight: 400;
+        src: url('../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        padding: 64px 80px;
+        color: #f5eee4;
+        background:
+          radial-gradient(circle at 92% 108%, rgb(103 215 236 / 18%), transparent 42%),
+          #061426;
+        font-family: 'Lora', Georgia, serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .corner {
+        position: absolute;
+        width: 56px;
+        height: 56px;
+      }
+
+      .corner-top-left {
+        top: 32px;
+        left: 32px;
+        border-top: 2px solid #67d7ec;
+        border-left: 2px solid #67d7ec;
+      }
+
+      .corner-bottom-right {
+        right: 32px;
+        bottom: 32px;
+        border-right: 2px solid #ff8a65;
+        border-bottom: 2px solid #ff8a65;
+      }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .brand {
+        font-family: 'Poppins', sans-serif;
+        font-size: 36px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+      }
+
+      .headline {
+        margin-top: auto;
+        max-width: 900px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1.04;
+        letter-spacing: -0.045em;
+      }
+
+      .description {
+        margin-top: 28px;
+        color: #c3ccd5;
+        font-size: 30px;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: auto;
+        padding-top: 28px;
+        border-top: 1px solid #35465a;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 26px;
+      }
+
+      .prompt {
+        color: #ff8a65;
+      }
+
+      .domain {
+        color: #67d7ec;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="corner corner-top-left"></div>
+    <div class="corner corner-bottom-right"></div>
+
+    <main class="card">
+      <p class="brand">Caleb Smith</p>
+      <h1 class="headline">I build dependable software and write down what I learn.</h1>
+      <p class="description">Full-stack developer in Kansas.</p>
+      <p class="footer">
+        <span><span class="prompt">$</span> cd field-notes/</span>
+        <span class="domain">caleb-smith.dev</span>
+      </p>
+    </main>
+  </body>
+</html>
