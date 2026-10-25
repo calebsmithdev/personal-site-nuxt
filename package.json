@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxi build",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run generate && npm run test:generated",
     "dev": "nuxi dev",
     "generate": "nuxi generate",
     "lint": "eslint .",
@@ -13,6 +13,7 @@
     "postinstall": "nuxi prepare",
     "start": "node .output/server/index.mjs",
     "test": "vitest run",
+    "test:generated": "node --test test/generated/*.test.mjs",
     "typecheck": "nuxi typecheck"
   },
   "devDependencies": {
