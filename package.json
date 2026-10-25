@@ -43,7 +43,7 @@
     "axios": "^1.20.0",
     "better-sqlite3": "^13.0.3",
     "dayjs": "^1.11.23",
-    "sitemap": "^9.0.1",
+    "sitemap": "^10.0.0",
     "vue-gtag": "^3.7.1",
     "xml-js": "^1.6.11"
   }
