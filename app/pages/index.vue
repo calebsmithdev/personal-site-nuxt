@@ -113,16 +113,12 @@
 </template>
 
 <script setup lang="ts">
-import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
-import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import ArrowRightIcon from '../components/ArrowRightIcon.vue'
 import FaIcon from '../components/FaIcon.vue'
 import HeroTerminal from '../components/HeroTerminal.vue'
-import { articleDateTime, formatArticleDate, getHomepageArticles } from '../utils/article'
-
-const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
+import { categoryIcon, displayCategory, articleDateTime, formatArticleDate, getHomepageArticles } from '../utils/article'
+import { defaultDescription } from '../utils/site'
 
 useSiteSeo({
   title: 'Full Stack Web Developer',
@@ -137,17 +133,6 @@ await fetchList()
 const homepageArticles = computed(() => getHomepageArticles(articles.value))
 const featuredArticle = computed(() => homepageArticles.value.featured)
 const recentArticles = computed(() => homepageArticles.value.recent)
-
-const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
-const categoryIcons: Record<string, IconDefinition> = {
-  'Advanced Custom Fields (ACF)': faWordpressSimple,
-  Javascript: faJsSquare,
-  Kubernetes: faDharmachakra,
-  Proxmox: faCube,
-  SwiftUI: faSwift,
-  WordPress: faWordpressSimple
-}
-const categoryIcon = (category: string) => categoryIcons[category] ?? faCube
 </script>
 
 <style scoped>

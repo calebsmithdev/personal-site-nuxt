@@ -16,11 +16,6 @@ export default defineNuxtConfig({
       }
     }
   },
-  vite: {
-    define: {
-      __DEV__: (process.env.NODE_ENV === 'development').toString()
-    }
-  },
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
