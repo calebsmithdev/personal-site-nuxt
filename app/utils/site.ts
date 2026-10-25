@@ -20,7 +20,9 @@ export const defaultSocialImage: SocialImage = {
 
 const socialImageSource = /^(?:https:\/\/|\/(?!\/))/
 
-export const isSocialImageSource = (src: string) => socialImageSource.test(src)
+export const isSocialImageSource = (src: string) => {
+  return socialImageSource.test(src) && URL.canParse(src, 'https://caleb-smith.dev/')
+}
 
 /**
  * Builds the social image for an article's optional `image` frontmatter.
