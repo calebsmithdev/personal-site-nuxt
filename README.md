@@ -152,6 +152,10 @@ Code blocks are highlighted with the `material-theme-palenight` theme. The suppo
 | Poppins | 500, 700 | Headings |
 | IBM Plex Mono | 400, 500 | Labels, metadata, and code |
 
+For repeatable article-heading performance experiments, see the
+[LCP lab and findings](docs/performance/article-lcp.md). Its font controls run in
+a local benchmark server and do not change the site's typography.
+
 ## SEO and analytics
 
 The homepage, blog index, and article pages each set their own title, description, canonical URL, Open Graph tags, and Twitter tags.
