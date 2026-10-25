@@ -77,10 +77,11 @@ cp .env.example .env
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Starts the Nuxt development server. |
-| `npm run check` | Runs lint, typecheck, tests, and the production build in that order. **CI runs this same command.** |
+| `npm run check` | Runs lint, typecheck, server/component/unit tests, the Nitro build, static generation, and generated-file tests in that order. **CI runs this same command.** |
 | `npm run lint` | Lints the repository with ESLint. |
 | `npm run typecheck` | Runs Nuxt's TypeScript checks. |
 | `npm run test` | Runs the Vitest `unit`, `nuxt`, and `e2e` projects. |
+| `npm run test:generated` | Checks the static files in `.output/public/`. Run `npm run generate` first. |
 | `npm run generate` | Prerenders the static site into `.output/public/`. |
 | `npm run build` | Builds the Node/Nitro server into `.output/`. |
 | `npm run preview` | Previews the latest build locally. |
@@ -104,7 +105,8 @@ cp .env.example .env
 ├── test/
 │   ├── unit/            # Node unit tests
 │   ├── nuxt/            # Component and composable tests in the Nuxt environment
-│   └── e2e/             # Tests that render real routes
+│   ├── e2e/             # Tests that render real routes through the Nuxt server
+│   └── generated/       # Tests that read prerendered files directly
 ├── content.config.ts    # Typed blog collection and frontmatter schema
 └── nuxt.config.ts       # Modules, fonts, Markdown highlighting, site URL
 ```
@@ -185,11 +187,15 @@ Vitest has three projects:
 
 The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes to `main`. It reads the Node version from `.nvmrc`, caches npm, runs `npm ci`, and then runs `npm run check`. It has read-only access to repository contents, and a new run cancels any older run on the same ref.
 
+After the Vitest projects and Nitro build pass, CI runs `npm run generate` and `npm run test:generated`. The latter uses Node's test runner to read the exact home, blog index, and article HTML and payload files in `.output/public/`, plus `sitemap.xml` and `robots.txt`. Expected article routes come from `content/blog/**/*.md`, so an article the prerender crawler fails to discover still fails validation. These checks also protect canonical URLs and sitemap modification dates, and make no requests to the live site or other external services. The existing server e2e tests remain useful for Nitro behavior; they do not establish how production hosting serves missing routes.
+
 Git ignores generated output in `.nuxt/`, `.output/`, `.data/`, and `.nuxtrc`. Don't edit those files by hand.
 
 ## Build and deployment
 
 Production runs on **[Laravel Cloud](https://cloud.laravel.com)** at `caleb-smith.dev`. The build and deploy settings live in the Laravel Cloud dashboard, not in this repository.
+
+**Hosting mode remains unverified.** Live responses checked on 2026-10-24 returned the homepage HTML, title, and canonical URL with status 200 for missing page paths; a separately tested local Nitro build returned 404 for those paths. The live behavior is consistent with a static homepage fallback, but does not prove a `nuxi generate` build command or rule out a proxy in front of a Nitro server. The dashboard build/start commands and served directory have not been confirmed through authenticated dashboard access. CI therefore validates both output modes; this repository change does not alter Laravel Cloud settings. See [issue #35](https://github.com/calebsmithdev/personal-site-nuxt/issues/35) for the outstanding deployment confirmation and [issue #20](https://github.com/calebsmithdev/personal-site-nuxt/issues/20) for production missing-route behavior.
 
 Nuxt can produce two kinds of output:
 
@@ -199,6 +205,8 @@ Nuxt can produce two kinds of output:
 | Static site | `npm run generate` | Prerendered files in `.output/public/` |
 
 Use `npm run preview` after a build to try the production output locally. The [Nuxt deployment docs](https://nuxt.com/docs/4.x/getting-started/deployment) list every output format Nuxt supports.
+
+`npm run check` finishes with static output because generation follows the Nitro build. Run `npm run build` again before `npm run start` when testing the server output. For static output, deploy `.output/public/` after `npm run generate`; runtime Nitro handlers are unavailable in that artifact. Confirm the actual Laravel Cloud build command, start command (if any), and served directory before selecting either mode or removing either CI validation path. Serving rules and HTTP status codes still need separate verification on the deployed host.
 
 > [!IMPORTANT]
 > This repository contains no hosting credentials. Keep tokens and account IDs in the hosting provider's secret settings, never in tracked files.
