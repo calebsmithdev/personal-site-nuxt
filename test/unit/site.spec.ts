@@ -45,6 +45,8 @@ describe('isSocialImageSource', () => {
     '//images.example.test/cover.jpg',
     'http://images.example.test/cover.jpg',
     'data:image/png;base64,AAAA',
+    'https://',
+    'https://[bad]/cover.png',
     ''
   ])('rejects %s', (src) => {
     expect(isSocialImageSource(src)).toBe(false)
@@ -78,6 +80,10 @@ describe('articleSocialImage', () => {
     )
 
     expect(image?.src).toBe('/_nuxt/cover.abc123.png')
+  })
+
+  it('falls back to the default for a malformed image URL', () => {
+    expect(articleSocialImage({ title: 'Article', image: 'https://[bad]/cover.png' })).toBeUndefined()
   })
 
   it('falls back to the default when an asset resolves to an inline data URI', () => {
