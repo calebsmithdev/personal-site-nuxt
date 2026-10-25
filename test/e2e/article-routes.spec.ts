@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { fetch, setup } from '@nuxt/test-utils/e2e'
 import { describe, expect, it } from 'vitest'
+import { defaultSocialImage } from '../../app/utils/site'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
@@ -13,6 +14,8 @@ const articleTitle = 'Migrating Kubernetes PVCs from csi-proxmox to csi-cephfs'
 const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
 const blogDescription = 'Practical field notes from Caleb Smith on web development, infrastructure, Kubernetes, WordPress, and SwiftUI.'
 const articleDescription = 'My journey moving from Proxmox VMs to CephFS as my k8s primary data storage.'
+
+const defaultImageUrl = `${siteOrigin}/social/default.png`
 
 interface RouteMetadata {
   path: string
@@ -141,8 +144,25 @@ describe('route metadata', () => {
     expectUniqueMeta(head, 'name', 'twitter:card', 'summary_large_image')
     expectUniqueMeta(head, 'name', 'twitter:creator', '@CalebSmithDev')
     expectUniqueMeta(head, 'name', 'twitter:site', '@CalebSmithDev')
+    expectUniqueMeta(head, 'property', 'og:image', defaultImageUrl)
+    expectUniqueMeta(head, 'property', 'og:image:secure_url', defaultImageUrl)
+    expectUniqueMeta(head, 'property', 'og:image:type', 'image/png')
+    expectUniqueMeta(head, 'property', 'og:image:width', '1200')
+    expectUniqueMeta(head, 'property', 'og:image:height', '630')
+    expectUniqueMeta(head, 'property', 'og:image:alt', defaultSocialImage.alt)
+    expectUniqueMeta(head, 'name', 'twitter:image', defaultImageUrl)
+    expectUniqueMeta(head, 'name', 'twitter:image:alt', defaultSocialImage.alt)
 
     expect(getTags(head, 'meta').filter(tag => getAttribute(tag, 'name')?.startsWith('og:'))).toHaveLength(0)
     expect(head).not.toContain('caleb-smith.dev//')
+  })
+})
+
+describe('social image', () => {
+  it('serves the default social image at its stable public path', async () => {
+    const response = await fetch(new URL(defaultImageUrl).pathname)
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('content-type')).toBe('image/png')
   })
 })

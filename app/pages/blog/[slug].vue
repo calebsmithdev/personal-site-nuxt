@@ -100,6 +100,7 @@ import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import FaIcon from '../../components/FaIcon.vue'
 import type { BlogArticle } from '../../types'
 import { categoryIcon, displayCategory, articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
+import { articleSocialImage } from '../../utils/site'
 
 interface TocLink {
   id: string
@@ -141,7 +142,8 @@ useSiteSeo({
   description: article.value.description!,
   path: route.path,
   type: 'article',
-  absoluteTitle: true
+  absoluteTitle: true,
+  image: articleSocialImage(article.value, useAsset)
 })
 </script>
 

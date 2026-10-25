@@ -1,6 +1,7 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useSiteSeo } from '../../app/composables/useSiteSeo'
+import { defaultSocialImage } from '../../app/utils/site'
 
 const mocks = vi.hoisted(() => ({
   useHead: vi.fn(),
@@ -13,6 +14,19 @@ mockNuxtImport('useHead', () => mocks.useHead)
 mockNuxtImport('useSeoMeta', () => mocks.useSeoMeta)
 
 const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
+
+const defaultImageUrl = 'https://caleb-smith.dev/social/default.png'
+const defaultImageMeta = {
+  ogImage: {
+    url: defaultImageUrl,
+    secureUrl: defaultImageUrl,
+    type: 'image/png',
+    width: 1200,
+    height: 630,
+    alt: defaultSocialImage.alt
+  },
+  twitterImage: { url: defaultImageUrl, alt: defaultSocialImage.alt }
+}
 
 const expectCanonical = (href: string) => {
   const head = mocks.useHead.mock.calls[0]?.[0]
@@ -52,7 +66,8 @@ describe('useSiteSeo', () => {
       twitterDomain: 'caleb-smith.dev',
       twitterTitle: 'Full Stack Web Developer',
       twitterDescription: defaultDescription,
-      twitterUrl: 'https://caleb-smith.dev/'
+      twitterUrl: 'https://caleb-smith.dev/',
+      ...defaultImageMeta
     })
 
     const head = expectCanonical('https://caleb-smith.dev/')
@@ -82,7 +97,8 @@ describe('useSiteSeo', () => {
       twitterDomain: 'caleb-smith.dev',
       twitterTitle: 'Writing',
       twitterDescription: description,
-      twitterUrl: 'https://caleb-smith.dev/blog'
+      twitterUrl: 'https://caleb-smith.dev/blog',
+      ...defaultImageMeta
     })
 
     const head = expectCanonical('https://caleb-smith.dev/blog')
@@ -114,7 +130,8 @@ describe('useSiteSeo', () => {
       twitterDomain: 'caleb-smith.dev',
       twitterTitle: 'Article title',
       twitterDescription: description,
-      twitterUrl: 'https://caleb-smith.dev/blog/article-title'
+      twitterUrl: 'https://caleb-smith.dev/blog/article-title',
+      ...defaultImageMeta
     })
 
     const head = expectCanonical('https://caleb-smith.dev/blog/article-title')
@@ -134,9 +151,45 @@ describe('useSiteSeo', () => {
       expect(mocks.useSeoMeta).toHaveBeenCalledWith(expect.objectContaining({
         ogUrl: url,
         twitterUrl: url,
-        twitterDomain: 'preview.example.test'
+        twitterDomain: 'preview.example.test',
+        ogImage: expect.objectContaining({ url: 'https://preview.example.test/social/default.png' }),
+        twitterImage: expect.objectContaining({ url: 'https://preview.example.test/social/default.png' })
       }))
     }
   )
 
+  it('resolves an override image path without claiming unknown dimensions', () => {
+    useSiteSeo({
+      title: 'Article title',
+      description: 'An article description.',
+      path: '/blog/article-title',
+      type: 'article',
+      image: { src: '/_nuxt/cover.abc123.png', alt: 'A diagram of the cluster' }
+    })
+
+    const imageUrl = 'https://caleb-smith.dev/_nuxt/cover.abc123.png'
+    const meta = mocks.useSeoMeta.mock.calls[0]?.[0]
+    expect(meta.ogImage).toEqual({
+      url: imageUrl,
+      secureUrl: imageUrl,
+      alt: 'A diagram of the cluster'
+    })
+    expect(meta.twitterImage).toEqual({ url: imageUrl, alt: 'A diagram of the cluster' })
+    expect(meta.twitterCard).toBe('summary_large_image')
+  })
+
+  it('keeps an absolute override image URL on its own host', () => {
+    useSiteSeo({
+      title: 'Article title',
+      description: 'An article description.',
+      path: '/blog/article-title',
+      image: { src: 'https://images.example.test/cover.jpg', alt: 'Cover' }
+    })
+
+    const meta = mocks.useSeoMeta.mock.calls[0]?.[0]
+    expect(meta.ogImage.url).toBe('https://images.example.test/cover.jpg')
+    expect(meta.twitterImage.url).toBe('https://images.example.test/cover.jpg')
+    expect(meta.ogImage).not.toHaveProperty('width')
+    expect(meta.ogImage).not.toHaveProperty('height')
+  })
 })
