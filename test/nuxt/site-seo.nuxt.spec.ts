@@ -4,9 +4,11 @@ import { useSiteSeo } from '../../app/composables/useSiteSeo'
 
 const mocks = vi.hoisted(() => ({
   useHead: vi.fn(),
-  useSeoMeta: vi.fn()
+  useSeoMeta: vi.fn(),
+  useSiteConfig: vi.fn()
 }))
 
+mockNuxtImport('useSiteConfig', () => mocks.useSiteConfig)
 mockNuxtImport('useHead', () => mocks.useHead)
 mockNuxtImport('useSeoMeta', () => mocks.useSeoMeta)
 
@@ -27,6 +29,7 @@ const expectCanonical = (href: string) => {
 describe('useSiteSeo', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.useSiteConfig.mockReturnValue({ url: 'https://caleb-smith.dev' })
   })
 
   it('uses the root URL with the default title template behavior', () => {
@@ -118,4 +121,22 @@ describe('useSiteSeo', () => {
     expect(head.title).toBe('Article title')
     expect(head.titleTemplate).toBe('')
   })
+
+  it.each(['/', 'blog/example', '///blog/example'])(
+    'uses the configured origin for %s, including a trailing origin slash',
+    (path) => {
+      mocks.useSiteConfig.mockReturnValue({ url: 'https://preview.example.test/' })
+
+      useSiteSeo({ title: 'Example', description: 'Example description.', path })
+
+      const url = `https://preview.example.test${path === '/' ? '/' : '/blog/example'}`
+      expectCanonical(url)
+      expect(mocks.useSeoMeta).toHaveBeenCalledWith(expect.objectContaining({
+        ogUrl: url,
+        twitterUrl: url,
+        twitterDomain: 'preview.example.test'
+      }))
+    }
+  )
+
 })

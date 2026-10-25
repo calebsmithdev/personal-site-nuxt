@@ -13,8 +13,6 @@ type SiteSeoMetaInput = UseSeoMetaInput & {
   twitterUrl: string
 }
 
-const SITE_ORIGIN = 'https://caleb-smith.dev'
-
 const normalizePath = (path: string) => {
   const pathWithoutLeadingSlashes = path.replace(/^\/+/, '')
   return pathWithoutLeadingSlashes ? `/${pathWithoutLeadingSlashes}` : '/'
@@ -27,7 +25,8 @@ export const useSiteSeo = ({
   type = 'website',
   absoluteTitle = false
 }: SiteSeoOptions) => {
-  const url = `${SITE_ORIGIN}${normalizePath(path)}`
+  const origin = useSiteConfig().url.replace(/\/+$/, '')
+  const url = `${origin}${normalizePath(path)}`
   const seoMeta: SiteSeoMetaInput = {
     description,
     ogTitle: title,
@@ -38,7 +37,7 @@ export const useSiteSeo = ({
     twitterCard: 'summary_large_image',
     twitterCreator: '@CalebSmithDev',
     twitterSite: '@CalebSmithDev',
-    twitterDomain: 'caleb-smith.dev',
+    twitterDomain: new URL(origin).hostname,
     twitterTitle: title,
     twitterDescription: description,
     twitterUrl: url
