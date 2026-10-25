@@ -195,6 +195,8 @@ Vitest has three projects:
 
 The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes to `main`. It reads the Node version from `.nvmrc`, caches npm, runs `npm ci`, and then runs `npm run check`. It has read-only access to repository contents, and a new run cancels any older run on the same ref.
 
+See the [dependency advisory triage](docs/security/dependency-triage.md) for the current security findings, evidence limits, and commands to reassess them.
+
 The [GitHub security baseline](docs/github-security.md) documents repository protections and read-only API commands for verifying their live state. These settings are managed on GitHub, separately from tracked workflow configuration.
 
 Git ignores generated output in `.nuxt/`, `.output/`, `.data/`, and `.nuxtrc`. Don't edit those files by hand.
