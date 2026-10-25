@@ -191,8 +191,6 @@ Git ignores generated output in `.nuxt/`, `.output/`, `.data/`, and `.nuxtrc`. D
 
 Production runs on **[Laravel Cloud](https://cloud.laravel.com)** at `caleb-smith.dev`. The build and deploy settings live in the Laravel Cloud dashboard, not in this repository.
 
-The [Cleavr retirement record](docs/cleavr-retirement.md) documents the removed legacy GitHub hooks and the remaining hosting-side verification.
-
 Nuxt can produce two kinds of output:
 
 | Output | Commands | Result |
