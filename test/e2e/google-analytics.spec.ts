@@ -4,11 +4,13 @@ import { describe, expect, it } from 'vitest'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
-  // Configure prerendered pages too; env applies only when the server starts.
-  nuxtConfig: { runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } } },
+  // Configure the fixture at build time and when its server starts.
   env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'G-TEST12345' },
-  // Exercise live SSR: prerendered HTML predates the server-only test env.
-  nuxtConfig: { routeRules: { '/**': { prerender: false } } },
+  nuxtConfig: {
+    runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } },
+    // Exercise live SSR instead of prerendered HTML.
+    routeRules: { '/**': { prerender: false } }
+  },
   captureServerLogs: true
 })
 
