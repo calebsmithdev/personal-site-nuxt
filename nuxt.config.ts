@@ -19,7 +19,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
-    '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots'
   ],
