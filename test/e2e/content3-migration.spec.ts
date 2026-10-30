@@ -91,6 +91,15 @@ describe('Content 3 route migration', () => {
     }
   })
 
+  it('serves the RSS feed with its content type and every article', async () => {
+    const response = await fetch('/rss.xml')
+    const xml = await response.text()
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('content-type')).toBe('application/rss+xml; charset=utf-8')
+    expect(xml.match(/<item>/g)).toHaveLength(articleFixtures.length)
+  })
+
   it('discovers the complete twelve-article collection', () => {
     expect(articleFixtures).toHaveLength(12)
   })
