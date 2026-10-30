@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip/schema.json",
+  "entry": [
+    "app/components/content/Prose*.vue",
+    "content.config.ts",
+    "scripts/**/*.ts",
+    "test/generated/**/*.ts"
+  ],
+  "ignoreDependencies": [
+    "@fontsource/*",
+    "vue-tsc",
+    "eslint-plugin-format",
+    "prettier"
+  ],
+  "ignoreBinaries": [
+    "flock"
+  ]
+}
