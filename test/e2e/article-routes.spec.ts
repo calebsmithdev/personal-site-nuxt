@@ -7,14 +7,14 @@ import { securityHeaders } from '../../config/security-headers'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
-  env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: '' }
+  env: { NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '' }
 })
 
 const siteOrigin = 'https://caleb-smith.dev'
 const articlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 const articleTitle = 'Migrating Kubernetes PVCs from csi-proxmox to csi-cephfs'
-const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
-const blogDescription = 'Practical field notes from Caleb Smith on web development, infrastructure, Kubernetes, WordPress, and SwiftUI.'
+const defaultDescription = 'Caleb Smith is a full-stack developer in Kansas. Field notes on Vue, Nuxt, TypeScript and Laravel apps, and on Kubernetes and self-hosted infrastructure.'
+const blogDescription = 'Practical field notes from Caleb Smith on building web apps with Vue, Nuxt, TypeScript and Laravel, and on running Kubernetes and self-hosted infrastructure.'
 const articleDescription = 'My journey moving from Proxmox VMs to CephFS as my k8s primary data storage.'
 
 const defaultImageUrl = `${siteOrigin}/social/default.png`
@@ -32,8 +32,8 @@ interface RouteMetadata {
 const routeMetadata: RouteMetadata[] = [
   {
     path: '/',
-    documentTitle: 'Full Stack Web Developer | Caleb Smith',
-    socialTitle: 'Full Stack Web Developer',
+    documentTitle: 'Caleb Smith | Full-Stack Developer in Kansas',
+    socialTitle: 'Caleb Smith | Full-Stack Developer in Kansas',
     description: defaultDescription,
     type: 'website',
     image: defaultSocialImage
@@ -113,7 +113,9 @@ describe('article routes', () => {
 
   it('keeps analytics code out of unconfigured page scripts and resource hints', async () => {
     const response = await fetch('/')
-    const head = getHead(await response.text())
+    const html = await response.text()
+    expect(html).not.toContain('static.cloudflareinsights.com/beacon.min.js')
+    const head = getHead(html)
     const scriptHints = getTags(head, 'link').filter((tag) => {
       const rel = getAttribute(tag, 'rel')
       return rel === 'modulepreload'
@@ -129,7 +131,7 @@ describe('article routes', () => {
       expect(path).toMatch(/^\/_nuxt\//)
       const scriptResponse = await fetch(path)
       expect(scriptResponse.status).toBe(200)
-      expect(await scriptResponse.text()).not.toContain('googletagmanager.com')
+      expect(await scriptResponse.text()).not.toContain('cloudflareinsights.com')
     }))
   })
 
@@ -140,6 +142,8 @@ describe('article routes', () => {
     expect(response.status).toBe(200)
     expect(html).toContain(articleTitle)
     expect(html).toMatch(/<article\b[^>]*\bid="full-content"/)
+    // This article's lastmod equals its date, so no updated date is shown.
+    expect(html).not.toMatch(/<span\b[^>]*>Updated [A-Z][a-z]+ \d{1,2}, \d{4}<\/span>/)
   })
 
   it('returns not found for a guaranteed-missing article', async () => {
@@ -166,7 +170,20 @@ describe('route metadata', () => {
       '@graph': [
         {
           '@type': 'Person', '@id': `${siteOrigin}/#person`, name: 'Caleb Smith', url: `${siteOrigin}/`,
-          sameAs: ['https://github.com/calebsmithdev', 'https://www.linkedin.com/in/calebsmithdev/']
+          jobTitle: 'Full-Stack Developer',
+          description: 'Full-stack developer in Kansas building web apps with Vue, Nuxt, TypeScript and Laravel, and the infrastructure that runs them.',
+          homeLocation: {
+            '@type': 'Place',
+            name: 'Kansas, United States',
+            address: { '@type': 'PostalAddress', addressRegion: 'KS', addressCountry: 'US' }
+          },
+          knowsAbout: ['Vue.js', 'Nuxt', 'TypeScript', 'Laravel', 'PHP', 'Kubernetes', 'Proxmox', 'Ceph', 'Self-hosting'],
+          sameAs: [
+            'https://github.com/calebsmithdev',
+            'https://www.linkedin.com/in/calebsmithdev/',
+            'https://x.com/CalebSmithDev',
+            'https://bsky.app/profile/did:plc:m2blbfmeq3jyk4jiilzygri7'
+          ]
         },
         {
           '@type': 'WebSite', '@id': `${siteOrigin}/#website`, url: `${siteOrigin}/`, name: 'Caleb Smith',

@@ -121,7 +121,8 @@ import { categoryIcon, displayCategory, articleDateTime, formatArticleDate, getH
 import { defaultDescription } from '../utils/site'
 
 useSiteSeo({
-  title: 'Full Stack Web Developer',
+  title: 'Caleb Smith | Full-Stack Developer in Kansas',
+  absoluteTitle: true,
   description: defaultDescription,
   path: '/'
 })

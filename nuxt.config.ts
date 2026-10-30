@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      googleAnalyticsId: ''
+      cloudflareAnalyticsToken: ''
     }
   },
   // Static hosting must apply these headers at the host/edge; see README.
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       // Discover rendered image URLs in Node builds as well as generate output.
-      routes: ['/blog'],
+      routes: ['/blog', '/rss.xml'],
       crawlLinks: true
     }
   },
@@ -61,22 +61,17 @@ export default defineNuxtConfig({
       compilerOptions: { types: ['node'] }
     }
   },
-  hooks: {
-    'build:manifest': (manifest) => {
-      // Keep optional analytics out of automatic preload and prefetch requests.
-      for (const [id, entry] of Object.entries(manifest)) {
-        if (id.includes('/vue-gtag/')) {
-          entry.preload = false
-          entry.prefetch = false
-        }
-      }
-    }
-  },
   eslint: {
     config: {
       typescript: { tsconfigPath: './tsconfig.json' },
       stylistic: { commaDangle: 'never', quoteProps: 'as-needed' },
       formatters: { css: true }
     }
+  },
+  robots: {
+    groups: [{
+      userAgent: ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended'],
+      disallow: ['/']
+    }]
   }
 })

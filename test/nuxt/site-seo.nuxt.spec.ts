@@ -14,7 +14,7 @@ mockNuxtImport('useSiteConfig', () => mocks.useSiteConfig)
 mockNuxtImport('useHead', () => mocks.useHead)
 mockNuxtImport('useSeoMeta', () => mocks.useSeoMeta)
 
-const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
+const defaultDescription = 'Caleb Smith is a full-stack developer in Kansas. Field notes on Vue, Nuxt, TypeScript and Laravel apps, and on Kubernetes and self-hosted infrastructure.'
 
 const defaultImageUrl = 'https://caleb-smith.dev/social/default.png'
 const defaultImageMeta = {
@@ -47,16 +47,17 @@ describe('useSiteSeo', () => {
     mocks.useSiteConfig.mockReturnValue({ url: 'https://caleb-smith.dev' })
   })
 
-  it('uses the root URL with the default title template behavior', () => {
+  it('uses the absolute homepage title at the root URL', () => {
     useSiteSeo({
-      title: 'Full Stack Web Developer',
+      title: 'Caleb Smith | Full-Stack Developer in Kansas',
       description: defaultDescription,
-      path: '/'
+      path: '/',
+      absoluteTitle: true
     })
 
     expect(mocks.useSeoMeta).toHaveBeenCalledWith({
       description: defaultDescription,
-      ogTitle: 'Full Stack Web Developer',
+      ogTitle: 'Caleb Smith | Full-Stack Developer in Kansas',
       ogDescription: defaultDescription,
       ogType: 'website',
       ogLocale: 'en_US',
@@ -65,15 +66,15 @@ describe('useSiteSeo', () => {
       twitterCreator: '@CalebSmithDev',
       twitterSite: '@CalebSmithDev',
       twitterDomain: 'caleb-smith.dev',
-      twitterTitle: 'Full Stack Web Developer',
+      twitterTitle: 'Caleb Smith | Full-Stack Developer in Kansas',
       twitterDescription: defaultDescription,
       twitterUrl: 'https://caleb-smith.dev/',
       ...defaultImageMeta
     })
 
     const head = expectCanonical('https://caleb-smith.dev/')
-    expect(head.title).toBe('Full Stack Web Developer')
-    expect(head).not.toHaveProperty('titleTemplate')
+    expect(head.title).toBe('Caleb Smith | Full-Stack Developer in Kansas')
+    expect(head.titleTemplate).toBe('')
   })
 
   it('normalizes a blog path to one leading slash', () => {
@@ -246,7 +247,23 @@ describe('structured metadata', () => {
     const { data } = readStructuredData()
     const seo = mocks.useSeoMeta.mock.calls[0]?.[0]
     expect(data['@graph']).toContainEqual(expect.objectContaining({
-      '@type': 'Person', '@id': 'https://preview.example.test/#person'
+      '@type': 'Person', '@id': 'https://preview.example.test/#person',
+      name: 'Caleb Smith',
+      url: 'https://preview.example.test/',
+      jobTitle: 'Full-Stack Developer',
+      description: 'Full-stack developer in Kansas building web apps with Vue, Nuxt, TypeScript and Laravel, and the infrastructure that runs them.',
+      homeLocation: {
+        '@type': 'Place',
+        name: 'Kansas, United States',
+        address: { '@type': 'PostalAddress', addressRegion: 'KS', addressCountry: 'US' }
+      },
+      knowsAbout: ['Vue.js', 'Nuxt', 'TypeScript', 'Laravel', 'PHP', 'Kubernetes', 'Proxmox', 'Ceph', 'Self-hosting'],
+      sameAs: [
+        'https://github.com/calebsmithdev',
+        'https://www.linkedin.com/in/calebsmithdev/',
+        'https://x.com/CalebSmithDev',
+        'https://bsky.app/profile/did:plc:m2blbfmeq3jyk4jiilzygri7'
+      ]
     }))
     expect(data['@graph']).toContainEqual({
       '@type': 'BlogPosting', '@id': `${String(seo.ogUrl)}#blogposting`, url: seo.ogUrl,

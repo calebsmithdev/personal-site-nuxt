@@ -9,7 +9,7 @@ const execFileAsync = promisify(execFile)
 const checker = fileURLToPath(new URL('../../scripts/check-deployment-404.ts', import.meta.url))
 const articlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 const pages: Record<string, string> = {
-  '/': '<title>Full Stack Web Developer | Caleb Smith</title>',
+  '/': '<h1 id="home-heading">A known homepage</h1>',
   '/blog': '<title>Writing | Caleb Smith</title>',
   [articlePath]: '<article id="full-content">A known article</article>'
 }

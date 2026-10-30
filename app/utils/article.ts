@@ -87,6 +87,13 @@ export const formatArticleDate = (date: Date | string): string => dayjs.utc(date
 
 export const articleDateTime = (date: Date | string): string => dayjs.utc(date).format('YYYY-MM-DD')
 
+export const articleUpdatedDate = (date: Date | string, lastmod: Date | string): string | undefined => {
+  // dayjs treats undefined as now, so require both values before checking validity.
+  if (!date || !lastmod || !dayjs.utc(date).isValid() || !dayjs.utc(lastmod).isValid()) { return undefined }
+  const updated = articleDateTime(lastmod)
+  return updated > articleDateTime(date) ? updated : undefined
+}
+
 export const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
 const categoryIcons: Record<string, IconDefinition> = {
   'Advanced Custom Fields (ACF)': faWordpressSimple,

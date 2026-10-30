@@ -33,7 +33,7 @@ This content must render at a nested URL.
   await setup({
     rootDir: fixtureRoot,
     buildDir: join(fixtureRoot, '.nuxt'),
-    env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: '' }
+    env: { NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '' }
   })
   const context = useTestContext()
   context.teardown ??= []
@@ -60,6 +60,9 @@ describe('nested article routes', () => {
     expect(html).toContain(`<meta property="og:url" content="${siteOrigin}${nestedPath}">`)
     // The fixture has no rendered card, so this only checks the nested path rule.
     expect(html).toContain(`<meta property="og:image" content="${siteOrigin}/social${nestedPath}.png">`)
+    // The fixture's lastmod (2026-01-02) is later than its date (2026-01-01).
+    expect(html).toMatch(/<time\b[^>]*\bdatetime="2026-01-02"[^>]*>/)
+    expect(html).toMatch(/<span\b[^>]*>Updated January 2, 2026<\/span>/)
   })
 
   it('keeps the blog index and adjacent article links navigable', async () => {

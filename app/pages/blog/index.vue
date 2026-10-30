@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 const { fetchList, articles } = useBlog()
-const description = 'Practical field notes from Caleb Smith on web development, infrastructure, Kubernetes, WordPress, and SwiftUI.'
+const description = 'Practical field notes from Caleb Smith on building web apps with Vue, Nuxt, TypeScript and Laravel, and on running Kubernetes and self-hosted infrastructure.'
 
 useSiteSeo({
   title: 'Writing',

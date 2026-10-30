@@ -5,9 +5,9 @@ import { describe, expect, it } from 'vitest'
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
   // Configure the fixture at build time and when its server starts.
-  env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: 'G-TEST12345' },
+  env: { NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: 'test-cloudflare-token' },
   nuxtConfig: {
-    runtimeConfig: { public: { googleAnalyticsId: 'G-TEST12345' } },
+    runtimeConfig: { public: { cloudflareAnalyticsToken: 'test-cloudflare-token' } },
     // Exercise live SSR instead of prerendered HTML.
     routeRules: { '/**': { prerender: false } }
   },
@@ -26,12 +26,16 @@ describe('configured analytics during SSR', () => {
 
       expect(response.status).toBe(200)
       // Verify that this request really has analytics enabled in runtime config.
-      expect(html).toContain('G-TEST12345')
-      expect(html).not.toContain('googletagmanager.com/gtag/js')
+      expect(html).toContain('test-cloudflare-token')
+      const script = html.match(/<script[^>]*src="https:\/\/static.cloudflareinsights.com\/beacon.min.js"[^>]*>/)?.[0]
+      expect(script).toBeDefined()
+      expect(script).toContain('type="module"')
+      expect(script).toContain('data-cf-beacon="{&quot;token&quot;:&quot;test-cloudflare-token&quot;}"')
+      expect(html).not.toMatch(/<link[^>]*href="https:\/\/static.cloudflareinsights.com/)
     }
 
     // Unhandled rejections and the subprocess log pipe can settle after a response.
     await new Promise(resolve => setTimeout(resolve, 50))
-    expect(getServerLogs().join('\n')).not.toMatch(/unhandledRejection|Cannot use 'in' operator|vue-gtag|\[.*error.*\]/i)
+    expect(getServerLogs().join('\n')).not.toMatch(/unhandledRejection|Cannot use 'in' operator|\[.*error.*\]/i)
   })
 })
