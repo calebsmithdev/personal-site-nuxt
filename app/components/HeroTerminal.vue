@@ -48,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import type { BlogArticleSummary } from '../types'
 import { articleDateTime } from '../utils/article'
+import type { BlogArticleSummary } from '../types'
 
 const props = defineProps<{
   articles: BlogArticleSummary[]

@@ -1,6 +1,6 @@
 // Lab-only static server: never imported by the app or used for deployment.
-import { createServer } from 'node:http'
 import { readFile, readdir, realpath, stat } from 'node:fs/promises'
+import { createServer } from 'node:http'
 import { extname, relative, resolve, sep } from 'node:path'
 import { brotliCompressSync } from 'node:zlib'
 

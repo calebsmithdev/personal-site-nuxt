@@ -98,9 +98,9 @@
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import FaIcon from '../../components/FaIcon.vue'
-import type { BlogArticle } from '../../types'
 import { categoryIcon, displayCategory, articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
 import { articleSocialImage } from '../../utils/site'
+import type { BlogArticle } from '../../types'
 
 interface TocLink {
   id: string
