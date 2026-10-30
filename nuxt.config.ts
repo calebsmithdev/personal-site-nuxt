@@ -49,6 +49,12 @@ export default defineNuxtConfig({
       }
     }
   },
+  robots: {
+    groups: [{
+      userAgent: ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended'],
+      disallow: ['/']
+    }]
+  },
   site: {
     url: 'https://caleb-smith.dev'
   },

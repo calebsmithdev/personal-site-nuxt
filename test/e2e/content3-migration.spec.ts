@@ -74,14 +74,21 @@ describe('Content 3 route migration', () => {
     }
   })
 
-  it('advertises the canonical sitemap without blocking all crawlers', async () => {
+  it('advertises the canonical sitemap and blocks only AI training crawlers', async () => {
     const response = await fetch('/robots.txt')
     const robots = await response.text()
+    const groups = robots.split(/\n\s*\n/)
+    const rulesFor = (token: string) => groups
+      .filter(group => group.split('\n').some(line => line.toLowerCase() === `user-agent: ${token.toLowerCase()}`))
+      .join('\n')
 
     expect(response.status).toBe(200)
-    expect(robots).toContain('User-agent: *')
     expect(robots).toContain(`Sitemap: ${siteOrigin}/sitemap.xml`)
-    expect(robots).not.toMatch(/^Disallow:[ \t]*\/[ \t]*$/m)
+    expect(rulesFor('*')).toContain('User-agent: *')
+    expect(rulesFor('*')).not.toMatch(/^Disallow:[ \t]*\/[ \t]*$/m)
+    for (const token of ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended']) {
+      expect(rulesFor(token), token).toMatch(/^Disallow: \/$/m)
+    }
   })
 
   it('discovers the complete twelve-article collection', () => {

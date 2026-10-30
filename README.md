@@ -166,6 +166,7 @@ a local benchmark server and do not change the site's typography.
 
 The homepage, blog index, and article pages each set their own title, description, canonical URL, Open Graph tags, and Twitter tags.
 
+- `robots.txt` allows search and AI retrieval crawlers while disallowing GPTBot, ClaudeBot, CCBot, Google-Extended, and Applebot-Extended. These are voluntary crawler directives; Google-Extended also controls some Gemini grounding, and Common Crawl supplies a general-purpose dataset.
 - Canonical URLs, the sitemap, and `robots.txt` all use the site origin `https://caleb-smith.dev` from `nuxt.config.ts`.
 - The homepage and blog index have the Open Graph type `website`. Articles have the type `article`.
 - Every page sends the default social card, `public/social/default.png` (1200×630), as `og:image` and `twitter:image`, with its dimensions and alt text. An article's `image` frontmatter replaces the card for that article. Point it at a file in `public/` (a stable URL), an `/assets/img/...` path, or an `https://` URL. Dimensions aren't known for replacements, so they aren't sent. Use a 1200×630 image for the best previews.
