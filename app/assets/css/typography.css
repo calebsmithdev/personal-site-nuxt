@@ -8,9 +8,9 @@
   --color-rule: #35465a;
   --color-accent: #ff8a65;
   --color-cyan: #67d7ec;
-  --font-heading: 'Poppins', ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
-  --font-serif: 'Lora', georgia, cambria, 'Times New Roman', serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, sfmono-regular, menlo, consolas, monospace;
+  --font-heading: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Lora', Georgia, Cambria, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 /* Sizing for FaIcon, matching the Font Awesome base icon rule. */
