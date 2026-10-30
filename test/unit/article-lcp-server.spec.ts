@@ -1,8 +1,8 @@
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { request } from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { brotliDecompressSync } from 'node:zlib'
-import { request } from 'node:http'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createLabServer, transformTypography } from '../../scripts/performance/serve-article-lcp.ts'
 
