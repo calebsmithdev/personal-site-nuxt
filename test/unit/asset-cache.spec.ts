@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkAssetCache, discoverAssets, policyErrors } from '../../scripts/check-asset-cache.mjs'
+import { checkAssetCache, discoverAssets, policyErrors } from '../../scripts/check-asset-cache.ts'
 
 const immutable = 'public, max-age=31536000, immutable'
 
@@ -64,18 +64,18 @@ describe('deployed asset cache validation', () => {
     const output: string[] = []
     const failures = await checkAssetCache('https://site.test', {
       log: (line: string) => output.push(line),
-      fetcher: async (url: string | URL | Request, init?: RequestInit) => {
+      fetcher: (url: string, init?: RequestInit) => {
         expect(init?.redirect).toBe('manual')
         expect(init?.signal).toBeDefined()
-        const path = new URL(String(url)).pathname
+        const path = new URL(url).pathname
         requested.push(path)
         const replacement = override?.(path)
-        if (replacement) return replacement
+        if (replacement) return Promise.resolve(replacement)
         const [body, type] = fixtures.get(path)!
-        return new Response(body, { headers: {
+        return Promise.resolve(new Response(body, { headers: {
           'content-type': type!,
           'cache-control': path.startsWith('/_nuxt/') && !path.endsWith('.json') ? immutable : 'no-cache'
-        } })
+        } }))
       }
     })
     return { failures, requested, output }
@@ -125,7 +125,7 @@ describe('deployed asset cache validation', () => {
     const output: string[] = []
     const failures = await checkAssetCache('https://site.test', {
       log: (line: string) => output.push(line),
-      fetcher: async () => { throw new Error('connection unavailable') }
+      fetcher: () => Promise.reject(new Error('connection unavailable'))
     })
     expect(failures).toBeGreaterThan(0)
     expect(output.join('\n')).toContain('request failed: connection unavailable')

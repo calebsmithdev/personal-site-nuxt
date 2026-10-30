@@ -103,9 +103,9 @@
 import { faCalendar, faClock, faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import FaIcon from '../../components/FaIcon.vue'
-import type { BlogArticle } from '../../types'
 import { articleUpdatedDate, categoryIcon, displayCategory, articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
 import { articleSocialImage } from '../../utils/site'
+import type { BlogArticle } from '../../types'
 
 interface TocLink {
   id: string
@@ -130,23 +130,23 @@ await fetchList()
 
 const updatedDate = computed(() => articleUpdatedDate(article.value.date, article.value.sitemap.lastmod))
 
-const articlePosition = computed(() => getArticlePosition(articles.value, article.value?.path))
+const articlePosition = computed(() => getArticlePosition(articles.value, article.value.path))
 const articleNumber = computed(() => articlePosition.value.displayNumber)
 const newerArticle = computed(() => articlePosition.value.newer)
 const olderArticle = computed(() => articlePosition.value.older)
 
 const tocLinks = computed<TocLink[]>(() => {
-  const body = article.value?.body as { toc?: { links?: TocLink[] } } | undefined
+  const body = article.value.body as { toc?: { links?: TocLink[] } } | undefined
   return body?.toc?.links ?? []
 })
 
 const readingMinutes = computed(() => {
-  return getReadingMinutes(article.value?.body)
+  return getReadingMinutes(article.value.body)
 })
 
 useSiteSeo({
-  title: article.value.title!,
-  description: article.value.description!,
+  title: article.value.title,
+  description: article.value.description,
   path: route.path,
   type: 'article',
   datePublished: article.value.date,

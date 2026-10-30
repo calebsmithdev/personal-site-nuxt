@@ -3,7 +3,7 @@
 Run the smoke check with Node.js 26 **after the deployment is publicly reachable**:
 
 ```bash
-node scripts/check-deployment-404.mjs https://caleb-smith.dev
+node scripts/check-deployment-404.ts https://caleb-smith.dev
 ```
 
 Pass the origin of the environment being checked. The command makes six GET requests,

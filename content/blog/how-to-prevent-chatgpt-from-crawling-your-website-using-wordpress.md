@@ -24,7 +24,7 @@ Disallow: /
 
 ## Configure with Yoast SEO
 
-The most popular SEO tool, Yoast, there are two different ways to configure this. First, if you are a Premium Yoast user, then you can go to Yoast SEO -> Settings -> Crawl Optimization and then toggle the option to "Prevent Google Bard and Vertex AI bots from crawling" and "Prevent OpenAI GPTBot from crawling". 
+The most popular SEO tool, Yoast, there are two different ways to configure this. First, if you are a Premium Yoast user, then you can go to Yoast SEO -> Settings -> Crawl Optimization and then toggle the option to "Prevent Google Bard and Vertex AI bots from crawling" and "Prevent OpenAI GPTBot from crawling".
 
 If you are a free Yoast user, then you will need to edit the raw robots.txt file. This is located under Yoast SEO -> Tools -> File Editor. If you don't have a file yet, then you'll see a button to "Create robots.txt file".  If there are no edits made to the file yet, then you'll see a file like this:
 

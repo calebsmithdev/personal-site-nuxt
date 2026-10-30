@@ -37,7 +37,9 @@ This content must render at a nested URL.
   })
   const context = useTestContext()
   context.teardown ??= []
-  context.teardown.push(() => rm(fixtureRoot, { recursive: true, force: true }))
+  // Nuxt awaits teardown results, although its callback type only declares void.
+  const teardown: Array<() => void | Promise<void>> = context.teardown
+  teardown.push(() => rm(fixtureRoot, { recursive: true, force: true }))
 }
 catch (error) {
   await rm(fixtureRoot, { recursive: true, force: true })

@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-recommended-vue"
+  ],
+  "rules": {
+    "custom-property-empty-line-before": null,
+    "value-keyword-case": [
+      "lower",
+      {
+        "camelCaseSvgKeywords": true,
+        "ignoreProperties": ["/^--font-/"]
+      }
+    ],
+    "media-feature-range-notation": "prefix",
+    "selector-class-pattern": "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$|^svg-inline--fa$"
+  }
+}

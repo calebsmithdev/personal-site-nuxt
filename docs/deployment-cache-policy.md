@@ -52,9 +52,9 @@ These are observations, not deployment configuration. The hashes will change on 
 With Node.js 26:
 
 ```bash
-node scripts/check-asset-cache.mjs
+node scripts/check-asset-cache.ts
 # Optional: audit another deployment origin
-node scripts/check-asset-cache.mjs https://your-preview.example
+node scripts/check-asset-cache.ts https://your-preview.example
 ```
 
 The command needs network access, but no credentials or build. It issues GET requests, discovers `/_nuxt/` references in the homepage, blog index, linked articles, and JS/CSS dependencies, and prints only cache headers, URLs, and validation results. It does not execute page scripts or analytics. It checks status and content type to catch HTML fallbacks, requires one-year `public` + `immutable` browser caching for discovered assets, and checks short-lived HTML and the mutable `/_nuxt/builds/latest.json` separately. A 404 for that optional manifest is skipped. It fails if JS, CSS, fonts, or images are absent from discovery. Exit code 0 means all checks passed; 1 means a policy, response, network, or coverage failure.

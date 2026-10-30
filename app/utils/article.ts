@@ -1,26 +1,26 @@
 import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { MarkdownRoot, MinimarkElement, MinimarkNode } from '@nuxt/content'
 
 dayjs.extend(utc)
 
-export interface ContentNode {
+interface ContentNode {
   type?: string
   tag?: string
   value?: string
   children?: ContentNode[]
 }
 
-type ArticleContent =
-  | ContentNode
-  | ContentNode[]
-  | MarkdownRoot
-  | MinimarkNode
-  | MinimarkNode[]
-  | undefined
+type ArticleContent
+  = | ContentNode
+    | ContentNode[]
+    | MarkdownRoot
+    | MinimarkNode
+    | MinimarkNode[]
+    | undefined
 
 interface PathBearingArticle {
   path?: string
@@ -31,10 +31,10 @@ const countText = (value: string): number => {
 }
 
 const isMinimarkElement = (node: readonly unknown[]): node is MinimarkElement => {
-  return typeof node[0] === 'string' &&
-    typeof node[1] === 'object' &&
-    node[1] !== null &&
-    !Array.isArray(node[1])
+  return typeof node[0] === 'string'
+    && typeof node[1] === 'object'
+    && node[1] !== null
+    && !Array.isArray(node[1])
 }
 
 export const countWords = (node: ArticleContent): number => {

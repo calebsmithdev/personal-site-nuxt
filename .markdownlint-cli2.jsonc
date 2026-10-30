@@ -1,0 +1,9 @@
+{
+  "config": {
+    "MD013": false,
+    "MD033": false,
+    "MD041": false,
+    "MD010": { "code_blocks": false }
+  },
+  "ignores": ["node_modules/**", ".nuxt/**", ".output/**", ".data/**"]
+}

@@ -36,6 +36,7 @@ describe('font asset configuration', () => {
       '@fontsource/poppins/700.css',
       '@fontsource/ibm-plex-mono/400.css',
       '@fontsource/ibm-plex-mono/500.css',
+      '@/assets/css/reset.css',
       '@/assets/css/typography.css'
     ])
   })

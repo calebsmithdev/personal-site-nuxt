@@ -4,7 +4,7 @@ import TableOfContents from '../../app/components/post/TableOfContents.vue'
 
 describe('TableOfContents', () => {
   afterEach(() => {
-    document.querySelectorAll('[data-characterization-heading]').forEach(element => element.remove())
+    document.querySelectorAll('[data-characterization-heading]').forEach((element) => { element.remove() })
     vi.unstubAllGlobals()
   })
 
@@ -17,7 +17,7 @@ describe('TableOfContents', () => {
     let observerCount = 0
 
     class FakeIntersectionObserver {
-      constructor (callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+      constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
         observerCallback = callback
         observerOptions = options
         observerInstance = this as unknown as IntersectionObserver
@@ -98,7 +98,7 @@ describe('TableOfContents', () => {
       throw new Error('Expected the nested heading and observer to be initialized')
     }
     const headingBounds = nestedHeading.getBoundingClientRect()
-    observerCallback?.([
+    observerCallback([
       {
         time: 0,
         isIntersecting: true,
