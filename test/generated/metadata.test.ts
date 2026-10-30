@@ -14,21 +14,22 @@ const window = new Window({
 after(() => window.happyDOM.close())
 const output = new URL('../../.output/public/', import.meta.url)
 // Parse only metadata so modulepreload links and page embeds cannot initiate resource requests.
-const readPage = async (path) => {
+const readPage = async (path: string) => {
   const html = await readFile(new URL(path, output), 'utf8')
   const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]
   assert.ok(head)
   const metadata = head.match(/<title>[^<]*<\/title>|<meta\b[^>]*>|<script\b[^>]*type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/gi)
+  assert.ok(metadata)
   return new window.DOMParser().parseFromString(metadata.join(''), 'text/html')
 }
 
-test('homepage has the absolute title, description, and Person metadata', async () => {
+await test('homepage has the absolute title, description, and Person metadata', async () => {
   const document = await readPage('index.html')
   assert.equal(document.title, 'Caleb Smith | Full-Stack Developer in Kansas')
   const description = 'Caleb Smith is a full-stack developer in Kansas. Field notes on Vue, Nuxt, TypeScript and Laravel apps, and on Kubernetes and self-hosted infrastructure.'
-  assert.equal(document.querySelector('meta[name="description"]').content, description)
-  const graph = JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent)['@graph']
-  const person = graph.find(node => node['@type'] === 'Person')
+  assert.equal(document.querySelector('meta[name="description"]')!.getAttribute('content'), description)
+  const graph = JSON.parse(document.querySelector('script[type="application/ld+json"]')!.textContent)['@graph']
+  const person = graph.find((node: Record<string, unknown>) => node['@type'] === 'Person')
   assert.equal(person.jobTitle, 'Full-Stack Developer')
   assert.equal(person.name, 'Caleb Smith')
   assert.equal(person.description, 'Full-stack developer in Kansas building web apps with Vue, Nuxt, TypeScript and Laravel, and the infrastructure that runs them.')
@@ -46,10 +47,10 @@ test('homepage has the absolute title, description, and Person metadata', async 
     assert.equal(image.origin, 'https://caleb-smith.dev')
     assert.ok((await stat(new URL(image.pathname.slice(1), output))).isFile())
   }
-  assert.equal(graph.find(node => node['@type'] === 'WebSite').description, description)
+  assert.equal(graph.find((node: Record<string, unknown>) => node['@type'] === 'WebSite').description, description)
 })
 
-test('blog index describes both content pillars', async () => {
+await test('blog index describes both content pillars', async () => {
   const document = await readPage('blog/index.html')
-  assert.equal(document.querySelector('meta[name="description"]').content, 'Practical field notes from Caleb Smith on building web apps with Vue, Nuxt, TypeScript and Laravel, and on running Kubernetes and self-hosted infrastructure.')
+  assert.equal(document.querySelector('meta[name="description"]')!.getAttribute('content'), 'Practical field notes from Caleb Smith on building web apps with Vue, Nuxt, TypeScript and Laravel, and on running Kubernetes and self-hosted infrastructure.')
 })
