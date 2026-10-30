@@ -1,4 +1,4 @@
-export const defaultDescription = 'A full stack web developer in Kansas with a speciality focus in React, Vue, PHP, WordPress and .NET Core.'
+export const defaultDescription = 'Caleb Smith is a full-stack developer in Kansas. Field notes on Vue, Nuxt, TypeScript and Laravel apps, and on Kubernetes and self-hosted infrastructure.'
 
 export interface SocialImage {
   /** A site-relative path such as `/social/default.png`, or an absolute https URL. */
