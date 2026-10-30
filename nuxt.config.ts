@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      googleAnalyticsId: ''
+      cloudflareAnalyticsToken: ''
     }
   },
   // Static hosting must apply these headers at the host/edge; see README.
@@ -59,17 +59,6 @@ export default defineNuxtConfig({
     nodeTsConfig: {
       include: ['../content.config.ts', '../vitest.config.mts', '../config/**/*.ts', '../test/unit/**/*.ts', '../test/e2e/**/*.ts', '../scripts/**/*.ts', '../test/generated/**/*.ts'],
       compilerOptions: { types: ['node'] }
-    }
-  },
-  hooks: {
-    'build:manifest': (manifest) => {
-      // Keep optional analytics out of automatic preload and prefetch requests.
-      for (const [id, entry] of Object.entries(manifest)) {
-        if (id.includes('/vue-gtag/')) {
-          entry.preload = false
-          entry.prefetch = false
-        }
-      }
     }
   },
   eslint: {

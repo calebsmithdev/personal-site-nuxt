@@ -108,7 +108,9 @@ describe('article routes', () => {
 
   it('keeps analytics code out of unconfigured page scripts and resource hints', async () => {
     const response = await fetch('/')
-    const head = getHead(await response.text())
+    const html = await response.text()
+    expect(html).not.toContain('static.cloudflareinsights.com/beacon.min.js')
+    const head = getHead(html)
     const scriptHints = getTags(head, 'link').filter((tag) => {
       const rel = getAttribute(tag, 'rel')
       return rel === 'modulepreload'
@@ -124,7 +126,7 @@ describe('article routes', () => {
       expect(path).toMatch(/^\/_nuxt\//)
       const scriptResponse = await fetch(path)
       expect(scriptResponse.status).toBe(200)
-      expect(await scriptResponse.text()).not.toContain('googletagmanager.com')
+      expect(await scriptResponse.text()).not.toContain('cloudflareinsights.com')
     }))
   })
 

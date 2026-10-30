@@ -51,7 +51,7 @@ The site has three routes:
 | Content | [Nuxt Content 3](https://content.nuxt.com/docs/getting-started/installation), a typed `blog` collection backed by SQLite (`better-sqlite3`) |
 | SEO | `@nuxtjs/sitemap`, `@nuxtjs/robots`, route-level metadata in `useSiteSeo` |
 | Styling | Hand-written CSS, self-hosted Fontsource fonts, Font Awesome icons |
-| Analytics | Google Analytics through `vue-gtag`, enabled only when configured |
+| Analytics | Cloudflare Web Analytics, enabled only when configured |
 | Quality | ESLint with type-aware and accessibility rules, Stylelint, markdownlint, Knip, `vue-tsc`, Vitest with `@nuxt/test-utils`, commitlint |
 | Hosting | [Laravel Cloud](https://cloud.laravel.com) |
 
@@ -67,7 +67,7 @@ npm run dev   # start the dev server at http://localhost:3000
 
 `package-lock.json` is the authoritative lockfile. After installing, npm runs `postinstall` (`nuxi prepare`) to generate Nuxt's types.
 
-Analytics is optional. To try it locally, copy the example file and fill in the ID:
+Analytics is optional. To try it locally, copy the example file and fill in the token:
 
 ```bash
 cp .env.example .env
@@ -102,7 +102,7 @@ cp .env.example .env
 │   ├── composables/     # useBlog, useSiteSeo, useAsset
 │   ├── layouts/         # Default layout
 │   ├── pages/           # /, /blog, /blog/[...slug]
-│   ├── plugins/         # Optional Google Analytics plugin
+│   ├── plugins/         # Optional Cloudflare Web Analytics plugin
 │   └── utils/           # Article helpers such as date formatting
 ├── content/blog/        # Article Markdown files
 ├── public/              # Favicons, the social card, and other files served as-is
@@ -173,13 +173,21 @@ The homepage, blog index, and article pages each set their own title, descriptio
 - Every page sends the default social card, `public/social/default.png` (1200×630), as `og:image` and `twitter:image`, with its dimensions and alt text. An article's `image` frontmatter replaces the card for that article. Point it at a file in `public/` (a stable URL), an `/assets/img/...` path, or an `https://` URL. Dimensions aren't known for replacements, so they aren't sent. Use a 1200×630 image for the best previews.
 - The default card is rendered from `scripts/social-image/default.html` with the site's fonts and colors. After you edit the template, run `npm run social-image` to render the PNG again. The script needs a local Chrome or Chromium (`CHROME_PATH`, or a Playwright-installed Chromium).
 
-Google Analytics is **optional**. Set the public runtime key in `.env` to turn it on:
+### Cloudflare Web Analytics
+
+Cloudflare Web Analytics is **optional** and cookieless. Create the site token in
+the Cloudflare dashboard: **Web Analytics → Add a site → JS snippet** (under
+Manage site). Set the public runtime key:
 
 ```dotenv
-NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=
+NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN=
 ```
 
-If the value is empty, the analytics plugin doesn't start and no tracking code loads.
+With an empty token, no analytics script loads. For production's static
+`nuxi generate` output, set the token in the **build environment**: public runtime
+configuration is baked into the generated files. Rebuild to change the token.
+The manual snippet loads a deferred beacon without preload or prefetch.
+[SPA page views are tracked automatically](https://developers.cloudflare.com/web-analytics/get-started/web-analytics-spa/).
 
 ## Testing and CI
 
@@ -237,7 +245,7 @@ The versioned policy lives in [`config/security-headers.ts`](config/security-hea
 npm run --silent security:headers
 ```
 
-The policy starts with **`Content-Security-Policy-Report-Only`**, which does not block resources. It allows Nuxt's inline payload/importmap scripts, inline styles, self-hosted fonts/images, data images, same-origin Cloudflare `/cdn-cgi/` scripts, and the existing YouTube iframe. `'wasm-unsafe-eval'` permits Nuxt Content's client-side SQLite WebAssembly compilation without allowing JavaScript `eval`. GA script, connection and image origins are permitted regardless of configuration so one policy works with analytics enabled or disabled. This permission does not load GA or enable tracking; the optional analytics plugin still requires `NUXT_PUBLIC_GOOGLE_ANALYTICS_ID`.
+The policy starts with **`Content-Security-Policy-Report-Only`**, which does not block resources. It allows Nuxt's inline payload/importmap scripts, inline styles, self-hosted fonts/images, data images, same-origin Cloudflare `/cdn-cgi/` scripts, and the existing YouTube iframe. `'wasm-unsafe-eval'` permits Nuxt Content's client-side SQLite WebAssembly compilation without allowing JavaScript `eval`. Cloudflare's script origin (`https://static.cloudflareinsights.com`) and manual beacon connection origin (`https://cloudflareinsights.com`) are permitted regardless of configuration so one policy works with analytics enabled or disabled. These permissions do not load analytics; the optional plugin still requires `NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`.
 
 `Permissions-Policy: camera=(), microphone=(), geolocation=()` disables those unused features in supporting browsers, including child frames. It leaves the YouTube player's other feature permissions alone. HSTS is not changed: HTTPS support for every subdomain has not been verified.
 
@@ -249,7 +257,7 @@ For the operator applying the policy:
 
 1. Run `npm run --silent security:headers` and copy both exact name/value pairs into the serving host/edge's response-header configuration for all paths, including article pages and errors. Use **Report-Only**, not the enforcing `Content-Security-Policy` name. Keep the existing HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and `X-Frame-Options` settings.
 2. Verify actual GET response headers on the homepage, `/blog`, `/blog/how-to-connect-to-your-steam-deck-using-ftp`, and a missing article. For example, `curl -sS -D - -o /dev/null https://caleb-smith.dev/`. Compare the two values against the printed policy and confirm the new application policy remains report-only. Nitro already supplies a separate restrictive enforcing CSP on its error responses; preserve that framework behavior.
-3. In a browser, inspect CSP diagnostics during client-side navigation from the blog index to an article and between articles, loading the YouTube player, and testing both configured and unconfigured analytics builds. Check Cloudflare-injected scripts on the real edge as well. The GA allowlist covers basic GA4; if Google Signals or advertising features are configured, review their extra origins against observed requests before expanding it. No report collector or `Reporting-Endpoints` is configured: there is no centralized violation collection, so header presence alone does not establish that the policy is clean.
+3. In a browser, inspect CSP diagnostics during client-side navigation from the blog index to an article and between articles, loading the YouTube player, and testing both configured and unconfigured analytics builds. Check Cloudflare-injected scripts on the real edge as well. No report collector or `Reporting-Endpoints` is configured: there is no centralized violation collection, so header presence alone does not establish that the policy is clean.
 4. Keep [issue #22](https://github.com/calebsmithdev/personal-site-nuxt/issues/22) open until the host application and live verification are complete. Tighten inline script allowances with hashes/nonces and consider enforcement only in a separate reviewed change after observing the policy on production traffic. A future collector requires a real endpoint and a separate reporting/privacy decision.
 
 For local server verification, run `npm run build`, start it with `PORT=4022 npm run start`, then inspect GET response headers at `http://localhost:4022/`. This checks the built server only, not production static hosting. The [MDN report-only header reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy-Report-Only) explains reporting configuration and why this header cannot be supplied through an HTML meta tag.
