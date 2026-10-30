@@ -1,5 +1,5 @@
-import { toHast } from 'minimark/hast'
 import { toHtml } from 'hast-util-to-html'
+import { toHast } from 'minimark/hast'
 import type { Root, ElementContent, Element } from 'hast'
 import type { MinimarkTree } from 'minimark'
 
@@ -50,7 +50,8 @@ export const renderFeedHtml = (
         const url = absoluteFeedUrl(resolved, articleUrl)
         if (!/^(https?:|mailto:|tel:)/.test(url)) { continue }
         properties[key] = url
-      } else {
+      }
+      else {
         properties[key] = value
       }
     }

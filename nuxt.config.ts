@@ -32,12 +32,6 @@ export default defineNuxtConfig({
       }
     }
   },
-  robots: {
-    groups: [{
-      userAgent: ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended'],
-      disallow: ['/']
-    }]
-  },
   runtimeConfig: {
     public: {
       googleAnalyticsId: ''
@@ -84,5 +78,11 @@ export default defineNuxtConfig({
       stylistic: { commaDangle: 'never', quoteProps: 'as-needed' },
       formatters: { css: true }
     }
+  },
+  robots: {
+    groups: [{
+      userAgent: ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended'],
+      disallow: ['/']
+    }]
   }
 })

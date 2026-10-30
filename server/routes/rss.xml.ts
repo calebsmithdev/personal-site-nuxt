@@ -1,11 +1,13 @@
 import { queryCollection } from '@nuxt/content/server'
-import { getSiteConfig } from '#site-config/server'
+// Nitro resolves this build-time virtual manifest; Nuxt remains a build dependency.
+// eslint-disable-next-line import/no-extraneous-dependencies
 import manifest from 'nuxt/internal/manifest'
 import { defaultDescription } from '../../app/utils/site'
 import { absoluteFeedUrl, cdata, renderFeedHtml, rssDate, xmlText } from '../utils/rss'
+import { getSiteConfig } from '#site-config/server'
 
 export default defineEventHandler(async (event) => {
-  const origin = new URL(getSiteConfig(event).url!).origin
+  const origin = new URL(getSiteConfig(event).url).origin
   const posts = await queryCollection(event, 'blog').order('date', 'DESC').order('path', 'ASC').all()
   const resolveAsset = (src: string): string => {
     if (!src.startsWith('/assets/')) { return src }

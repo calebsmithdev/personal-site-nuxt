@@ -57,10 +57,12 @@
     "@nuxt/content": "^3.16.2",
     "@nuxtjs/robots": "^7.0.2",
     "@nuxtjs/sitemap": "^9.1.0",
+    "@types/hast": "3.0.5",
     "better-sqlite3": "^13.0.3",
     "dayjs": "^1.11.23",
     "hast-util-to-html": "9.0.5",
     "minimark": "0.2.0",
+    "nuxt-site-config": "5.0.3",
     "vue-gtag": "^3.7.1"
   }
 }

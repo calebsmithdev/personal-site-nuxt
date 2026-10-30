@@ -111,7 +111,7 @@ await test('generated robots.txt advertises the canonical sitemap and allows cra
   assert.match(robots, /^User-agent: \*\s*$/m)
   assert.ok(robots.includes(`Sitemap: ${siteOrigin}/sitemap.xml`))
   const groups = robots.split(/\n\s*\n/)
-  const rulesFor = token => groups.filter(group => group.split('\n').some(line => line.toLowerCase() === `user-agent: ${token.toLowerCase()}`)).join('\n')
+  const rulesFor = (token: string) => groups.filter(group => group.split('\n').some(line => line.toLowerCase() === `user-agent: ${token.toLowerCase()}`)).join('\n')
   assert.match(rulesFor('*'), /^(?:Allow: \/|Disallow:[ \t]*)$/m)
   assert.doesNotMatch(rulesFor('*'), /^Disallow:[ \t]*\/[ \t]*$/m)
   for (const token of ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended']) {
