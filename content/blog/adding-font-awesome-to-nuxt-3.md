@@ -65,4 +65,4 @@ If you decided to use less of the free packages (or add pro packages), be sure t
 
 ## Conclusion
 
-That's it! You can now use Font Awesome anywhere using the Vue components, like `<font-awesome-icon icon="fa-brands fa-github" />`. 
+That's it! You can now use Font Awesome anywhere using the Vue components, like `<font-awesome-icon icon="fa-brands fa-github" />`.
