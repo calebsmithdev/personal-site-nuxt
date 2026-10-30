@@ -11,7 +11,8 @@ describe('RSS helpers', () => {
     expect(absoluteFeedUrl('/blog/other', base)).toBe('https://caleb-smith.dev/blog/other')
     expect(absoluteFeedUrl('other', base)).toBe('https://caleb-smith.dev/blog/other')
     expect(absoluteFeedUrl('#heading', base)).toBe(`${base}#heading`)
-    expect(absoluteFeedUrl('http://example.com/image.png', base)).toBe('https://example.com/image.png')
+    expect(absoluteFeedUrl('http://caleb-smith.dev/blog/other', base)).toBe('https://caleb-smith.dev/blog/other')
+    expect(absoluteFeedUrl('http://example.com/image.png', base)).toBe('http://example.com/image.png')
   })
   it('escapes XML text and splits embedded CDATA terminators without losing content', () => {
     expect(xmlText('<A & "B">')).toBe('&lt;A &amp; &quot;B&quot;&gt;')
@@ -27,8 +28,15 @@ describe('RSS helpers', () => {
     ] }, 'https://caleb-smith.dev/blog/test', () => '/_nuxt/test.hash.png')
     expect(html).toContain('src="https://caleb-smith.dev/_nuxt/test.hash.png"')
     expect(html).toContain('href="https://caleb-smith.dev/blog/test#test"')
-    expect(html).toContain('<pre><code>&#x3C;script>example&#x3C;/script>\n</code></pre>')
+    expect(html).toContain('<pre><code class="language-html">&#x3C;script>example&#x3C;/script>\n</code></pre>')
     expect(html).toContain('<p>Text</p>')
     expect(html).not.toMatch(/<script|<style|custom-component|javascript:|onclick/)
+  })
+  it('keeps a code block filename ahead of its code', () => {
+    const html = renderFeedHtml({ type: 'minimark', value: [
+      ['pre', { code: 'export default {}\n', language: 'ts', filename: 'nuxt.config.ts' }, 'ignored'],
+      ['a', { href: 'http://example.com/' }, 'External']
+    ] }, 'https://caleb-smith.dev/blog/test', src => src)
+    expect(html).toBe('<p><code>nuxt.config.ts</code></p><pre><code class="language-ts">export default {}\n</code></pre><a href="http://example.com/">External</a>')
   })
 })

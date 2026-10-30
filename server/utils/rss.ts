@@ -9,7 +9,7 @@ export const cdata = (value: string): string => `<![CDATA[${value.replaceAll(']]
 
 export const absoluteFeedUrl = (value: string, base: string): string => {
   const url = new URL(value, base)
-  if (url.protocol === 'http:') { url.protocol = 'https:' }
+  if (url.protocol === 'http:' && url.host === new URL(base).host) { url.protocol = 'https:' }
   return url.href
 }
 
@@ -29,9 +29,17 @@ export const renderFeedHtml = (
     const children = (node.children || []).flatMap(convert)
     if (!htmlTags.has(tag)) { return children }
     if (tag === 'pre' && typeof node.props?.code === 'string') {
-      return [{ type: 'element', tagName: 'pre', properties: {}, children: [
-        { type: 'element', tagName: 'code', properties: {}, children: [{ type: 'text', value: node.props.code }] }
-      ] }]
+      const language = typeof node.props.language === 'string' ? node.props.language : undefined
+      const filename = typeof node.props.filename === 'string' ? node.props.filename : undefined
+      const pre: Element = { type: 'element', tagName: 'pre', properties: {}, children: [
+        { type: 'element', tagName: 'code', properties: language ? { className: [`language-${language}`] } : {}, children: [{ type: 'text', value: node.props.code }] }
+      ] }
+      // The page shows the filename in a toolbar; prose like "add this to the file" relies on it.
+      return filename
+        ? [{ type: 'element', tagName: 'p', properties: {}, children: [
+            { type: 'element', tagName: 'code', properties: {}, children: [{ type: 'text', value: filename }] }
+          ] }, pre]
+        : [pre]
     }
     const properties: Element['properties'] = {}
     for (const key of ['id', 'title', 'alt', 'width', 'height', 'colspan', 'rowspan', 'start', 'className', 'class', 'href', 'src']) {
@@ -40,7 +48,7 @@ export const renderFeedHtml = (
       if (key === 'href' || key === 'src') {
         const resolved = key === 'src' ? resolveAsset(String(value)) : String(value)
         const url = absoluteFeedUrl(resolved, articleUrl)
-        if (!/^(https:|mailto:|tel:)/.test(url)) { continue }
+        if (!/^(https?:|mailto:|tel:)/.test(url)) { continue }
         properties[key] = url
       } else {
         properties[key] = value
