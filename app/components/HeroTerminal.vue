@@ -73,7 +73,9 @@ const notes = computed(() => props.articles.slice(0, 3).map(article => ({
   background: #030c18;
   border: 1px solid var(--color-rule);
   border-radius: 0.35rem;
-  box-shadow: 0 0 0 1px rgb(103 215 236 / 6%), 0 2.5rem 6rem -3rem rgb(103 215 236 / 40%);
+  box-shadow:
+    0 0 0 1px rgb(103 215 236 / 6%),
+    0 2.5rem 6rem -3rem rgb(103 215 236 / 40%);
   font-family: var(--font-mono);
   font-size: clamp(0.82rem, 1vw, 0.95rem);
   line-height: 1.7;

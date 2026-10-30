@@ -4,7 +4,7 @@ import { readFile, readdir, realpath, stat } from 'node:fs/promises'
 import { extname, relative, resolve, sep } from 'node:path'
 import { brotliCompressSync } from 'node:zlib'
 
-const types = {
+const types: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
@@ -18,7 +18,7 @@ const types = {
   '.ico': 'image/x-icon'
 }
 
-export function transformTypography(source, variant) {
+export function transformTypography(source: string, variant: string) {
   if (variant === 'optional') {
     return source.replace(/@font-face\s*\{[^}]*\}/g, (face) => {
       if (!/font-family:\s*["']?Poppins["']?\s*(?:;|\})/i.test(face)
@@ -32,13 +32,13 @@ export function transformTypography(source, variant) {
   return source
 }
 
-export async function createLabServer({ root, variant = 'baseline', compression = true }) {
+export async function createLabServer({ root, variant = 'baseline', compression = true }: { root: string, variant?: string, compression?: boolean }) {
   if (!['baseline', 'optional', 'system'].includes(variant)) {
     throw new Error(`Unknown font variant: ${variant}`)
   }
   const publicRoot = await realpath(root)
-  const cache = new Map()
-  const changedFiles = []
+  const cache = new Map<string, { body: Buffer, compressed: Buffer | null, type: string }>()
+  const changedFiles: string[] = []
   // Validate against actual generated HTML/CSS before any measurements start.
   for (const entry of await readdir(publicRoot, { recursive: true, withFileTypes: true })) {
     if (!entry.isFile() || !['.html', '.css'].includes(extname(entry.name))) continue
@@ -52,11 +52,11 @@ export async function createLabServer({ root, variant = 'baseline', compression 
 
   return createServer(async (request, response) => {
     try {
-      if (!['GET', 'HEAD'].includes(request.method)) {
+      if (!['GET', 'HEAD'].includes(request.method ?? '')) {
         response.writeHead(405).end()
         return
       }
-      const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname)
+      const pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://localhost').pathname)
       if (pathname === '/__lcp-lab.json') {
         response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
           .end(JSON.stringify({ variant, compression, changedFiles }))
@@ -83,20 +83,21 @@ export async function createLabServer({ root, variant = 'baseline', compression 
         })
       }
       const asset = cache.get(file)
+      if (!asset) throw new Error('Missing cached asset')
       const useBrotli = asset.compressed && /\bbr\b/.test(request.headers['accept-encoding'] ?? '')
-      const body = useBrotli ? asset.compressed : asset.body
+      const body = useBrotli && asset.compressed ? asset.compressed : asset.body
       response.writeHead(200, {
         'Content-Type': asset.type,
         'Content-Length': body.length,
         'Cache-Control': 'no-store',
-        'Vary': 'Accept-Encoding',
+        Vary: 'Accept-Encoding',
         ...(useBrotli ? { 'Content-Encoding': 'br' } : {})
       })
       response.end(request.method === 'HEAD' ? undefined : body)
     }
     catch (error) {
-      const missing = ['ENOENT', 'ENOTDIR'].includes(error.code)
-      if (!missing) console.error('LCP lab response failed:', error.message)
+      const missing = error instanceof Error && 'code' in error && ['ENOENT', 'ENOTDIR'].includes(String(error.code))
+      if (!missing) console.error('LCP lab response failed:', error instanceof Error ? error.message : String(error))
       response.writeHead(missing ? 404 : 500).end()
     }
   })

@@ -14,13 +14,13 @@ export interface ContentNode {
   children?: ContentNode[]
 }
 
-type ArticleContent =
-  | ContentNode
-  | ContentNode[]
-  | MarkdownRoot
-  | MinimarkNode
-  | MinimarkNode[]
-  | undefined
+type ArticleContent
+  = | ContentNode
+    | ContentNode[]
+    | MarkdownRoot
+    | MinimarkNode
+    | MinimarkNode[]
+    | undefined
 
 interface PathBearingArticle {
   path?: string
@@ -31,10 +31,10 @@ const countText = (value: string): number => {
 }
 
 const isMinimarkElement = (node: readonly unknown[]): node is MinimarkElement => {
-  return typeof node[0] === 'string' &&
-    typeof node[1] === 'object' &&
-    node[1] !== null &&
-    !Array.isArray(node[1])
+  return typeof node[0] === 'string'
+    && typeof node[1] === 'object'
+    && node[1] !== null
+    && !Array.isArray(node[1])
 }
 
 export const countWords = (node: ArticleContent): number => {
