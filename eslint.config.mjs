@@ -1,6 +1,7 @@
+import accessibility from 'eslint-plugin-vuejs-accessibility'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
-export default withNuxt({
+export default withNuxt(...accessibility.configs['flat/recommended'], {
   files: ['**/*.{js,mjs,cjs,ts,mts,cts,vue}'],
   rules: {
     eqeqeq: ['error', 'smart'],

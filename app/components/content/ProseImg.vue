@@ -1,6 +1,7 @@
 <template>
   <img
     v-bind="$props"
+    :alt="alt ?? ''"
     :src="useAsset(src)"
     loading="lazy"
     decoding="async"
