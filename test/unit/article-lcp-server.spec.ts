@@ -1,10 +1,10 @@
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { request } from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { brotliDecompressSync } from 'node:zlib'
-import { request } from 'node:http'
 import { afterEach, describe, expect, it } from 'vitest'
-import { createLabServer, transformTypography } from '../../scripts/performance/serve-article-lcp.mjs'
+import { createLabServer, transformTypography } from '../../scripts/performance/serve-article-lcp.ts'
 
 const fonts = `@font-face{font-family:Poppins;font-style:normal;font-weight:700;font-display:swap;src:url(bold.woff2)}
 @font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(medium.woff2)}
@@ -34,15 +34,18 @@ describe('article LCP lab controls', () => {
     const server = await createLabServer({ root, variant: 'optional' })
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
     cleanups.push(() => new Promise<void>((resolve, reject) => {
-      server.close((error?: Error) => error ? reject(error) : resolve())
+      server.close((error?: Error) => {
+        if (error) reject(error)
+        else resolve()
+      })
     }))
     const address = server.address()
     if (!address || typeof address === 'string') throw new Error('Missing TCP address')
     const result = await new Promise<{ body: Buffer, encoding: string | undefined }>((resolve, reject) => {
-      request(`http://127.0.0.1:${address.port}/`, { headers: { 'Accept-Encoding': 'br' } }, (response) => {
+      request(`http://127.0.0.1:${String(address.port)}/`, { headers: { 'Accept-Encoding': 'br' } }, (response) => {
         const chunks: Buffer[] = []
         response.on('data', chunk => chunks.push(chunk))
-        response.on('end', () => resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }))
+        response.on('end', () => { resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }) })
       }).on('error', reject).end()
     })
     expect(result.encoding).toBe('br')
@@ -64,16 +67,19 @@ describe('article LCP lab controls', () => {
     const server = await createLabServer({ root, variant: 'system', compression })
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
     cleanups.push(() => new Promise<void>((resolve, reject) => {
-      server.close((error?: Error) => error ? reject(error) : resolve())
+      server.close((error?: Error) => {
+        if (error) reject(error)
+        else resolve()
+      })
     }))
     const address = server.address()
     if (!address || typeof address === 'string') throw new Error('Missing TCP address')
     for (const encoding of ['', 'br']) {
       const result = await new Promise<{ body: Buffer, encoding: string | undefined }>((resolve, reject) => {
-        request(`http://127.0.0.1:${address.port}/style.css`, { headers: { 'Accept-Encoding': encoding } }, (response) => {
+        request(`http://127.0.0.1:${String(address.port)}/style.css`, { headers: { 'Accept-Encoding': encoding } }, (response) => {
           const chunks: Buffer[] = []
           response.on('data', chunk => chunks.push(chunk))
-          response.on('end', () => resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }))
+          response.on('end', () => { resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }) })
         }).on('error', reject).end()
       })
       expect(result.encoding).toBe(compression && encoding ? 'br' : undefined)

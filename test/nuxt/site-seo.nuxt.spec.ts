@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { createHead, renderSSRHead } from '@unhead/vue/server'
+import { createHead } from '@unhead/vue/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useSiteSeo } from '../../app/composables/useSiteSeo'
 import { defaultSocialImage } from '../../app/utils/site'
@@ -224,7 +224,7 @@ describe('structured metadata', () => {
       '@type': 'Person', '@id': 'https://preview.example.test/#person'
     }))
     expect(data['@graph']).toContainEqual({
-      '@type': 'BlogPosting', '@id': `${seo.ogUrl}#blogposting`, url: seo.ogUrl,
+      '@type': 'BlogPosting', '@id': `${String(seo.ogUrl)}#blogposting`, url: seo.ogUrl,
       headline: seo.ogTitle, description: seo.ogDescription,
       datePublished: '2020-01-02', dateModified: '2026-10-24',
       mainEntityOfPage: { '@id': seo.ogUrl },
@@ -232,7 +232,7 @@ describe('structured metadata', () => {
     })
   })
 
-  it('renders script-closing text as safe, parseable JSON-LD', async () => {
+  it('renders script-closing text as safe, parseable JSON-LD', () => {
     const title = '</script><script>alert("title")</script>'
     const description = '<!-- & <tag> "quoted" \u2028 \u2029'
     useSiteSeo({
@@ -245,7 +245,7 @@ describe('structured metadata', () => {
     expect(data['@graph'][1].description).toBe(description)
     const head = createHead()
     head.push(mocks.useHead.mock.calls[0]?.[0])
-    const { headTags } = await renderSSRHead(head)
+    const { headTags } = head.render()
     const scripts = [...headTags.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
     expect(scripts).toHaveLength(1)
     expect(headTags).not.toContain('<script>alert')

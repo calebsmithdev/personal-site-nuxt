@@ -94,12 +94,12 @@ import dayjs from 'dayjs'
   font-size: 1rem;
 }
 
-.footer-links li:last-child a {
-  color: var(--color-accent);
-}
-
 .footer-links a:hover {
   border-bottom: 1px solid currentColor;
+}
+
+.footer-links li:last-child a {
+  color: var(--color-accent);
 }
 
 @media (max-width: 767px) {

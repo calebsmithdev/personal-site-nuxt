@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict'
 import { fileURLToPath } from 'node:url'
 import { fetch, setup } from '@nuxt/test-utils/e2e'
 import { describe, expect, it } from 'vitest'
@@ -74,6 +75,7 @@ const expectUniqueMeta = (
     .filter(tag => getAttribute(tag, attribute) === key)
 
   expect(matches).toHaveLength(1)
+  assert.ok(matches[0])
   expect(getAttribute(matches[0], 'content')).toBe(content)
 
   return matches[0]
@@ -97,10 +99,11 @@ describe('article routes', () => {
     expect(response.headers.get('Content-Security-Policy')).toBe(
       response.status === 404 ? "script-src 'none'; frame-ancestors 'none';" : null
     )
+  })
 
-    if (path.endsWith('using-ftp')) {
-      expect(await response.text()).toContain('https://www.youtube.com/embed/')
-    }
+  it('renders the Steam Deck article video', async () => {
+    const response = await fetch('/blog/how-to-connect-to-your-steam-deck-using-ftp')
+    expect(await response.text()).toContain('https://www.youtube.com/embed/')
   })
 
   it('keeps analytics code out of unconfigured page scripts and resource hints', async () => {
@@ -108,8 +111,8 @@ describe('article routes', () => {
     const head = getHead(await response.text())
     const scriptHints = getTags(head, 'link').filter((tag) => {
       const rel = getAttribute(tag, 'rel')
-      return rel === 'modulepreload' ||
-        (getAttribute(tag, 'as') === 'script' && (rel === 'preload' || rel === 'prefetch'))
+      return rel === 'modulepreload'
+        || (getAttribute(tag, 'as') === 'script' && (rel === 'preload' || rel === 'prefetch'))
     })
     const scriptPaths = [...new Set([
       ...getTags(head, 'script').map(tag => getAttribute(tag, 'src')),
@@ -188,6 +191,7 @@ describe('route metadata', () => {
     expect(response.status).toBe(200)
     expect(title).toBe(metadata.documentTitle)
     expect(canonicalTags).toHaveLength(1)
+    assert.ok(canonicalTags[0])
     expect(getAttribute(canonicalTags[0], 'href')).toBe(url)
     expectUniqueMeta(head, 'name', 'description', metadata.description)
     expectUniqueMeta(head, 'property', 'og:url', url)

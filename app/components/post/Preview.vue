@@ -30,10 +30,10 @@
 
 <script setup lang="ts">
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
+import { displayCategory, articleDateTime, formatArticleDate } from '../../utils/article'
 import ArrowRightIcon from '../ArrowRightIcon.vue'
 import FaIcon from '../FaIcon.vue'
 import type { BlogArticleSummary } from '../../types'
-import { displayCategory, articleDateTime, formatArticleDate } from '../../utils/article'
 
 defineOptions({
   name: 'PostPreview'

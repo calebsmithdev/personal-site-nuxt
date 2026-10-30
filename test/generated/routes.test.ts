@@ -10,9 +10,9 @@ after(() => window.happyDOM.close())
 const siteOrigin = 'https://caleb-smith.dev'
 const contentDirectory = new URL('../../content/blog/', import.meta.url)
 const outputDirectory = new URL('../../.output/public/', import.meta.url)
-const readOutput = path => readFile(new URL(path, outputDirectory), 'utf8')
-const getAttribute = (tag, attribute) => tag.match(new RegExp(`\\b${attribute}=(["'])(.*?)\\1`, 'i'))?.[2]
-const escapeText = text => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+const readOutput = (path: string) => readFile(new URL(path, outputDirectory), 'utf8')
+const getAttribute = (tag: string | undefined, attribute: string) => tag?.match(new RegExp(`\\b${attribute}=(["'])(.*?)\\1`, 'i'))?.[2]
+const escapeText = (text: string) => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
 // Derive the expected routes from source files, independently of crawler discovery
 // and sitemap generation, so an undiscovered article cannot silently disappear.
@@ -34,14 +34,14 @@ const articles = await Promise.all(
     })
 )
 
-const routes = [
+const routes: Array<{ path: string, title: string, lastmod?: string }> = [
   { path: '/', title: 'Full Stack Web Developer | Caleb Smith' },
   { path: '/blog', title: 'Writing | Caleb Smith' },
   ...articles
 ]
 
 for (const route of routes) {
-  test(`prerenders ${route.path} with its own content, metadata, and payload`, async () => {
+  await test(`prerenders ${route.path} with its own content, metadata, and payload`, async () => {
     const directory = route.path === '/' ? '' : `${route.path.slice(1)}/`
     // Read the exact artifact: no server, route rewrite, or SPA fallback.
     const html = await readOutput(`${directory}index.html`)
@@ -68,7 +68,8 @@ for (const route of routes) {
     const payloadData = JSON.stringify(JSON.parse(payload))
     if (route.lastmod) {
       assert.ok(payloadData.includes(JSON.stringify(route.title)), `${route.path} payload must contain its article title`)
-    } else {
+    }
+    else {
       // useBlog stores its list in useState, which Nuxt serializes inline rather
       // than in the extracted useAsyncData payload used by individual articles.
       const state = html.match(/<script\b[^>]*\bid="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)?.[1]
@@ -81,7 +82,7 @@ for (const route of routes) {
   })
 }
 
-test('prerendered blog index links to every source article', async () => {
+await test('prerendered blog index links to every source article', async () => {
   assert.ok(articles.length > 0)
   const html = await readOutput('blog/index.html')
   for (const { path } of articles) {
@@ -89,7 +90,7 @@ test('prerendered blog index links to every source article', async () => {
   }
 })
 
-test('generated sitemap preserves all public routes and article modification dates', async () => {
+await test('generated sitemap preserves all public routes and article modification dates', async () => {
   const xml = await readOutput('sitemap.xml')
   const entries = (xml.match(/<url>[\s\S]*?<\/url>/g) ?? []).map(entry => ({
     loc: entry.match(/<loc>(.*?)<\/loc>/)?.[1],
@@ -105,7 +106,7 @@ test('generated sitemap preserves all public routes and article modification dat
   }
 })
 
-test('generated robots.txt advertises the canonical sitemap and allows crawling', async () => {
+await test('generated robots.txt advertises the canonical sitemap and allows crawling', async () => {
   const robots = await readOutput('robots.txt')
   assert.match(robots, /^User-agent: \*\s*$/m)
   assert.ok(robots.includes(`Sitemap: ${siteOrigin}/sitemap.xml`))

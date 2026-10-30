@@ -7,7 +7,7 @@ sitemap:
   lastmod: 2024-05-12
 ---
 
-As a WordPress developer who routinely uses Advanced Custom Fields, I occasionally run into small things where I think "Woah - why isn't this part of the core feature set?". They are usually small things, but I end up copy/pasting them between projects anyway. One of those features is the ability to hide fields labels for admins, whether with just any meta field or with ACF blocks. 
+As a WordPress developer who routinely uses Advanced Custom Fields, I occasionally run into small things where I think "Woah - why isn't this part of the core feature set?". They are usually small things, but I end up copy/pasting them between projects anyway. One of those features is the ability to hide fields labels for admins, whether with just any meta field or with ACF blocks.
 
 For me - I specifically use this with the Message field type. Message fields are static message spots that I primarily use for leaving instructions, or important messages, while my content editors are in the backend. For ACF Blocks, I'll use them at the very top for any specific details about how to use a block, or to list any rules to consider at the design system level.
 

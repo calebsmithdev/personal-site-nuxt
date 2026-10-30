@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
 import { createServer, type RequestListener } from 'node:http'
 import { fileURLToPath } from 'node:url'
@@ -5,7 +6,7 @@ import { promisify } from 'node:util'
 import { describe, expect, it } from 'vitest'
 
 const execFileAsync = promisify(execFile)
-const checker = fileURLToPath(new URL('../../scripts/check-deployment-404.mjs', import.meta.url))
+const checker = fileURLToPath(new URL('../../scripts/check-deployment-404.ts', import.meta.url))
 const articlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 const pages: Record<string, string> = {
   '/': '<title>Full Stack Web Developer | Caleb Smith</title>',
@@ -28,11 +29,14 @@ async function withServer(handler: RequestListener, run: (origin: string) => Pro
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('Expected an HTTP server port')
   try {
-    await run(`http://127.0.0.1:${address.port}`)
+    await run(`http://127.0.0.1:${String(address.port)}`)
   }
   finally {
     await new Promise<void>((resolve, reject) => {
-      server.close(error => error ? reject(error) : resolve())
+      server.close((error) => {
+        if (error) reject(error)
+        else resolve()
+      })
       server.closeAllConnections()
     })
   }
@@ -83,7 +87,7 @@ describe('deployment 404 smoke checker', () => {
     }, async (origin) => {
       await expect(runChecker([origin])).rejects.toMatchObject({
         code: 1,
-        stdout: expect.stringContaining(`expected 404, received ${status}`)
+        stdout: expect.stringContaining(`expected 404, received ${String(status)}`)
       })
       expect(redirectTargetRequests).toBe(0)
     })
@@ -136,7 +140,8 @@ describe('deployment 404 smoke checker', () => {
     await withServer((request) => {
       request.socket.destroy()
     }, async (origin) => {
-      const result = await runChecker([origin]).catch(error => error)
+      const result = await runChecker([origin]).catch((error: unknown) => error)
+      assert.ok(result instanceof Error && 'code' in result && 'stderr' in result && typeof result.stderr === 'string' && 'stdout' in result && typeof result.stdout === 'string')
       expect(result.code).toBe(1)
       expect(result.stderr.match(/^FAIL GET \S+: request failed$/gm)).toHaveLength(6)
       expect(result.stderr).not.toContain(origin)
@@ -152,7 +157,7 @@ describe('deployment 404 smoke checker', () => {
   ])('rejects invalid or ambiguous arguments %#', async (...args) => {
     // it.each spreads each row into this callback.
     await expect(runChecker(args)).rejects.toMatchObject({
-      code: 1, stderr: expect.stringContaining('Usage: node scripts/check-deployment-404.mjs')
+      code: 1, stderr: expect.stringContaining('Usage: node scripts/check-deployment-404.ts')
     })
   })
 })

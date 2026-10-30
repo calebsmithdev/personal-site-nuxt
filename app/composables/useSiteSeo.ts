@@ -1,4 +1,3 @@
-import type { UseSeoMetaInput } from '@unhead/vue'
 import { defaultSocialImage, type SocialImage } from '../utils/site'
 
 export type SiteSeoOptions = {
@@ -17,7 +16,7 @@ export type SiteSeoOptions = {
   dateModified?: never
 })
 
-type SiteSeoMetaInput = UseSeoMetaInput & {
+interface SiteSeoMetaInput extends NonNullable<Parameters<typeof useSeoMeta>[0]> {
   twitterDomain: string
   twitterUrl: string
 }
@@ -55,6 +54,7 @@ export const useSiteSeo = ({
     ogLocale: 'en_US',
     ogUrl: url,
     ogImage,
+    /* eslint-disable @typescript-eslint/no-deprecated -- X/Twitter still reads twitter:* tags. */
     twitterCard: 'summary_large_image',
     twitterCreator: '@CalebSmithDev',
     twitterSite: '@CalebSmithDev',
@@ -63,6 +63,7 @@ export const useSiteSeo = ({
     twitterDescription: description,
     twitterUrl: url,
     twitterImage: { url: imageUrl, alt: image.alt }
+    /* eslint-enable @typescript-eslint/no-deprecated */
   }
 
   useSeoMeta(seoMeta)
@@ -77,29 +78,31 @@ export const useSiteSeo = ({
       'https://www.linkedin.com/in/calebsmithdev/'
     ]
   }
-  const graph = type === 'article'
-    ? [person, {
-        '@type': 'BlogPosting',
-        '@id': `${url}#blogposting`,
-        url,
-        headline: title,
-        description,
-        datePublished,
-        dateModified,
-        mainEntityOfPage: { '@id': url },
-        author: { '@id': person['@id'] },
-        image: imageUrl
-      }]
-    : normalizePath(path) === '/'
-      ? [person, {
-          '@type': 'WebSite',
-          '@id': `${origin}/#website`,
-          url,
-          name: 'Caleb Smith',
-          description,
-          author: { '@id': person['@id'] }
-        }]
-      : []
+  const graph = []
+  if (type === 'article') {
+    graph.push(person, {
+      '@type': 'BlogPosting',
+      '@id': `${url}#blogposting`,
+      url,
+      headline: title,
+      description,
+      datePublished,
+      dateModified,
+      mainEntityOfPage: { '@id': url },
+      author: { '@id': person['@id'] },
+      image: imageUrl
+    })
+  }
+  else if (normalizePath(path) === '/') {
+    graph.push(person, {
+      '@type': 'WebSite',
+      '@id': `${origin}/#website`,
+      url,
+      name: 'Caleb Smith',
+      description,
+      author: { '@id': person['@id'] }
+    })
+  }
 
   // A literal '<' could close the script element even inside a JSON string.
   const structuredData = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })

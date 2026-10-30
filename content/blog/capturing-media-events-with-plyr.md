@@ -24,7 +24,7 @@ const player = new Plyr('#player');
 We will the on() event listener to look for specific events that we will hook into to capture Google Analytics details. Here is a list of the current supported events to listen to as of v3.7.8, but you can find a more [up to date list here](https://github.com/sampotts/plyr#standard-media-events).
 
 |Event Type|Description|
-|--- |--- |
+|---|---|
 |progress|Sent periodically to inform interested parties of progress downloading the media. Information about the current amount of the media that has been downloaded is available in the media element’s buffered attribute.|
 |playing|Sent when the media begins to play (either for the first time, after having been paused, or after ending and then restarting).|
 |play|Sent when playback of the media starts after having been paused; that is, when playback is resumed after a prior pause event.|
@@ -44,7 +44,7 @@ We will the on() event listener to look for specific events that we will hook in
 |controlsshown|Sent when the controls are shown.|
 |ready|Triggered when the instance is ready for API calls.|
 
-For our purposes, we will focus on the play, ended, and pause events. The play event will be called everytime the user pushes play, and ended of course is targeted once the media completely finishes, and pause is everytime the media is paused. Our Google Events will be custom events, so feel free to rename these to something more relevant to your tracking system. 
+For our purposes, we will focus on the play, ended, and pause events. The play event will be called everytime the user pushes play, and ended of course is targeted once the media completely finishes, and pause is everytime the media is paused. Our Google Events will be custom events, so feel free to rename these to something more relevant to your tracking system.
 
 Our Google Analytics event will send over the source URL for all events, as well as the current_time and progress, if relevant. This object is flexible and you can submit more/less data as you see fit for your team.
 

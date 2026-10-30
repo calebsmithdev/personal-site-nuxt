@@ -23,7 +23,7 @@ This is Caleb Smith's Nuxt 4 personal site. Use Node.js 26 (from `.nvmrc`) and n
 ## Verification
 
 - During iteration, run the narrowest relevant test or check.
-- Before handing off a code change, run `npm run check`.
+- Before handing off a code change, run `npm run check` (lint, typecheck, tests, build, generate, generated-file tests, and Knip).
 - If the full check cannot run, report the exact command and blocker.
 
 ## Git workflow

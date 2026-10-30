@@ -52,7 +52,7 @@ The site has three routes:
 | SEO | `@nuxtjs/sitemap`, `@nuxtjs/robots`, route-level metadata in `useSiteSeo` |
 | Styling | Hand-written CSS, self-hosted Fontsource fonts, Font Awesome icons |
 | Analytics | Google Analytics through `vue-gtag`, enabled only when configured |
-| Quality | ESLint, `vue-tsc`, Vitest with `@nuxt/test-utils` |
+| Quality | ESLint with type-aware and accessibility rules, Stylelint, markdownlint, Knip, `vue-tsc`, Vitest with `@nuxt/test-utils`, commitlint |
 | Hosting | [Laravel Cloud](https://cloud.laravel.com) |
 
 ## Quick start
@@ -78,9 +78,11 @@ cp .env.example .env
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Starts the Nuxt development server. |
-| `npm run check` | Runs lint, typecheck, server/component/unit tests, the Nitro build, static generation, and generated-file tests in that order. **CI runs this same command.** |
-| `npm run lint` | Lints the repository with ESLint. |
-| `npm run typecheck` | Runs Nuxt's TypeScript checks. |
+| `npm run check` | Runs lint, typecheck, server/component/unit tests, the Nitro build, static generation, generated-file tests, and Knip in that order. **CI runs this same command.** |
+| `npm run lint` | Runs ESLint, Stylelint, and markdownlint. |
+| `npm run lint:fix` | Applies automatic JavaScript, CSS, and Markdown lint fixes. |
+| `npm run knip` | Checks for unused files, exports, and dependencies. |
+| `npm run typecheck` | Checks app, server, shared, config, scripts, and test TypeScript projects. |
 | `npm run test` | Runs the Vitest `unit`, `nuxt`, and `e2e` projects. |
 | `npm run test:generated` | Checks the static files in `.output/public/`. Run `npm run generate` first. |
 | `npm run generate` | Prerenders the static site into `.output/public/`. |
@@ -197,7 +199,7 @@ Vitest has three projects:
 | `nuxt` | `test/nuxt/**/*.nuxt.spec.ts` | Nuxt, through `@nuxt/test-utils` |
 | `e2e` | `test/e2e/**/*.spec.ts` | Node, files run one at a time |
 
-The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes to `main`. It reads the Node version from `.nvmrc`, caches npm, runs `npm ci`, and then runs `npm run check`. It has read-only access to repository contents, and a new run cancels any older run on the same ref.
+The [CI workflow](.github/workflows/ci.yml) runs on pull requests and on pushes to `main`. It reads the Node version from `.nvmrc`, caches npm, runs `npm ci`, and then runs `npm run check`. Pull requests also validate commit messages with commitlint. It has read-only access to repository contents, and a new run cancels any older run on the same ref.
 
 After the Vitest projects and Nitro build pass, CI runs `npm run generate` and `npm run test:generated`. The latter uses Node's test runner to read the exact home, blog index, and article HTML and payload files in `.output/public/`, plus `sitemap.xml` and `robots.txt`. Expected article routes come from `content/blog/**/*.md`, so an article the prerender crawler fails to discover still fails validation. These checks also protect canonical URLs and sitemap modification dates, and make no requests to the live site or other external services. The existing server e2e tests remain useful for Nitro behavior; they do not establish how production hosting serves missing routes.
 
@@ -224,7 +226,7 @@ Use `npm run preview` after a build to try the production output locally. The [N
 
 `npm run check` finishes with static output because generation follows the Nitro build. Run `npm run build` again before `npm run start` when testing the server output. For static output, deploy `.output/public/` after `npm run generate`; runtime Nitro handlers are unavailable in that artifact. Confirm the actual Laravel Cloud build command, start command (if any), and served directory before selecting either mode or removing either CI validation path. Serving rules and HTTP status codes still need separate verification on the deployed host.
 
-Hashed `/_nuxt/*` JS, CSS, fonts, and images should use `Cache-Control: public, max-age=31536000, immutable`; HTML and mutable `/_nuxt/builds/latest.json` must keep a short browser TTL or require revalidation. See the [deployment cache policy](docs/deployment-cache-policy.md) for the scoped Laravel Cloud change, current production findings, and the repeatable `node scripts/check-asset-cache.mjs` audit. Static hosting must apply these response headers; changing Nuxt route rules alone does not configure the edge.
+Hashed `/_nuxt/*` JS, CSS, fonts, and images should use `Cache-Control: public, max-age=31536000, immutable`; HTML and mutable `/_nuxt/builds/latest.json` must keep a short browser TTL or require revalidation. See the [deployment cache policy](docs/deployment-cache-policy.md) for the scoped Laravel Cloud change, current production findings, and the repeatable `node scripts/check-asset-cache.ts` audit. Static hosting must apply these response headers; changing Nuxt route rules alone does not configure the edge.
 
 > [!IMPORTANT]
 > This repository contains no hosting credentials. Keep tokens and account IDs in the hosting provider's secret settings, never in tracked files.
