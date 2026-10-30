@@ -1,8 +1,8 @@
 import { faJsSquare, faSwift, faWordpressSimple } from '@fortawesome/free-brands-svg-icons'
 import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { MarkdownRoot, MinimarkElement, MinimarkNode } from '@nuxt/content'
 
 dayjs.extend(utc)
