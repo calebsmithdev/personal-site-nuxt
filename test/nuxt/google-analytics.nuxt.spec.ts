@@ -18,7 +18,7 @@ describe('optional analytics', () => {
 
   it('does not load or install analytics without configuration', async () => {
     const { default: analyticsPlugin } = await import('../../app/plugins/google-analytics.client')
-    analyticsPlugin(useNuxtApp())
+    await analyticsPlugin(useNuxtApp())
     await vi.dynamicImportSettled()
 
     expect(mocks.libraryLoaded).not.toHaveBeenCalled()

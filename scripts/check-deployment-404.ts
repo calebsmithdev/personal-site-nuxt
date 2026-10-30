@@ -35,7 +35,7 @@ async function main(args: string[]) {
         redirect: 'manual',
         signal: AbortSignal.timeout(10_000)
       })
-      detail = `expected ${probe.status}, received ${response.status}`
+      detail = `expected ${String(probe.status)}, received ${String(response.status)}`
       let passed = response.status === probe.status
       if (passed && probe.content) {
         const html = await response.text()

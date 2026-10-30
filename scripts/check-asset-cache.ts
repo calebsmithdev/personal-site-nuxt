@@ -8,7 +8,7 @@ const kinds = {
   image: /\.(?:png|jpe?g|webp|avif|gif|svg)$/i
 }
 
-export function parseCacheControl(value = '') {
+function parseCacheControl(value = '') {
   const directives = new Map<string, string[]>()
   for (const part of value.split(',')) {
     const [name, ...rest] = part.trim().toLowerCase().split('=')
@@ -31,7 +31,7 @@ export function policyErrors(value: string, asset: boolean) {
       if (!directives.has(directive)) errors.push(`missing ${directive}`)
     }
     if (maxAges.length !== 1 || Number(maxAges[0]) !== YEAR) {
-      errors.push(`expected browser max-age=${YEAR}`)
+      errors.push(`expected browser max-age=${String(YEAR)}`)
     }
     for (const directive of ['private', 'no-cache', 'no-store']) {
       if (directives.has(directive)) errors.push(`conflicting ${directive}`)
@@ -91,7 +91,7 @@ export async function checkAssetCache(base: string, { fetcher = fetch, log = con
       }
       cacheControl = response.headers.get('cache-control') ?? ''
       const contentType = response.headers.get('content-type') ?? ''
-      if (response.status !== 200) errors.push(`expected 200, got ${response.status}`)
+      if (response.status !== 200) errors.push(`expected 200, got ${String(response.status)}`)
       const expectedType = {
         html: /text\/html/i,
         manifest: /application\/json/i,
@@ -145,7 +145,7 @@ export async function checkAssetCache(base: string, { fetcher = fetch, log = con
       failures++
     }
   }
-  log(`Checked ${pages.size} HTML pages and ${Object.values(counts).reduce((a, b) => a + b, 0)} assets (${JSON.stringify(counts)}); ${failures} failures.`)
+  log(`Checked ${String(pages.size)} HTML pages and ${String(Object.values(counts).reduce((a, b) => a + b, 0))} assets (${JSON.stringify(counts)}); ${String(failures)} failures.`)
   return failures
 }
 

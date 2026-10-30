@@ -54,6 +54,7 @@ export const useSiteSeo = ({
     ogLocale: 'en_US',
     ogUrl: url,
     ogImage,
+    /* eslint-disable @typescript-eslint/no-deprecated -- X/Twitter still reads twitter:* tags. */
     twitterCard: 'summary_large_image',
     twitterCreator: '@CalebSmithDev',
     twitterSite: '@CalebSmithDev',
@@ -62,6 +63,7 @@ export const useSiteSeo = ({
     twitterDescription: description,
     twitterUrl: url,
     twitterImage: { url: imageUrl, alt: image.alt }
+    /* eslint-enable @typescript-eslint/no-deprecated */
   }
 
   useSeoMeta(seoMeta)

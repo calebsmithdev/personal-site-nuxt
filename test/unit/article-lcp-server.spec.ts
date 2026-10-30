@@ -34,15 +34,18 @@ describe('article LCP lab controls', () => {
     const server = await createLabServer({ root, variant: 'optional' })
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
     cleanups.push(() => new Promise<void>((resolve, reject) => {
-      server.close((error?: Error) => error ? reject(error) : resolve())
+      server.close((error?: Error) => {
+        if (error) reject(error)
+        else resolve()
+      })
     }))
     const address = server.address()
     if (!address || typeof address === 'string') throw new Error('Missing TCP address')
     const result = await new Promise<{ body: Buffer, encoding: string | undefined }>((resolve, reject) => {
-      request(`http://127.0.0.1:${address.port}/`, { headers: { 'Accept-Encoding': 'br' } }, (response) => {
+      request(`http://127.0.0.1:${String(address.port)}/`, { headers: { 'Accept-Encoding': 'br' } }, (response) => {
         const chunks: Buffer[] = []
         response.on('data', chunk => chunks.push(chunk))
-        response.on('end', () => resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }))
+        response.on('end', () => { resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }) })
       }).on('error', reject).end()
     })
     expect(result.encoding).toBe('br')
@@ -64,16 +67,19 @@ describe('article LCP lab controls', () => {
     const server = await createLabServer({ root, variant: 'system', compression })
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
     cleanups.push(() => new Promise<void>((resolve, reject) => {
-      server.close((error?: Error) => error ? reject(error) : resolve())
+      server.close((error?: Error) => {
+        if (error) reject(error)
+        else resolve()
+      })
     }))
     const address = server.address()
     if (!address || typeof address === 'string') throw new Error('Missing TCP address')
     for (const encoding of ['', 'br']) {
       const result = await new Promise<{ body: Buffer, encoding: string | undefined }>((resolve, reject) => {
-        request(`http://127.0.0.1:${address.port}/style.css`, { headers: { 'Accept-Encoding': encoding } }, (response) => {
+        request(`http://127.0.0.1:${String(address.port)}/style.css`, { headers: { 'Accept-Encoding': encoding } }, (response) => {
           const chunks: Buffer[] = []
           response.on('data', chunk => chunks.push(chunk))
-          response.on('end', () => resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }))
+          response.on('end', () => { resolve({ body: Buffer.concat(chunks), encoding: response.headers['content-encoding'] }) })
         }).on('error', reject).end()
       })
       expect(result.encoding).toBe(compression && encoding ? 'br' : undefined)

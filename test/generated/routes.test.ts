@@ -41,7 +41,7 @@ const routes: Array<{ path: string, title: string, lastmod?: string }> = [
 ]
 
 for (const route of routes) {
-  test(`prerenders ${route.path} with its own content, metadata, and payload`, async () => {
+  await test(`prerenders ${route.path} with its own content, metadata, and payload`, async () => {
     const directory = route.path === '/' ? '' : `${route.path.slice(1)}/`
     // Read the exact artifact: no server, route rewrite, or SPA fallback.
     const html = await readOutput(`${directory}index.html`)
@@ -82,7 +82,7 @@ for (const route of routes) {
   })
 }
 
-test('prerendered blog index links to every source article', async () => {
+await test('prerendered blog index links to every source article', async () => {
   assert.ok(articles.length > 0)
   const html = await readOutput('blog/index.html')
   for (const { path } of articles) {
@@ -90,7 +90,7 @@ test('prerendered blog index links to every source article', async () => {
   }
 })
 
-test('generated sitemap preserves all public routes and article modification dates', async () => {
+await test('generated sitemap preserves all public routes and article modification dates', async () => {
   const xml = await readOutput('sitemap.xml')
   const entries = (xml.match(/<url>[\s\S]*?<\/url>/g) ?? []).map(entry => ({
     loc: entry.match(/<loc>(.*?)<\/loc>/)?.[1],
@@ -106,7 +106,7 @@ test('generated sitemap preserves all public routes and article modification dat
   }
 })
 
-test('generated robots.txt advertises the canonical sitemap and allows crawling', async () => {
+await test('generated robots.txt advertises the canonical sitemap and allows crawling', async () => {
   const robots = await readOutput('robots.txt')
   assert.match(robots, /^User-agent: \*\s*$/m)
   assert.ok(robots.includes(`Sitemap: ${siteOrigin}/sitemap.xml`))

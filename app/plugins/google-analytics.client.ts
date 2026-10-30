@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           router
         }
       }))
-    }).catch((error) => {
+    }).catch((error: unknown) => {
       if (import.meta.dev) {
         console.warn('Unable to load Google Analytics', error)
       }

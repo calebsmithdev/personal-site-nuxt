@@ -99,10 +99,11 @@ describe('article routes', () => {
     expect(response.headers.get('Content-Security-Policy')).toBe(
       response.status === 404 ? "script-src 'none'; frame-ancestors 'none';" : null
     )
+  })
 
-    if (path.endsWith('using-ftp')) {
-      expect(await response.text()).toContain('https://www.youtube.com/embed/')
-    }
+  it('renders the Steam Deck article video', async () => {
+    const response = await fetch('/blog/how-to-connect-to-your-steam-deck-using-ftp')
+    expect(await response.text()).toContain('https://www.youtube.com/embed/')
   })
 
   it('keeps analytics code out of unconfigured page scripts and resource hints', async () => {
