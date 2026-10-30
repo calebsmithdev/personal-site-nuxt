@@ -1,7 +1,7 @@
 <template>
   <div>
     <Head>
-      <link rel="alternate" type="application/rss+xml" title="Caleb Smith" href="https://caleb-smith.dev/rss.xml">
+      <link rel="alternate" type="application/rss+xml" title="Caleb Smith" :href="feedUrl">
       <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
       <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
       <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
@@ -18,3 +18,8 @@
     <GlobalFooter />
   </div>
 </template>
+
+<script setup lang="ts">
+// Use the configured site origin, like canonical URLs and the feed itself.
+const feedUrl = new URL('/rss.xml', useSiteConfig().url).href
+</script>
