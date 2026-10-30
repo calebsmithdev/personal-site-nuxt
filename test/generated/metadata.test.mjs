@@ -3,10 +3,24 @@ import { readFile, stat } from 'node:fs/promises'
 import { after, test } from 'node:test'
 import { Window } from 'happy-dom'
 
-const window = new Window()
+const window = new Window({
+  settings: {
+    disableCSSFileLoading: true,
+    disableJavaScriptFileLoading: true,
+    disableJavaScriptEvaluation: true,
+    disableIframePageLoading: true
+  }
+})
 after(() => window.happyDOM.close())
 const output = new URL('../../.output/public/', import.meta.url)
-const readPage = async path => new window.DOMParser().parseFromString(await readFile(new URL(path, output), 'utf8'), 'text/html')
+// Parse only metadata so modulepreload links and page embeds cannot initiate resource requests.
+const readPage = async (path) => {
+  const html = await readFile(new URL(path, output), 'utf8')
+  const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]
+  assert.ok(head)
+  const metadata = head.match(/<title>[^<]*<\/title>|<meta\b[^>]*>|<script\b[^>]*type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/gi)
+  return new window.DOMParser().parseFromString(metadata.join(''), 'text/html')
+}
 
 test('homepage has the absolute title, description, and Person metadata', async () => {
   const document = await readPage('index.html')
