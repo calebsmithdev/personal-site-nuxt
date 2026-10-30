@@ -36,6 +36,9 @@
             </a>
           </li>
           <li>
+            <a href="/rss.xml">RSS</a>
+          </li>
+          <li>
             <NuxtLink to="/blog">
               Writing
             </NuxtLink>

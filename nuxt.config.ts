@@ -51,7 +51,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       // Discover rendered image URLs in Node builds as well as generate output.
-      routes: ['/blog'],
+      routes: ['/blog', '/rss.xml'],
       crawlLinks: true
     }
   },
@@ -78,5 +78,11 @@ export default defineNuxtConfig({
       stylistic: { commaDangle: 'never', quoteProps: 'as-needed' },
       formatters: { css: true }
     }
+  },
+  robots: {
+    groups: [{
+      userAgent: ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Applebot-Extended'],
+      disallow: ['/']
+    }]
   }
 })
