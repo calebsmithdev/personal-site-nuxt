@@ -67,7 +67,9 @@ for (let run = 1; run <= 3; run++) {
         '/tmp/personal-site-nuxt-issue-validation.lock',
         'flock', '--close', '-E', '75', '-w', '1800', '/tmp/personal-site-nuxt-issue-install.lock',
         'timeout', '--kill-after=15s', '300s', ...args], { encoding: 'utf8' })
-      await writeFile(output.replace(/\.json$/, '.log'), `${result.stdout}${result.stderr}`)
+      // Node can return null output when spawning fails, despite its encoded-output overload.
+      const captured = result as { stdout: string | null, stderr: string | null }
+      await writeFile(output.replace(/\.json$/, '.log'), `${captured.stdout ?? ''}${captured.stderr ?? ''}`)
       if (result.status !== 0) throw new Error(`Audit failed or lock remained busy: ${output}, exit ${String(result.status)}`)
       const report = JSON.parse(await readFile(output, 'utf8')) as LighthouseReport
       if (report.runtimeError) throw new Error(JSON.stringify(report.runtimeError))
