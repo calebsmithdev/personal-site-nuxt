@@ -37,7 +37,7 @@ describe('sitemap images', () => {
       const source = await readFile(fileURLToPath(new URL(`../../content/blog/${slug}.md`, import.meta.url)), 'utf8')
       const lastmod = source.match(/^sitemap:\s*\n\s+lastmod:\s*(\d{4}-\d{2}-\d{2})/m)?.[1]
       expect(lastmod).toBeDefined()
-      expect(entry).toContain(`<lastmod>${lastmod}</lastmod>`)
+      expect(entry).toContain(`<lastmod>${String(lastmod)}</lastmod>`)
 
       const articleResponse = await fetchSite(path)
       expect(articleResponse.status).toBe(200)

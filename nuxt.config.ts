@@ -74,6 +74,7 @@ export default defineNuxtConfig({
   },
   eslint: {
     config: {
+      typescript: { tsconfigPath: './tsconfig.json' },
       stylistic: { commaDangle: 'never', quoteProps: 'as-needed' },
       formatters: { css: true }
     }

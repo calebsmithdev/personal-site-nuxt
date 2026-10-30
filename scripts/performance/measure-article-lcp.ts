@@ -45,7 +45,7 @@ for (const { label, origin } of parsedTargets) {
   const response = await fetch(new URL('/__lcp-lab.json', origin))
   if (!response.ok) throw new Error(`Lab control missing: ${label}`)
   controls[label] = await response.json() as LabControl
-  if (controls[label]!.variant !== 'baseline' && !controls[label]!.changedFiles?.length) {
+  if (controls[label].variant !== 'baseline' && !controls[label].changedFiles?.length) {
     throw new Error(`No transformed files: ${label}`)
   }
 }
@@ -56,7 +56,7 @@ for (let run = 1; run <= 3; run++) {
   const ordered = [...parsedTargets.slice(offset), ...parsedTargets.slice(0, offset)]
   for (const { label, origin } of ordered) {
     for (const [page, route] of Object.entries(pages)) {
-      const output = resolve(directory, `${label}-${page}-${run}.json`)
+      const output = resolve(directory, `${label}-${page}-${String(run)}.json`)
       const args = [process.execPath, cli, new URL(route, origin).href,
         '--only-categories=performance', `--throttling-method=${method}`,
         '--chrome-flags=--headless=new --no-sandbox',
@@ -67,8 +67,8 @@ for (let run = 1; run <= 3; run++) {
         '/tmp/personal-site-nuxt-issue-validation.lock',
         'flock', '--close', '-E', '75', '-w', '1800', '/tmp/personal-site-nuxt-issue-install.lock',
         'timeout', '--kill-after=15s', '300s', ...args], { encoding: 'utf8' })
-      await writeFile(output.replace(/\.json$/, '.log'), `${result.stdout ?? ''}${result.stderr ?? ''}`)
-      if (result.status !== 0) throw new Error(`Audit failed or lock remained busy: ${output}, exit ${result.status}`)
+      await writeFile(output.replace(/\.json$/, '.log'), `${result.stdout}${result.stderr}`)
+      if (result.status !== 0) throw new Error(`Audit failed or lock remained busy: ${output}, exit ${String(result.status)}`)
       const report = JSON.parse(await readFile(output, 'utf8')) as LighthouseReport
       if (report.runtimeError) throw new Error(JSON.stringify(report.runtimeError))
       if (report.lighthouseVersion !== '13.5.0') throw new Error('Expected Lighthouse 13.5.0')
@@ -94,7 +94,7 @@ for (let run = 1; run <= 3; run++) {
         warnings: report.runWarnings
       })
       await writeFile(resolve(directory, 'measurements.json'), JSON.stringify(rows, null, 2) + '\n')
-      console.log(`${label} ${page} ${run}: LCP ${rows.at(-1)!.lcp.toFixed(0)} ms; CLS ${rows.at(-1)!.cls}`)
+      console.log(`${label} ${page} ${String(run)}: LCP ${rows.at(-1)!.lcp.toFixed(0)} ms; CLS ${String(rows.at(-1)!.cls)}`)
     }
   }
 }

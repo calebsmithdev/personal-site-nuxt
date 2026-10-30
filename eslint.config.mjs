@@ -1,3 +1,4 @@
+import vitest from '@vitest/eslint-plugin'
 import accessibility from 'eslint-plugin-vuejs-accessibility'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
@@ -28,5 +29,21 @@ export default withNuxt(...accessibility.configs['flat/recommended'], {
     'vue/no-template-target-blank': 'error',
     'vue/define-props-declaration': ['error', 'type-based'],
     'vue/max-attributes-per-line': ['error', { singleline: { max: 4 }, multiline: { max: 1 } }]
+  }
+}, {
+  files: ['test/**'],
+  rules: {
+    '@typescript-eslint/no-unsafe-argument': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off'
+  }
+}, {
+  files: ['test/**/*.spec.ts'],
+  plugins: { vitest },
+  rules: {
+    ...vitest.configs.recommended.rules,
+    'vitest/valid-expect': ['error', { maxArgs: 2 }]
   }
 })

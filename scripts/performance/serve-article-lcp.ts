@@ -50,7 +50,7 @@ export async function createLabServer({ root, variant = 'baseline', compression 
     throw new Error(`No generated HTML/CSS matched the ${variant} control`)
   }
 
-  return createServer(async (request, response) => {
+  const handleRequest = async (request: import('node:http').IncomingMessage, response: import('node:http').ServerResponse) => {
     try {
       if (!['GET', 'HEAD'].includes(request.method ?? '')) {
         response.writeHead(405).end()
@@ -100,7 +100,8 @@ export async function createLabServer({ root, variant = 'baseline', compression 
       if (!missing) console.error('LCP lab response failed:', error instanceof Error ? error.message : String(error))
       response.writeHead(missing ? 404 : 500).end()
     }
-  })
+  }
+  return createServer((request, response) => { void handleRequest(request, response) })
 }
 
 if (import.meta.main) {
