@@ -92,9 +92,9 @@ textarea {
 
 button,
 input:where([type='button'], [type='reset'], [type='submit']) {
-  /* Preserve native button appearance from the reset. */
-  /* stylelint-disable-next-line declaration-property-value-keyword-no-deprecated */
-  appearance: button;
+  /* Kept exactly as in Tailwind Preflight; Autoprefixer would not restore this prefix. */
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-appearance: button;
   background-color: transparent;
   background-image: none;
 }

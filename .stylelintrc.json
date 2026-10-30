@@ -8,7 +8,8 @@
     "value-keyword-case": [
       "lower",
       {
-        "camelCaseSvgKeywords": true
+        "camelCaseSvgKeywords": true,
+        "ignoreProperties": ["/^--font-/"]
       }
     ],
     "media-feature-range-notation": "prefix",
