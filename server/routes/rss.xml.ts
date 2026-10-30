@@ -4,7 +4,6 @@ import { queryCollection } from '@nuxt/content/server'
 import manifest from 'nuxt/internal/manifest'
 import { defaultDescription } from '../../app/utils/site'
 import { absoluteFeedUrl, cdata, renderFeedHtml, rssDate, xmlText } from '../utils/rss'
-import { getSiteConfig } from '#site-config/server'
 
 export default defineEventHandler(async (event) => {
   const origin = new URL(getSiteConfig(event).url).origin
