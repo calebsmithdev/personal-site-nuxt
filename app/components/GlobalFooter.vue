@@ -26,6 +26,16 @@
             </a>
           </li>
           <li>
+            <a href="https://x.com/CalebSmithDev" target="_blank" rel="noreferrer noopener">
+              X
+            </a>
+          </li>
+          <li>
+            <a href="https://bsky.app/profile/did:plc:m2blbfmeq3jyk4jiilzygri7" target="_blank" rel="noreferrer noopener">
+              Bluesky
+            </a>
+          </li>
+          <li>
             <NuxtLink to="/blog">
               Writing
             </NuxtLink>
@@ -78,6 +88,7 @@ import dayjs from 'dayjs'
 
 .footer-links {
   display: flex;
+  flex-wrap: wrap;
   gap: clamp(2rem, 5vw, 5rem);
   margin: 0;
   padding: 0;

@@ -2,7 +2,7 @@
 const usage = 'Usage: node scripts/check-deployment-404.ts <http(s) origin>'
 const articlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 const probes = [
-  { path: '/', status: 200, content: '<title>Full Stack Web Developer | Caleb Smith</title>' },
+  { path: '/', status: 200, content: 'id="home-heading"' },
   { path: '/blog', status: 200, content: '<title>Writing | Caleb Smith</title>' },
   { path: articlePath, status: 200, content: 'id="full-content"' },
   { path: '/blog/does-not-exist', status: 404 },

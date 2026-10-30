@@ -73,9 +73,19 @@ export const useSiteSeo = ({
     '@id': `${origin}/#person`,
     name: 'Caleb Smith',
     url: `${origin}/`,
+    jobTitle: 'Full-Stack Developer',
+    description: 'Full-stack developer in Kansas building web apps with Vue, Nuxt, TypeScript and Laravel, and the infrastructure that runs them.',
+    homeLocation: {
+      '@type': 'Place',
+      name: 'Kansas, United States',
+      address: { '@type': 'PostalAddress', addressRegion: 'KS', addressCountry: 'US' }
+    },
+    knowsAbout: ['Vue.js', 'Nuxt', 'TypeScript', 'Laravel', 'PHP', 'Kubernetes', 'Proxmox', 'Ceph', 'Self-hosting'],
     sameAs: [
       'https://github.com/calebsmithdev',
-      'https://www.linkedin.com/in/calebsmithdev/'
+      'https://www.linkedin.com/in/calebsmithdev/',
+      'https://x.com/CalebSmithDev',
+      'https://bsky.app/profile/did:plc:m2blbfmeq3jyk4jiilzygri7'
     ]
   }
   const graph = []

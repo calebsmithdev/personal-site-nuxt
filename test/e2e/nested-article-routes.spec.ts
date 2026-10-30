@@ -58,6 +58,9 @@ describe('nested article routes', () => {
     expect(html).toContain('This content must render at a nested URL.')
     expect(html).toContain(`<link rel="canonical" href="${siteOrigin}${nestedPath}">`)
     expect(html).toContain(`<meta property="og:url" content="${siteOrigin}${nestedPath}">`)
+    // The fixture's lastmod (2026-01-02) is later than its date (2026-01-01).
+    expect(html).toMatch(/<time\b[^>]*\bdatetime="2026-01-02"[^>]*>/)
+    expect(html).toMatch(/<span\b[^>]*>Updated January 2, 2026<\/span>/)
   })
 
   it('keeps the blog index and adjacent article links navigable', async () => {

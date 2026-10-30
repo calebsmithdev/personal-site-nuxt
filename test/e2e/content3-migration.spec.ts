@@ -117,7 +117,7 @@ describe('Content 3 route migration', () => {
   })
 
   it.each([
-    ['/', 'Full Stack Web Developer | Caleb Smith'],
+    ['/', 'Caleb Smith | Full-Stack Developer in Kansas'],
     ['/blog', 'Writing | Caleb Smith']
   ])('keeps the public index route %s', async (path, title) => {
     const response = await fetch(path)
