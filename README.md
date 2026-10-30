@@ -166,6 +166,7 @@ a local benchmark server and do not change the site's typography.
 
 The homepage, blog index, and article pages each set their own title, description, canonical URL, Open Graph tags, and Twitter tags.
 
+- `/rss.xml` is a full-content RSS 2.0 feed, linked in every page head and the footer. It includes every article, newest first, with absolute links and images.
 - `robots.txt` allows search and AI retrieval crawlers while disallowing GPTBot, ClaudeBot, CCBot, Google-Extended, and Applebot-Extended. These are voluntary crawler directives; Google-Extended also controls some Gemini grounding, and Common Crawl supplies a general-purpose dataset.
 - Canonical URLs, the sitemap, and `robots.txt` all use the site origin `https://caleb-smith.dev` from `nuxt.config.ts`.
 - The homepage and blog index have the Open Graph type `website`. Articles have the type `article`.

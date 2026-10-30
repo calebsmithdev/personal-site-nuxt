@@ -40,6 +40,8 @@
     "@nuxtjs/sitemap": "^9.1.0",
     "better-sqlite3": "^13.0.3",
     "dayjs": "^1.11.23",
+    "hast-util-to-html": "9.0.5",
+    "minimark": "0.2.0",
     "vue-gtag": "^3.7.1"
   }
 }

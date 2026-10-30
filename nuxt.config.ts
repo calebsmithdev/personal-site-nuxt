@@ -61,7 +61,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       // Discover rendered image URLs in Node builds as well as generate output.
-      routes: ['/blog'],
+      routes: ['/blog', '/rss.xml'],
       crawlLinks: true
     }
   },
