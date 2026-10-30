@@ -29,7 +29,7 @@ describe('configured analytics during SSR', () => {
       expect(html).toContain('test-cloudflare-token')
       const script = html.match(/<script[^>]*src="https:\/\/static.cloudflareinsights.com\/beacon.min.js"[^>]*>/)?.[0]
       expect(script).toBeDefined()
-      expect(script).toMatch(/\sdefer(?:[\s=>])/)
+      expect(script).toContain('type="module"')
       expect(script).toContain('data-cf-beacon="{&quot;token&quot;:&quot;test-cloudflare-token&quot;}"')
       expect(html).not.toMatch(/<link[^>]*href="https:\/\/static.cloudflareinsights.com/)
     }

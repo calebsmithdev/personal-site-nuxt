@@ -186,7 +186,7 @@ NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN=
 With an empty token, no analytics script loads. For production's static
 `nuxi generate` output, set the token in the **build environment**: public runtime
 configuration is baked into the generated files. Rebuild to change the token.
-The manual snippet loads a deferred beacon without preload or prefetch.
+The manual snippet loads the beacon as a module script, which is deferred, without preload or prefetch. The plugin runs only on the server, so an unconfigured build ships no analytics code to the browser. As a result, the client-only `404.html` shell served for unknown URLs isn't tracked; Search Console reports those URLs instead.
 [SPA page views are tracked automatically](https://developers.cloudflare.com/web-analytics/get-started/web-analytics-spa/).
 
 ## Testing and CI
