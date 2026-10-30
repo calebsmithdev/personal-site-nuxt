@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
   const posts = await queryCollection(event, 'blog').order('date', 'DESC').order('path', 'ASC').all()
   const resolveAsset = (src: string): string => {
     if (!src.startsWith('/assets/')) { return src }
+    // Dev serves source assets directly, as useAsset does; the manifest has no image entries there.
+    if (import.meta.dev) { return `/_nuxt/${src.slice(1)}` }
     // Vite keys are relative to Nuxt's app directory; file is relative to /_nuxt/.
     const asset = manifest[src.slice(1)]
     if (!asset) { throw new Error(`RSS asset missing from client manifest: ${src}`) }
