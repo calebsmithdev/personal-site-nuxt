@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkAssetCache, discoverAssets, policyErrors } from '../../scripts/check-asset-cache.mjs'
+import { checkAssetCache, discoverAssets, policyErrors } from '../../scripts/check-asset-cache.ts'
 
 const immutable = 'public, max-age=31536000, immutable'
 

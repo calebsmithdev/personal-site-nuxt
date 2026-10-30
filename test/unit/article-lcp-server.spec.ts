@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { brotliDecompressSync } from 'node:zlib'
 import { request } from 'node:http'
 import { afterEach, describe, expect, it } from 'vitest'
-import { createLabServer, transformTypography } from '../../scripts/performance/serve-article-lcp.mjs'
+import { createLabServer, transformTypography } from '../../scripts/performance/serve-article-lcp.ts'
 
 const fonts = `@font-face{font-family:Poppins;font-style:normal;font-weight:700;font-display:swap;src:url(bold.woff2)}
 @font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(medium.woff2)}

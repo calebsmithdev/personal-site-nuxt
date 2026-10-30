@@ -9,17 +9,17 @@ const kinds = {
 }
 
 export function parseCacheControl(value = '') {
-  const directives = new Map()
+  const directives = new Map<string, string[]>()
   for (const part of value.split(',')) {
     const [name, ...rest] = part.trim().toLowerCase().split('=')
-    const values = directives.get(name) ?? []
+    const values = directives.get(name ?? '') ?? []
     values.push(rest.join('=').replace(/^"|"$/g, ''))
-    directives.set(name, values)
+    directives.set(name ?? '', values)
   }
   return directives
 }
 
-export function policyErrors(value, asset) {
+export function policyErrors(value: string, asset: boolean) {
   const directives = parseCacheControl(value)
   const errors = []
   const maxAges = directives.get('max-age') ?? []
@@ -47,9 +47,9 @@ export function policyErrors(value, asset) {
   return errors
 }
 
-export function discoverAssets(source, base) {
+export function discoverAssets(source: string, base: string) {
   const baseUrl = new URL(base)
-  const assets = new Set()
+  const assets = new Set<string>()
   // Covers HTML attributes, inline CSS, CSS url()/@import, and build JS strings.
   const references = source.matchAll(/[^\s"'`<>()[\]{}\\,;=]+\.(?:m?js|css|woff2?|ttf|otf|png|jpe?g|webp|avif|gif|svg)(?:\?[^\s"'`<>()[\]{}\\,;]*)?(?=[\s"'`<>()[\]{}\\,;]|$)/gi)
   for (const [reference] of references) {
@@ -59,7 +59,7 @@ export function discoverAssets(source, base) {
       // Vite's current build uses eight-character hashes, either as the chunk name
       // or before the extension. Skip library source filenames embedded in JS.
       const filename = url.pathname.split('/').at(-1)
-      const hash = filename.match(/(?:^|[.-])([\w-]{8})\.[a-z0-9]+$/i)?.[1]
+      const hash = filename?.match(/(?:^|[.-])([\w-]{8})\.[a-z0-9]+$/i)?.[1]
       if (!hash || !/[A-Z0-9]/.test(hash)) continue
       url.hash = ''
       assets.add(url.href)
@@ -69,14 +69,14 @@ export function discoverAssets(source, base) {
   return [...assets].sort()
 }
 
-export async function checkAssetCache(base, { fetcher = fetch, log = console.log } = {}) {
+export async function checkAssetCache(base: string, { fetcher = fetch, log = console.log }: { fetcher?: (url: string, init?: RequestInit) => Promise<Response>, log?: (line: string) => void } = {}) {
   const origin = new URL(base).origin
-  const assets = new Set()
+  const assets = new Set<string>()
   const pages = new Set([`${origin}/`, `${origin}/blog`])
   const counts = { js: 0, css: 0, font: 0, image: 0 }
   let failures = 0
 
-  async function inspect(url, kind, { allowMissing = false } = {}) {
+  async function inspect(url: string, kind: keyof typeof kinds | 'html' | 'manifest', { allowMissing = false } = {}) {
     const errors = []
     let source = ''
     let cacheControl = '(missing)'
@@ -110,7 +110,7 @@ export async function checkAssetCache(base, { fetcher = fetch, log = console.log
       }
     }
     catch (error) {
-      errors.push(`request failed: ${error.message}`)
+      errors.push(`request failed: ${error instanceof Error ? error.message : String(error)}`)
     }
     log(`${errors.length ? 'FAIL' : 'PASS'} ${kind} ${url}\n  Cache-Control: ${cacheControl || '(missing)'}`)
     for (const error of errors) log(`  ${error}`)
@@ -124,7 +124,7 @@ export async function checkAssetCache(base, { fetcher = fetch, log = console.log
     const source = await inspect(page, 'html')
     if (page === `${origin}/` || page === `${origin}/blog`) {
       for (const [, path] of source.matchAll(/href=["'](\/blog\/[^"'#?]+)[#?"']/g)) {
-        const article = new URL(path, origin)
+        const article = new URL(path ?? '', origin)
         // Prerendered payload preload links share /blog/ but are not article pages.
         if (article.origin === origin && !/\.[^/]+$/.test(article.pathname)) pages.add(article.href)
       }
@@ -134,7 +134,7 @@ export async function checkAssetCache(base, { fetcher = fetch, log = console.log
   await inspect(`${origin}/_nuxt/builds/latest.json`, 'manifest', { allowMissing: true })
   // Sets preserve insertion order and visit newly discovered JS/CSS dependencies once.
   for (const asset of assets) {
-    const kind = Object.keys(kinds).find(key => kinds[key].test(new URL(asset).pathname))
+    const kind = (Object.keys(kinds) as Array<keyof typeof kinds>).find(key => kinds[key].test(new URL(asset).pathname))
     if (!kind) continue
     counts[kind]++
     await inspect(asset, kind)
@@ -152,7 +152,7 @@ export async function checkAssetCache(base, { fetcher = fetch, log = console.log
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2)
   if (args.length > 1) {
-    console.error('Usage: node scripts/check-asset-cache.mjs [https://caleb-smith.dev]')
+    console.error('Usage: node scripts/check-asset-cache.ts [https://caleb-smith.dev]')
     process.exitCode = 1
   }
   else {
@@ -160,7 +160,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       process.exitCode = await checkAssetCache(args[0] ?? 'https://caleb-smith.dev') ? 1 : 0
     }
     catch (error) {
-      console.error(error.message)
+      console.error(error instanceof Error ? error.message : String(error))
       process.exitCode = 1
     }
   }

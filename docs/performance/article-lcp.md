@@ -144,10 +144,10 @@ export CHROME_PATH=/path/to/chrome
 Start each server in its own terminal from the repository root:
 
 ```bash
-node scripts/performance/serve-article-lcp.mjs baseline 4029 br
-node scripts/performance/serve-article-lcp.mjs optional 4030 br
-node scripts/performance/serve-article-lcp.mjs system 4031 br
-node scripts/performance/serve-article-lcp.mjs baseline 4032 identity
+node scripts/performance/serve-article-lcp.ts baseline 4029 br
+node scripts/performance/serve-article-lcp.ts optional 4030 br
+node scripts/performance/serve-article-lcp.ts system 4031 br
+node scripts/performance/serve-article-lcp.ts baseline 4032 identity
 ```
 
 The servers bind to loopback. A human preview is available at
@@ -169,9 +169,9 @@ the production encoding, not production CDN latency, HTTP/2, caching, or CPU.
 Establish the current baseline before comparing experiments:
 
 ```bash
-node scripts/performance/measure-article-lcp.mjs /tmp/article-lcp-baseline baseline=http://127.0.0.1:4029
-LCP_THROTTLING=devtools node scripts/performance/measure-article-lcp.mjs /tmp/article-lcp-devtools baseline=http://127.0.0.1:4029 optional=http://127.0.0.1:4030 system=http://127.0.0.1:4031 identity=http://127.0.0.1:4032
-node scripts/performance/measure-article-lcp.mjs /tmp/article-lcp-compression baseline=http://127.0.0.1:4029 identity=http://127.0.0.1:4032
+node scripts/performance/measure-article-lcp.ts /tmp/article-lcp-baseline baseline=http://127.0.0.1:4029
+LCP_THROTTLING=devtools node scripts/performance/measure-article-lcp.ts /tmp/article-lcp-devtools baseline=http://127.0.0.1:4029 optional=http://127.0.0.1:4030 system=http://127.0.0.1:4031 identity=http://127.0.0.1:4032
+node scripts/performance/measure-article-lcp.ts /tmp/article-lcp-compression baseline=http://127.0.0.1:4029 identity=http://127.0.0.1:4032
 ```
 
 The runner takes three cold-browser mobile samples of `/` and

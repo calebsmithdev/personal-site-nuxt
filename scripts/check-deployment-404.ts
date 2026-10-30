@@ -1,5 +1,5 @@
 // Check the actual HTTP serving layer after deployment, without following redirects.
-const usage = 'Usage: node scripts/check-deployment-404.mjs <http(s) origin>'
+const usage = 'Usage: node scripts/check-deployment-404.ts <http(s) origin>'
 const articlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 const probes = [
   { path: '/', status: 200, content: '<title>Full Stack Web Developer | Caleb Smith</title>' },
@@ -10,11 +10,11 @@ const probes = [
   { path: '/_nuxt/nope.js', status: 404 }
 ]
 
-async function main(args) {
+async function main(args: string[]) {
   let origin
   try {
     if (args.length !== 1) throw new Error()
-    origin = new URL(args[0])
+    origin = new URL(args[0] ?? '')
     if (!['http:', 'https:'].includes(origin.protocol)
       || origin.username || origin.password || origin.search || origin.hash
       || origin.pathname !== '/') {
@@ -51,7 +51,7 @@ async function main(args) {
     }
     catch (error) {
       // Do not print response bodies, request URLs, or potentially sensitive errors.
-      detail = error.name === 'TimeoutError' ? 'request timed out' : 'request failed'
+      detail = error instanceof Error && error.name === 'TimeoutError' ? 'request timed out' : 'request failed'
       console.error(`FAIL GET ${probe.path}: ${detail}`)
       process.exitCode = 1
     }

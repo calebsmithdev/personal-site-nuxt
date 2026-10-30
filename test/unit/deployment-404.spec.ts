@@ -5,7 +5,7 @@ import { promisify } from 'node:util'
 import { describe, expect, it } from 'vitest'
 
 const execFileAsync = promisify(execFile)
-const checker = fileURLToPath(new URL('../../scripts/check-deployment-404.mjs', import.meta.url))
+const checker = fileURLToPath(new URL('../../scripts/check-deployment-404.ts', import.meta.url))
 const articlePath = '/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs'
 const pages: Record<string, string> = {
   '/': '<title>Full Stack Web Developer | Caleb Smith</title>',
@@ -152,7 +152,7 @@ describe('deployment 404 smoke checker', () => {
   ])('rejects invalid or ambiguous arguments %#', async (...args) => {
     // it.each spreads each row into this callback.
     await expect(runChecker(args)).rejects.toMatchObject({
-      code: 1, stderr: expect.stringContaining('Usage: node scripts/check-deployment-404.mjs')
+      code: 1, stderr: expect.stringContaining('Usage: node scripts/check-deployment-404.ts')
     })
   })
 })

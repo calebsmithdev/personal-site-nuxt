@@ -10,9 +10,9 @@ after(() => window.happyDOM.close())
 const siteOrigin = 'https://caleb-smith.dev'
 const contentDirectory = new URL('../../content/blog/', import.meta.url)
 const outputDirectory = new URL('../../.output/public/', import.meta.url)
-const readOutput = path => readFile(new URL(path, outputDirectory), 'utf8')
-const getAttribute = (tag, attribute) => tag.match(new RegExp(`\\b${attribute}=(["'])(.*?)\\1`, 'i'))?.[2]
-const escapeText = text => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+const readOutput = (path: string) => readFile(new URL(path, outputDirectory), 'utf8')
+const getAttribute = (tag: string | undefined, attribute: string) => tag?.match(new RegExp(`\\b${attribute}=(["'])(.*?)\\1`, 'i'))?.[2]
+const escapeText = (text: string) => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
 // Derive the expected routes from source files, independently of crawler discovery
 // and sitemap generation, so an undiscovered article cannot silently disappear.
@@ -34,7 +34,7 @@ const articles = await Promise.all(
     })
 )
 
-const routes = [
+const routes: Array<{ path: string, title: string, lastmod?: string }> = [
   { path: '/', title: 'Full Stack Web Developer | Caleb Smith' },
   { path: '/blog', title: 'Writing | Caleb Smith' },
   ...articles
@@ -68,7 +68,8 @@ for (const route of routes) {
     const payloadData = JSON.stringify(JSON.parse(payload))
     if (route.lastmod) {
       assert.ok(payloadData.includes(JSON.stringify(route.title)), `${route.path} payload must contain its article title`)
-    } else {
+    }
+    else {
       // useBlog stores its list in useState, which Nuxt serializes inline rather
       // than in the extracted useAsyncData payload used by individual articles.
       const state = html.match(/<script\b[^>]*\bid="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)?.[1]

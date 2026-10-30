@@ -3,7 +3,7 @@ import type { BlogArticleSummary } from '../types'
 export const useBlog = () => {
   const articles = useState<BlogArticleSummary[]>('articles', () => [])
 
-  async function fetchList (): Promise<void> {
+  async function fetchList(): Promise<void> {
     if (articles.value.length) {
       return
     }

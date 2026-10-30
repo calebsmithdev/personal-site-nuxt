@@ -1,27 +1,6 @@
 import { securityHeaders } from './config/security-headers'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2026-07-29',
-  // Static hosting must apply these headers at the host/edge; see README.
-  routeRules: {
-    '/**': { headers: securityHeaders }
-  },
-  runtimeConfig: {
-    public: {
-      googleAnalyticsId: ''
-    }
-  },
-  hooks: {
-    'build:manifest': (manifest) => {
-      // Keep optional analytics out of automatic preload and prefetch requests.
-      for (const [id, entry] of Object.entries(manifest)) {
-        if (id.includes('/vue-gtag/')) {
-          entry.preload = false
-          entry.prefetch = false
-        }
-      }
-    }
-  },
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
@@ -36,6 +15,9 @@ export default defineNuxtConfig({
     '@fontsource/ibm-plex-mono/500.css',
     '@/assets/css/typography.css'
   ],
+  site: {
+    url: 'https://caleb-smith.dev'
+  },
   content: {
     build: {
       markdown: {
@@ -49,9 +31,22 @@ export default defineNuxtConfig({
       }
     }
   },
-  site: {
-    url: 'https://caleb-smith.dev'
+  runtimeConfig: {
+    public: {
+      googleAnalyticsId: ''
+    }
   },
+  // Static hosting must apply these headers at the host/edge; see README.
+  routeRules: {
+    '/**': { headers: securityHeaders }
+  },
+  features: {
+    inlineStyles: true
+  },
+  experimental: {
+    writeEarlyHints: false
+  },
+  compatibilityDate: '2026-07-29',
   nitro: {
     prerender: {
       // Discover rendered image URLs in Node builds as well as generate output.
@@ -59,10 +54,27 @@ export default defineNuxtConfig({
       crawlLinks: true
     }
   },
-  features: {
-    inlineStyles: true
+  typescript: {
+    nodeTsConfig: {
+      include: ['../content.config.ts', '../vitest.config.mts', '../config/**/*.ts', '../test/unit/**/*.ts', '../test/e2e/**/*.ts', '../scripts/**/*.ts', '../test/generated/**/*.ts'],
+      compilerOptions: { types: ['node'] }
+    }
   },
-  experimental: {
-    writeEarlyHints: false
+  hooks: {
+    'build:manifest': (manifest) => {
+      // Keep optional analytics out of automatic preload and prefetch requests.
+      for (const [id, entry] of Object.entries(manifest)) {
+        if (id.includes('/vue-gtag/')) {
+          entry.preload = false
+          entry.prefetch = false
+        }
+      }
+    }
+  },
+  eslint: {
+    config: {
+      stylistic: { commaDangle: 'never', quoteProps: 'as-needed' },
+      formatters: { css: true }
+    }
   }
 })

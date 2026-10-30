@@ -17,7 +17,7 @@ describe('TableOfContents', () => {
     let observerCount = 0
 
     class FakeIntersectionObserver {
-      constructor (callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+      constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
         observerCallback = callback
         observerOptions = options
         observerInstance = this as unknown as IntersectionObserver
