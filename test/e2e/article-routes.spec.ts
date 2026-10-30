@@ -7,7 +7,7 @@ import { securityHeaders } from '../../config/security-headers'
 
 await setup({
   rootDir: fileURLToPath(new URL('../..', import.meta.url)),
-  env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: '' }
+  env: { NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '' }
 })
 
 const siteOrigin = 'https://caleb-smith.dev'
