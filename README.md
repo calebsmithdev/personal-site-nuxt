@@ -88,7 +88,7 @@ cp .env.example .env
 | `npm run generate` | Prerenders the static site into `.output/public/`. |
 | `npm run build` | Builds the Node/Nitro server into `.output/`. |
 | `npm run preview` | Previews the latest build locally. |
-| `npm run social-image` | Renders the default social card in `public/social/` from its HTML template. |
+| `npm run social-image` | Renders the default social card and one card per article in `public/social/` from their HTML templates. |
 | `npm run start` | Runs the built server from `.output/server/index.mjs`. Run `npm run build` first. |
 
 ## Project structure
@@ -105,8 +105,8 @@ cp .env.example .env
 │   ├── plugins/         # Optional Google Analytics plugin
 │   └── utils/           # Article helpers such as date formatting
 ├── content/blog/        # Article Markdown files
-├── public/              # Favicons, the social card, and other files served as-is
-├── scripts/             # Social card template and renderer
+├── public/              # Favicons, the social cards, and other files served as-is
+├── scripts/             # Social card templates and renderer
 ├── test/
 │   ├── unit/            # Node unit tests
 │   ├── nuxt/            # Component and composable tests in the Nuxt environment
@@ -134,8 +134,8 @@ description: 'One-sentence summary.' # required, non-empty
 date: 2026-07-29                     # required, YYYY-MM-DD
 categories: ['Nuxt']                 # required, at least one entry
 tags: ['vue', 'routing']             # optional, array of strings
-image: '/social/blog/cover.png'      # optional social image: a path starting with / or an https:// URL
-imageAlt: 'What the image shows'     # optional, defaults to the title
+image: '/social/covers/example.png'  # optional social image: a path starting with / or an https:// URL
+imageAlt: 'What the image shows'     # optional alt text for the image or the article's card
 sitemap:
   lastmod: 2026-07-29                # required, YYYY-MM-DD
 ---
@@ -170,8 +170,11 @@ The homepage, blog index, and article pages each set their own title, descriptio
 
 - Canonical URLs, the sitemap, and `robots.txt` all use the site origin `https://caleb-smith.dev` from `nuxt.config.ts`.
 - The homepage and blog index have the Open Graph type `website`. Articles have the type `article`.
-- Every page sends the default social card, `public/social/default.png` (1200×630), as `og:image` and `twitter:image`, with its dimensions and alt text. An article's `image` frontmatter replaces the card for that article. Point it at a file in `public/` (a stable URL), an `/assets/img/...` path, or an `https://` URL. Dimensions aren't known for replacements, so they aren't sent. Use a 1200×630 image for the best previews.
-- The default card is rendered from `scripts/social-image/default.html` with the site's fonts and colors. After you edit the template, run `npm run social-image` to render the PNG again. The script needs a local Chrome or Chromium (`CHROME_PATH`, or a Playwright-installed Chromium).
+- The homepage and blog index send the default social card, `public/social/default.png` (1200×630), as `og:image` and `twitter:image`, with its dimensions and alt text.
+- Each article sends its own card with its title and categories: the article path under `public/social/`, so `/blog/nuxt/routing` uses `public/social/blog/nuxt/routing.png` (1200×630). Its alt text is `imageAlt`, or a sentence naming the title and Caleb Smith.
+- An article's `image` frontmatter replaces its card. Point it at a file in `public/` (a stable URL), an `/assets/img/...` path, or an `https://` URL. Dimensions aren't known for replacements, so they aren't sent. Use a 1200×630 image for the best previews.
+- The default card is rendered from `scripts/social-image/default.html`, and article cards from `scripts/social-image/post.html`, with the site's fonts and colors. Run `npm run social-image` and commit the PNGs after you add an article, change an article's title or categories, or edit a template. Run `npm run social-image -- posts` or `npm run social-image -- default` to render only one kind. The script shrinks long titles to fit and fails if a title still doesn't fit. It doesn't delete cards, so remove the PNG yourself when you rename or delete an article. It needs a local Chrome or Chromium (`CHROME_PATH`, or a Playwright-installed Chromium).
+- `npm run test:generated` fails if an article's `og:image` is missing from the generated site or doesn't match its declared dimensions, which catches a forgotten `npm run social-image`.
 
 Google Analytics is **optional**. Set the public runtime key in `.env` to turn it on:
 

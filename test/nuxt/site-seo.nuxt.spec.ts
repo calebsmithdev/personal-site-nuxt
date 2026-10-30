@@ -2,7 +2,7 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { createHead } from '@unhead/vue/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useSiteSeo } from '../../app/composables/useSiteSeo'
-import { defaultSocialImage } from '../../app/utils/site'
+import { articleCardSocialImage, defaultSocialImage } from '../../app/utils/site'
 
 const mocks = vi.hoisted(() => ({
   useHead: vi.fn(),
@@ -160,6 +160,31 @@ describe('useSiteSeo', () => {
       }))
     }
   )
+
+  it('sends an article card with its known dimensions and type', () => {
+    const image = articleCardSocialImage({ path: '/blog/nuxt/routing', title: 'Routing' })
+    useSiteSeo({
+      title: 'Routing',
+      description: 'An article description.',
+      path: '/blog/nuxt/routing',
+      type: 'article',
+      datePublished: '2024-01-01',
+      dateModified: '2025-02-03',
+      image
+    })
+
+    const imageUrl = 'https://caleb-smith.dev/social/blog/nuxt/routing.png'
+    const meta = mocks.useSeoMeta.mock.calls[0]?.[0]
+    expect(meta.ogImage).toEqual({
+      url: imageUrl,
+      secureUrl: imageUrl,
+      type: 'image/png',
+      width: 1200,
+      height: 630,
+      alt: image.alt
+    })
+    expect(meta.twitterImage).toEqual({ url: imageUrl, alt: image.alt })
+  })
 
   it('resolves an override image path without claiming unknown dimensions', () => {
     useSiteSeo({

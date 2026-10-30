@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { articleSocialImage, defaultSocialImage, isSocialImageSource } from '../../app/utils/site'
+import { articleCardSocialImage, articleSocialImage, defaultSocialImage, isSocialImageSource } from '../../app/utils/site'
 
 const readPngSize = (path: string) => {
   const file = readFileSync(new URL(path, import.meta.url))
@@ -53,20 +53,62 @@ describe('isSocialImageSource', () => {
   })
 })
 
-describe('articleSocialImage', () => {
-  it('falls back to the default when the article has no image', () => {
-    expect(articleSocialImage({ title: 'Article' })).toBeUndefined()
+describe('articleCardSocialImage', () => {
+  it('uses the card rendered at the article path with its known dimensions', () => {
+    expect(articleCardSocialImage({ path: '/blog/example-article', title: 'Example article' })).toEqual({
+      src: '/social/blog/example-article.png',
+      alt: 'Social card for “Example article”, a field note by Caleb Smith.',
+      width: 1200,
+      height: 630,
+      type: 'image/png'
+    })
   })
 
-  it('uses the image alt text, or the article title without one', () => {
-    expect(articleSocialImage({ title: 'Article', image: '/social/a.png', imageAlt: 'A cluster diagram' }))
+  it('keeps nested article paths nested', () => {
+    expect(articleCardSocialImage({ path: '/blog/nuxt/routing', title: 'Routing' }).src).toBe('/social/blog/nuxt/routing.png')
+    expect(articleCardSocialImage({ path: '/blog/nuxt/routing/', title: 'Routing' }).src).toBe('/social/blog/nuxt/routing.png')
+  })
+
+  it('uses the image alt text when set', () => {
+    expect(articleCardSocialImage({ path: '/blog/a', title: 'Article', imageAlt: 'Card for Article' }).alt).toBe('Card for Article')
+  })
+
+  it('ships a 1200x630 PNG for every article', () => {
+    const files = readdirSync(new URL('../../content/blog/', import.meta.url), { recursive: true, encoding: 'utf8' })
+      .filter(file => file.endsWith('.md'))
+
+    expect(files.length).toBeGreaterThan(0)
+    for (const file of files) {
+      const image = articleCardSocialImage({ path: `/blog/${file.slice(0, -3)}`, title: file })
+      const size = readPngSize(`../../public${image.src}`)
+
+      expect(size, image.src).toMatchObject({ width: image.width, height: image.height })
+      expect(size.bytes, image.src).toBeLessThan(1024 * 1024)
+    }
+  })
+})
+
+describe('articleSocialImage', () => {
+  const card = articleCardSocialImage({ path: '/blog/article', title: 'Article' })
+
+  it('uses the article card when the article has no image', () => {
+    expect(articleSocialImage({ path: '/blog/article', title: 'Article' })).toEqual(card)
+  })
+
+  it('uses the image alt text for the article card', () => {
+    expect(articleSocialImage({ path: '/blog/article', title: 'Article', imageAlt: 'Card text' }))
+      .toEqual({ ...card, alt: 'Card text' })
+  })
+
+  it('uses an override image with its alt text, or the article title without one', () => {
+    expect(articleSocialImage({ path: '/blog/article', title: 'Article', image: '/social/a.png', imageAlt: 'A cluster diagram' }))
       .toEqual({ src: '/social/a.png', alt: 'A cluster diagram' })
-    expect(articleSocialImage({ title: 'Article', image: '/social/a.png' }))
+    expect(articleSocialImage({ path: '/blog/article', title: 'Article', image: '/social/a.png' }))
       .toEqual({ src: '/social/a.png', alt: 'Article' })
   })
 
   it('does not claim dimensions for an override', () => {
-    const image = articleSocialImage({ title: 'Article', image: 'https://images.example.test/cover.jpg' })
+    const image = articleSocialImage({ path: '/blog/article', title: 'Article', image: 'https://images.example.test/cover.jpg' })
 
     expect(image).not.toHaveProperty('width')
     expect(image).not.toHaveProperty('height')
@@ -75,23 +117,24 @@ describe('articleSocialImage', () => {
 
   it('resolves asset pipeline paths to their built URL', () => {
     const image = articleSocialImage(
-      { title: 'Article', image: '/assets/img/blog/cover.png' },
+      { path: '/blog/article', title: 'Article', image: '/assets/img/blog/cover.png' },
       src => src.replace('/assets/img/blog/cover.png', '/_nuxt/cover.abc123.png')
     )
 
-    expect(image?.src).toBe('/_nuxt/cover.abc123.png')
+    expect(image.src).toBe('/_nuxt/cover.abc123.png')
   })
 
-  it('falls back to the default for a malformed image URL', () => {
-    expect(articleSocialImage({ title: 'Article', image: 'https://[bad]/cover.png' })).toBeUndefined()
+  it('falls back to the article card for a malformed image URL', () => {
+    expect(articleSocialImage({ path: '/blog/article', title: 'Article', image: 'https://[bad]/cover.png', imageAlt: 'A cover' }))
+      .toEqual(card)
   })
 
-  it('falls back to the default when an asset resolves to an inline data URI', () => {
+  it('falls back to the article card when an asset resolves to an inline data URI', () => {
     const image = articleSocialImage(
-      { title: 'Article', image: '/assets/img/blog/tiny.png' },
+      { path: '/blog/article', title: 'Article', image: '/assets/img/blog/tiny.png' },
       () => 'data:image/png;base64,AAAA'
     )
 
-    expect(image).toBeUndefined()
+    expect(image).toEqual(card)
   })
 })

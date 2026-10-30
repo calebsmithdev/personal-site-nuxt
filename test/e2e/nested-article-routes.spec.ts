@@ -58,6 +58,8 @@ describe('nested article routes', () => {
     expect(html).toContain('This content must render at a nested URL.')
     expect(html).toContain(`<link rel="canonical" href="${siteOrigin}${nestedPath}">`)
     expect(html).toContain(`<meta property="og:url" content="${siteOrigin}${nestedPath}">`)
+    // The fixture has no rendered card, so this only checks the nested path rule.
+    expect(html).toContain(`<meta property="og:image" content="${siteOrigin}/social${nestedPath}.png">`)
   })
 
   it('keeps the blog index and adjacent article links navigable', async () => {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { fileURLToPath } from 'node:url'
 import { fetch, setup } from '@nuxt/test-utils/e2e'
 import { describe, expect, it } from 'vitest'
-import { defaultSocialImage } from '../../app/utils/site'
+import { articleCardSocialImage, defaultSocialImage, type SocialImage } from '../../app/utils/site'
 import { securityHeaders } from '../../config/security-headers'
 
 await setup({
@@ -18,6 +18,7 @@ const blogDescription = 'Practical field notes from Caleb Smith on web developme
 const articleDescription = 'My journey moving from Proxmox VMs to CephFS as my k8s primary data storage.'
 
 const defaultImageUrl = `${siteOrigin}/social/default.png`
+const articleImage = articleCardSocialImage({ path: articlePath, title: articleTitle })
 
 interface RouteMetadata {
   path: string
@@ -25,6 +26,7 @@ interface RouteMetadata {
   socialTitle: string
   description: string
   type: 'website' | 'article'
+  image: SocialImage
 }
 
 const routeMetadata: RouteMetadata[] = [
@@ -33,21 +35,24 @@ const routeMetadata: RouteMetadata[] = [
     documentTitle: 'Full Stack Web Developer | Caleb Smith',
     socialTitle: 'Full Stack Web Developer',
     description: defaultDescription,
-    type: 'website'
+    type: 'website',
+    image: defaultSocialImage
   },
   {
     path: '/blog',
     documentTitle: 'Writing | Caleb Smith',
     socialTitle: 'Writing',
     description: blogDescription,
-    type: 'website'
+    type: 'website',
+    image: defaultSocialImage
   },
   {
     path: articlePath,
     documentTitle: articleTitle,
     socialTitle: articleTitle,
     description: articleDescription,
-    type: 'article'
+    type: 'article',
+    image: articleImage
   }
 ]
 
@@ -206,14 +211,15 @@ describe('route metadata', () => {
     expectUniqueMeta(head, 'name', 'twitter:card', 'summary_large_image')
     expectUniqueMeta(head, 'name', 'twitter:creator', '@CalebSmithDev')
     expectUniqueMeta(head, 'name', 'twitter:site', '@CalebSmithDev')
-    expectUniqueMeta(head, 'property', 'og:image', defaultImageUrl)
-    expectUniqueMeta(head, 'property', 'og:image:secure_url', defaultImageUrl)
+    const imageUrl = `${siteOrigin}${metadata.image.src}`
+    expectUniqueMeta(head, 'property', 'og:image', imageUrl)
+    expectUniqueMeta(head, 'property', 'og:image:secure_url', imageUrl)
     expectUniqueMeta(head, 'property', 'og:image:type', 'image/png')
     expectUniqueMeta(head, 'property', 'og:image:width', '1200')
     expectUniqueMeta(head, 'property', 'og:image:height', '630')
-    expectUniqueMeta(head, 'property', 'og:image:alt', defaultSocialImage.alt)
-    expectUniqueMeta(head, 'name', 'twitter:image', defaultImageUrl)
-    expectUniqueMeta(head, 'name', 'twitter:image:alt', defaultSocialImage.alt)
+    expectUniqueMeta(head, 'property', 'og:image:alt', metadata.image.alt)
+    expectUniqueMeta(head, 'name', 'twitter:image', imageUrl)
+    expectUniqueMeta(head, 'name', 'twitter:image:alt', metadata.image.alt)
 
     expect(getTags(head, 'meta').filter(tag => getAttribute(tag, 'name')?.startsWith('og:'))).toHaveLength(0)
     expect(head).not.toContain('caleb-smith.dev//')
@@ -223,6 +229,14 @@ describe('route metadata', () => {
 describe('social image', () => {
   it('serves the default social image at its stable public path', async () => {
     const response = await fetch(new URL(defaultImageUrl).pathname)
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('content-type')).toBe('image/png')
+  })
+
+  it('serves the article card at its stable public path', async () => {
+    expect(articleImage.src).toBe('/social/blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs.png')
+    const response = await fetch(articleImage.src)
 
     expect(response.status).toBe(200)
     expect(response.headers.get('content-type')).toBe('image/png')
