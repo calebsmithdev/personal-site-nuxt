@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>caleb-smith.dev article social card</title>
+    <style>
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 500;
+        src: url('../../node_modules/@fontsource/poppins/files/poppins-latin-500-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 700;
+        src: url('../../node_modules/@fontsource/poppins/files/poppins-latin-700-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-weight: 400;
+        src: url('../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        font-weight: 500;
+        src: url('../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        padding: 64px 80px;
+        color: #f5eee4;
+        background:
+          radial-gradient(circle at 92% 108%, rgb(103 215 236 / 18%), transparent 42%),
+          #061426;
+        font-family: 'Poppins', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .corner {
+        position: absolute;
+        width: 56px;
+        height: 56px;
+      }
+
+      .corner-top-left {
+        top: 32px;
+        left: 32px;
+        border-top: 2px solid #67d7ec;
+        border-left: 2px solid #67d7ec;
+      }
+
+      .corner-bottom-right {
+        right: 32px;
+        bottom: 32px;
+        border-right: 2px solid #ff8a65;
+        border-bottom: 2px solid #ff8a65;
+      }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .kicker {
+        display: grid;
+        grid-template-columns: auto auto minmax(3rem, 1fr) 18px;
+        align-items: center;
+        gap: 20px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .kicker-label {
+        color: #ff8a65;
+      }
+
+      .kicker-author {
+        color: #c3ccd5;
+      }
+
+      .kicker-author::before {
+        margin-right: 20px;
+        color: #35465a;
+        content: '/';
+      }
+
+      .kicker-line {
+        height: 1px;
+        background: #35465a;
+      }
+
+      .kicker-end {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #67d7ec;
+      }
+
+      /* The title fills the space between the kicker and the footer. */
+      .title-box {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        min-height: 0;
+        padding: 36px 0;
+      }
+
+      .headline {
+        max-width: 1000px;
+        font-size: 84px;
+        font-weight: 700;
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        text-wrap: balance;
+        overflow-wrap: break-word;
+      }
+
+      /* Keep hyphenated words such as built-in whole. */
+      .nowrap {
+        white-space: nowrap;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        padding-top: 28px;
+        border-top: 1px solid #35465a;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 26px;
+      }
+
+      .categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 20px;
+        min-width: 0;
+      }
+
+      .category {
+        color: #67d7ec;
+      }
+
+      .category:nth-child(even) {
+        color: #ff8a65;
+      }
+
+      .category + .category::before {
+        margin-right: 20px;
+        color: #35465a;
+        content: '/';
+      }
+
+      .domain {
+        flex: none;
+        color: #67d7ec;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="corner corner-top-left"></div>
+    <div class="corner corner-bottom-right"></div>
+
+    <main class="card">
+      <p class="kicker">
+        <span class="kicker-label">Field note</span>
+        <span class="kicker-author">Caleb Smith</span>
+        <span class="kicker-line"></span>
+        <span class="kicker-end"></span>
+      </p>
+      <div class="title-box">
+        <h1 class="headline"></h1>
+      </div>
+      <p class="footer">
+        <span class="categories"></span>
+        <span class="domain">caleb-smith.dev</span>
+      </p>
+    </main>
+
+    <script>
+      // The renderer passes ?title=...&category=...&category=... and reads
+      // data-fit from the dumped DOM to confirm the title fit before capture.
+      const params = new URLSearchParams(location.search)
+      const headline = document.querySelector('.headline')
+      const box = document.querySelector('.title-box')
+      const categories = document.querySelector('.categories')
+
+      const title = params.get('title') || 'Article title'
+      for (const [index, word] of title.split(' ').entries()) {
+        if (index > 0) { headline.append(' ') }
+        if (word.includes('-')) {
+          const item = document.createElement('span')
+          item.className = 'nowrap'
+          item.textContent = word
+          headline.append(item)
+        }
+        else {
+          headline.append(word)
+        }
+      }
+      for (const name of params.getAll('category')) {
+        const item = document.createElement('span')
+        item.className = 'category'
+        item.textContent = name
+        categories.append(item)
+      }
+
+      const maxSize = 84
+      const minSize = 44
+      const fits = () => {
+        const style = getComputedStyle(box)
+        const available = box.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+        return headline.scrollHeight <= available && headline.scrollWidth <= headline.clientWidth
+      }
+
+      document.fonts.ready.then(() => {
+        let size = maxSize
+        headline.style.fontSize = `${size}px`
+        while (!fits() && size > minSize) {
+          size -= 2
+          headline.style.fontSize = `${size}px`
+        }
+
+        const lines = Math.round(headline.getBoundingClientRect().height / parseFloat(getComputedStyle(headline).lineHeight))
+        document.body.dataset.fit = fits() ? 'ok' : 'overflow'
+        document.body.dataset.fontSize = String(size)
+        document.body.dataset.lines = String(lines)
+      })
+    </script>
+  </body>
+</html>

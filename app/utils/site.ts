@@ -25,17 +25,33 @@ export const isSocialImageSource = (src: string) => {
 }
 
 /**
- * Builds the social image for an article's optional `image` frontmatter.
- * Override dimensions are unknown, so they are left out rather than guessed.
+ * The card `npm run social-image` renders for an article: the article path
+ * under /social, so /blog/nuxt/routing uses /social/blog/nuxt/routing.png.
+ */
+export const articleCardSocialImage = (
+  article: { path: string, title: string, imageAlt?: string }
+): SocialImage => ({
+  src: `/social${article.path.replace(/\/+$/, '')}.png`,
+  alt: article.imageAlt || `Social card for “${article.title}”, a field note by Caleb Smith.`,
+  width: 1200,
+  height: 630,
+  type: 'image/png'
+})
+
+/**
+ * Builds the social image for an article. An `image` frontmatter override wins;
+ * its dimensions are unknown, so they are left out rather than guessed.
+ * Otherwise, or when the override isn't a usable URL, the article's card is used.
  */
 export const articleSocialImage = (
-  article: { title: string, image?: string, imageAlt?: string },
+  article: { path: string, title: string, image?: string, imageAlt?: string },
   resolveAsset: (src: string) => string = src => src
-): SocialImage | undefined => {
-  if (!article.image) { return undefined }
+): SocialImage => {
+  if (!article.image) { return articleCardSocialImage(article) }
 
   const src = resolveAsset(article.image)
-  if (!isSocialImageSource(src)) { return undefined }
+  // imageAlt describes the override, so it doesn't fit the generated card.
+  if (!isSocialImageSource(src)) { return articleCardSocialImage({ path: article.path, title: article.title }) }
 
   return { src, alt: article.imageAlt || article.title }
 }
