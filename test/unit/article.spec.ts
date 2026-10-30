@@ -177,6 +177,12 @@ describe('article helpers', () => {
       }
     )
 
+    it('shows no updated date for unparseable or missing dates', () => {
+      expect(articleUpdatedDate('2025-04-16', 'not-a-date')).toBeUndefined()
+      expect(articleUpdatedDate('not-a-date', '2025-04-17')).toBeUndefined()
+      expect(articleUpdatedDate('2025-04-16', undefined as unknown as string)).toBeUndefined()
+    })
+
     it('formats Date values by their UTC calendar day', () => {
       process.env.TZ = 'Asia/Tokyo'
       const date = new Date('2023-12-27T00:00:00.000Z')

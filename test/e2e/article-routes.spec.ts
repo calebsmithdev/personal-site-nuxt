@@ -132,6 +132,8 @@ describe('article routes', () => {
     expect(response.status).toBe(200)
     expect(html).toContain(articleTitle)
     expect(html).toMatch(/<article\b[^>]*\bid="full-content"/)
+    // This article's lastmod equals its date, so no updated date is shown.
+    expect(html).not.toMatch(/<span\b[^>]*>Updated [A-Z][a-z]+ \d{1,2}, \d{4}<\/span>/)
   })
 
   it('returns not found for a guaranteed-missing article', async () => {
