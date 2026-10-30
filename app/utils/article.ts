@@ -7,7 +7,7 @@ import type { MarkdownRoot, MinimarkElement, MinimarkNode } from '@nuxt/content'
 
 dayjs.extend(utc)
 
-export interface ContentNode {
+interface ContentNode {
   type?: string
   tag?: string
   value?: string
