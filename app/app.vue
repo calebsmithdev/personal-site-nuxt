@@ -9,7 +9,7 @@ import { defaultDescription } from './utils/site'
 
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | Caleb Smith` : 'Full Stack Web Developer | Caleb Smith'
+    return titleChunk ? `${titleChunk} | Caleb Smith` : 'Caleb Smith | Full-Stack Developer in Kansas'
   },
   htmlAttrs: {
     lang: 'en'

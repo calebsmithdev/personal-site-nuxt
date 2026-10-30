@@ -32,6 +32,11 @@
                 <span>{{ formatArticleDate(article.date) }}</span>
               </time>
 
+              <time v-if="updatedDate" :datetime="articleDateTime(updatedDate)">
+                <FaIcon :icon="faPenToSquare" class="meta-icon" aria-hidden="true" />
+                <span>Updated {{ formatArticleDate(updatedDate) }}</span>
+              </time>
+
               <span
                 v-for="category in article.categories"
                 :key="category"
@@ -95,11 +100,11 @@
 </template>
 
 <script setup lang="ts">
-import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons'
+import { faCalendar, faClock, faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import ArrowRightIcon from '../../components/ArrowRightIcon.vue'
 import FaIcon from '../../components/FaIcon.vue'
 import type { BlogArticle } from '../../types'
-import { categoryIcon, displayCategory, articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
+import { articleUpdatedDate, categoryIcon, displayCategory, articleDateTime, formatArticleDate, getArticlePosition, getReadingMinutes } from '../../utils/article'
 import { articleSocialImage } from '../../utils/site'
 
 interface TocLink {
@@ -122,6 +127,8 @@ if (!articleData.value) {
 const article = computed(() => articleData.value as BlogArticle)
 
 await fetchList()
+
+const updatedDate = computed(() => articleUpdatedDate(article.value.date, article.value.sitemap.lastmod))
 
 const articlePosition = computed(() => getArticlePosition(articles.value, article.value?.path))
 const articleNumber = computed(() => articlePosition.value.displayNumber)

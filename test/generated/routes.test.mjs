@@ -35,7 +35,7 @@ const articles = await Promise.all(
 )
 
 const routes = [
-  { path: '/', title: 'Full Stack Web Developer | Caleb Smith' },
+  { path: '/', title: 'Caleb Smith | Full-Stack Developer in Kansas' },
   { path: '/blog', title: 'Writing | Caleb Smith' },
   ...articles
 ]

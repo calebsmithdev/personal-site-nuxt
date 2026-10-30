@@ -3,6 +3,7 @@ import { faCube, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   articleDateTime,
+  articleUpdatedDate,
   categoryIcon,
   displayCategory,
   countWords,
@@ -168,6 +169,11 @@ describe('article helpers', () => {
 
         expect(formatArticleDate('2025-04-16')).toBe('April 16, 2025')
         expect(articleDateTime('2025-04-16')).toBe('2025-04-16')
+        expect(articleUpdatedDate('2025-04-16', '2025-04-17')).toBe('2025-04-17')
+        expect(formatArticleDate(articleUpdatedDate('2025-04-16', '2025-04-17')!)).toBe('April 17, 2025')
+        expect(articleUpdatedDate('2025-04-16', '2025-04-16')).toBeUndefined()
+        expect(articleUpdatedDate('2025-04-16', '2025-04-15')).toBeUndefined()
+        expect(articleUpdatedDate(new Date('2025-04-16T00:00:00Z'), new Date('2025-04-17T00:00:00Z'))).toBe('2025-04-17')
       }
     )
 
