@@ -3,10 +3,10 @@
   "type": "module",
   "scripts": {
     "build": "nuxi build",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run generate && npm run test:generated",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run generate && npm run test:generated && npm run knip",
     "dev": "nuxi dev",
     "generate": "nuxi generate",
-    "lint": "eslint .",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:md",
     "preview": "nuxi preview",
     "security:headers": "node scripts/print-security-headers.ts",
     "social-image": "node scripts/generate-social-image.ts",
@@ -14,7 +14,12 @@
     "start": "node .output/server/index.mjs",
     "test": "vitest run",
     "test:generated": "node --test test/generated/*.test.ts",
-    "typecheck": "nuxi typecheck"
+    "typecheck": "nuxi typecheck",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"app/**/*.css\" \"app/**/*.vue\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix && npm run lint:md -- --fix",
+    "knip": "knip"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
