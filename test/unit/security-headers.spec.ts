@@ -22,7 +22,7 @@ describe('security header policy', () => {
 
   it('permits Nuxt inline scripts/importmaps/styles, same-origin Cloudflare scripts and the YouTube embed', () => {
     expect(directives['script-src']).toEqual([
-      "'self'", "'unsafe-inline'", "'wasm-unsafe-eval'", 'https://www.googletagmanager.com'
+      "'self'", "'unsafe-inline'", "'wasm-unsafe-eval'", 'https://static.cloudflareinsights.com'
     ])
     expect(directives['style-src']).toEqual(["'self'", "'unsafe-inline'"])
     expect(directives['frame-src']).toEqual(['https://www.youtube.com'])
@@ -30,16 +30,9 @@ describe('security header policy', () => {
     expect(directives['img-src']).toContain('data:')
   })
 
-  it.each(['connect-src', 'img-src'])('allows optional GA requests in %s without requiring a configured ID', (directive) => {
-    expect(directives[directive]).toContain("'self'")
-    for (const source of [
-      'https://*.google-analytics.com',
-      'https://*.analytics.google.com',
-      'https://*.googletagmanager.com'
-    ]) {
-      expect(directives[directive]).toContain(source)
-    }
-    expect(directives[directive]).not.toContain('*')
+  it('allows only the manual beacon connection origin and no analytics image origins', () => {
+    expect(directives['connect-src']).toEqual(["'self'", 'https://cloudflareinsights.com'])
+    expect(directives['img-src']).toEqual(["'self'", 'data:'])
   })
 
   it('disables camera, microphone and geolocation without disabling video playback features', () => {

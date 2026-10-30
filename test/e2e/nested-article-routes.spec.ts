@@ -33,7 +33,7 @@ This content must render at a nested URL.
   await setup({
     rootDir: fixtureRoot,
     buildDir: join(fixtureRoot, '.nuxt'),
-    env: { NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: '' }
+    env: { NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '' }
   })
   const context = useTestContext()
   context.teardown ??= []
