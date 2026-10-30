@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { readFile, readdir } from 'node:fs/promises'
 import { test } from 'node:test'
 
+import { socialImageOutputPath } from './social-image-path.ts'
+
 const siteOrigin = 'https://caleb-smith.dev'
 const contentDirectory = new URL('../../content/blog/', import.meta.url)
 const outputDirectory = new URL('../../.output/public/', import.meta.url)
@@ -49,7 +51,7 @@ for (const path of articlePaths) {
     // An absolute https override on another host can't be checked against the build.
     if (url.origin !== siteOrigin) { return }
 
-    const file = await readFile(new URL(decodeURIComponent(url.pathname.slice(1)), outputDirectory)).catch(() => undefined)
+    const file = await readFile(socialImageOutputPath(image, outputDirectory)).catch(() => undefined)
     assert.ok(file, `${path} sends og:image ${image}, but .output/public${url.pathname} doesn't exist. ${regenerate}`)
 
     const width = getMeta(head, 'property', 'og:image:width')

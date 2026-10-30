@@ -10,6 +10,8 @@ import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
+import { displayCategory, parsePostFrontmatter, validatePostPath } from './social-image/frontmatter.ts'
+
 const root = fileURLToPath(new URL('..', import.meta.url))
 const contentDirectory = join(root, 'content/blog')
 const postOutputDirectory = join(root, 'public/social/blog')
@@ -54,25 +56,10 @@ const dumpDom = (url: URL) => {
   return execFileSync(chrome, [...chromeArgs, '--dump-dom', url.href], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] })
 }
 
-// Matches displayCategory in app/utils/article.ts, which Node can't import directly.
-const displayCategory = (category: string) => category === 'Javascript' ? 'JavaScript' : category
-
-// Reads the quoted single-line frontmatter values the blog uses, without a YAML
-// dependency. Single-quoted YAML escapes a quote by doubling it.
-const unquote = (quote: string, value: string) => quote === '\'' ? value.replaceAll('\'\'', '\'') : value
-
 const readPost = (file: string) => {
-  const source = readFileSync(join(contentDirectory, file), 'utf8')
-  const frontmatter = source.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? ''
-  const title = frontmatter.match(/^title:\s*(['"])(.*)\1\s*$/m)
-  const categoryList = frontmatter.match(/^categories:\s*\[(.*)\]\s*$/m)?.[1] ?? ''
-  const categories = [...categoryList.matchAll(/(['"])(.*?)\1/g)].map(([, quote, value]) => unquote(quote!, value!))
-
-  if (!title || categories.length === 0) {
-    throw new Error(`${file} needs a quoted title and an inline categories list, such as categories: ['Nuxt']`)
-  }
-
-  return { slug: file.slice(0, -3), title: unquote(title[1]!, title[2]!), categories: categories.map(displayCategory) }
+  validatePostPath(file)
+  const { title, categories } = parsePostFrontmatter(readFileSync(join(contentDirectory, file), 'utf8'), file)
+  return { slug: file.slice(0, -3), title, categories: categories.map(displayCategory) }
 }
 
 const renderDefault = () => {

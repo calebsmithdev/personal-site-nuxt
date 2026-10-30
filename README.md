@@ -125,6 +125,11 @@ content/blog/example-article.md   →   /blog/example-article
 content/blog/nuxt/routing.md      →   /blog/nuxt/routing
 ```
 
+Each directory and filename segment (without `.md`) must match
+`^[a-z0-9]+(?:-[a-z0-9]+)*$`: lowercase ASCII letters and digits separated by hyphens.
+Numeric ordering prefixes such as `1.` and segments named `index` are forbidden,
+so article routes and social card filenames stay aligned.
+
 Every article starts with frontmatter. `content.config.ts` validates it:
 
 ```yaml
