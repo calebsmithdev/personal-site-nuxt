@@ -61,6 +61,17 @@ export default defineNuxtConfig({
       compilerOptions: { types: ['node'] }
     }
   },
+  hooks: {
+    'build:manifest': (manifest) => {
+      // useAsset's eager imports otherwise prefetch every image on article pages.
+      // Actual img requests and their lazy-loading attributes remain unchanged.
+      for (const entry of Object.values(manifest)) {
+        if (/\.(?:png|jpe?g|webp|avif|gif|svg)$/i.test(entry.file)) {
+          entry.prefetch = false
+        }
+      }
+    }
+  },
   eslint: {
     config: {
       typescript: { tsconfigPath: './tsconfig.json' },
