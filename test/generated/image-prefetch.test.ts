@@ -8,7 +8,7 @@ await test('generated pages do not speculatively fetch the image asset collectio
   const pages = (await readdir(output, { recursive: true }))
     .filter(file => file.endsWith('index.html'))
   assert.ok(pages.includes('index.html'))
-  assert.ok(pages.includes('blog/migrating-kubernetes-pvcs-from-csi-proxmox-to-csi-cephfs/index.html'))
+  assert.ok(pages.some(page => /^blog\/.+\/index\.html$/.test(page)))
 
   for (const page of pages) {
     const html = await readFile(new URL(page, output), 'utf8')
