@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFile, readdir } from 'node:fs/promises'
+import { readFile, readdir, stat } from 'node:fs/promises'
 import { after, test } from 'node:test'
 import { Window } from 'happy-dom'
 
@@ -88,6 +88,17 @@ await test('prerendered blog index links to every source article', async () => {
   for (const { path } of articles) {
     assert.ok(html.includes(`href="${path}"`), `Blog index must link to ${path}`)
   }
+})
+
+await test('prerendered ACF article screenshots fit within their byte budget', async () => {
+  const html = await readOutput('blog/hiding-field-labels-with-advanced-custom-fields-acf/index.html')
+  const screenshots = (html.match(/<img\b[^>]*>/g) ?? [])
+    .map(tag => getAttribute(tag, 'src') ?? '')
+    .filter(src => /^\/_nuxt\/63-01-20240411-hide-field-labels-0[12]\.[\w-]+\.png$/.test(src))
+  assert.equal(screenshots.length, 2)
+  const files = await Promise.all(screenshots.map(src => stat(new URL(src.slice(1), outputDirectory))))
+  const totalBytes = files.reduce((total, file) => total + file.size, 0)
+  assert.ok(totalBytes <= 67 * 1024, `Two ACF screenshots total ${String(totalBytes)} bytes`)
 })
 
 await test('generated sitemap preserves all public routes and article modification dates', async () => {
