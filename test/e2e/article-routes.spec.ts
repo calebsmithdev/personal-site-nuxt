@@ -146,6 +146,24 @@ describe('article routes', () => {
     expect(html).not.toMatch(/<span\b[^>]*>Updated [A-Z][a-z]+ \d{1,2}, \d{4}<\/span>/)
   })
 
+  it.each([articlePath, `${articlePath}/`])('uses the prerendered article data key for %s', async (path) => {
+    const response = await fetch(path)
+    const html = await response.text()
+    const payload = html.match(/<script\b[^>]*\bid="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)?.[1]
+
+    expect(response.status).toBe(200)
+    assert.ok(payload)
+    const data = JSON.stringify(JSON.parse(payload))
+    expect(data).toContain(`${JSON.stringify(articlePath)}:`)
+    expect(data).not.toContain(`${JSON.stringify(`${articlePath}/`)}:`)
+    const canonicalTags = getTags(getHead(html), 'link')
+      .filter(tag => getAttribute(tag, 'rel') === 'canonical')
+    expect(canonicalTags).toHaveLength(1)
+    assert.ok(canonicalTags[0])
+    expect(getAttribute(canonicalTags[0], 'href')).toBe(`${siteOrigin}${articlePath}`)
+    expectUniqueMeta(getHead(html), 'property', 'og:url', `${siteOrigin}${articlePath}`)
+  })
+
   it('returns not found for a guaranteed-missing article', async () => {
     const response = await fetch('/blog/__missing-characterization-article__')
 

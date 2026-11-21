@@ -117,9 +117,11 @@ interface TocLink {
 const route = useRoute()
 const { fetchList, articles } = useBlog()
 
+// Static hosts can serve the same prerendered payload with or without a trailing slash.
+const articlePath = route.path.replace(/\/+$/, '')
 const { data: articleData } = await useAsyncData(
-  route.path,
-  () => queryCollection('blog').path(route.path).first()
+  articlePath,
+  () => queryCollection('blog').path(articlePath).first()
 )
 if (!articleData.value) {
   throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
