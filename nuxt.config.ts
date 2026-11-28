@@ -48,13 +48,6 @@ export default defineNuxtConfig({
     writeEarlyHints: false
   },
   compatibilityDate: '2026-07-29',
-  nitro: {
-    prerender: {
-      // Discover rendered image URLs in Node builds as well as generate output.
-      routes: ['/blog', '/rss.xml'],
-      crawlLinks: true
-    }
-  },
   typescript: {
     nodeTsConfig: {
       include: ['../content.config.ts', '../vitest.config.mts', '../config/**/*.ts', '../test/unit/**/*.ts', '../test/e2e/**/*.ts', '../scripts/**/*.ts', '../test/generated/**/*.ts'],
@@ -78,6 +71,11 @@ export default defineNuxtConfig({
       stylistic: { commaDangle: 'never', quoteProps: 'as-needed' },
       formatters: { css: true }
     }
+  },
+  prerender: {
+    // Discover rendered image URLs in Node builds as well as generate output.
+    routes: ['/blog', '/rss.xml'],
+    crawlLinks: true
   },
   robots: {
     groups: [{

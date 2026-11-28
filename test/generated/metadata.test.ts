@@ -5,10 +5,10 @@ import { Window } from 'happy-dom'
 
 const window = new Window({
   settings: {
-    disableCSSFileLoading: true,
+    enableCSSFileLoading: false,
     disableJavaScriptFileLoading: true,
-    disableJavaScriptEvaluation: true,
-    disableIframePageLoading: true
+    enableJavaScriptEvaluation: false,
+    enableIframePageLoading: false
   }
 })
 after(() => window.happyDOM.close())
