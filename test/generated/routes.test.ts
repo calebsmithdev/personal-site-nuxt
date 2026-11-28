@@ -48,11 +48,18 @@ for (const route of routes) {
     const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]
     assert.ok(head, `${route.path} must have a document head`)
     assert.ok(head.includes(`<title>${escapeText(route.title)}</title>`), `${route.path} title`)
-    const canonicalTags = (head.match(/<link\b[^>]*>/gi) ?? [])
-      .filter(tag => getAttribute(tag, 'rel') === 'canonical')
+    const links = head.match(/<link\b[^>]*>/gi) ?? []
+    const canonicalTags = links.filter(tag => getAttribute(tag, 'rel') === 'canonical')
     assert.equal(canonicalTags.length, 1)
     assert.equal(getAttribute(canonicalTags[0], 'href'), `${siteOrigin}${route.path}`)
     assert.ok(head.includes(`<meta property="og:type" content="${route.lastmod ? 'article' : 'website'}">`))
+
+    const tabIcons = links.filter(tag => ['icon', 'shortcut icon'].includes(getAttribute(tag, 'rel') ?? ''))
+    assert.deepEqual(
+      tabIcons.map(tag => getAttribute(tag, 'href')),
+      ['/favicon.ico', '/favicons/favicon-32x32.png', '/favicons/favicon-16x16.png'],
+      `${route.path} should declare the fallback before the PNG favicons`
+    )
 
     if (route.lastmod) {
       const body = html.match(/<article\b[^>]*\bid="full-content"[^>]*>([\s\S]*?)<\/article>/)?.[1]
