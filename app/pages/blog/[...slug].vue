@@ -124,7 +124,7 @@ const { data: articleData } = await useAsyncData(
   () => queryCollection('blog').path(articlePath).first()
 )
 if (!articleData.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Blog post not found', fatal: true })
+  throw createError({ status: 404, statusText: 'Blog post not found', fatal: true })
 }
 const article = computed(() => articleData.value as BlogArticle)
 

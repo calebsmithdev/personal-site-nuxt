@@ -17,9 +17,9 @@ await test('prerendered pages include the module beacon only when configured', a
   const window = new Window({
     url: 'https://caleb-smith.dev',
     settings: {
-      disableJavaScriptEvaluation: true,
+      enableJavaScriptEvaluation: false,
       disableJavaScriptFileLoading: true,
-      disableCSSFileLoading: true
+      enableCSSFileLoading: false
     }
   })
   try {
