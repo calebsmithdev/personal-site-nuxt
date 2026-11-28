@@ -56,9 +56,11 @@ await test('RSS contains every source article with canonical URLs, dates, catego
   assert.ok(!(await readFile(new URL('sitemap.xml', output), 'utf8')).includes('/rss.xml'))
 })
 
-await test('homepage advertises RSS with an alternate link and footer link', async () => {
+await test('homepage advertises RSS in the document head and footer', async () => {
   const html = await readFile(new URL('index.html', output), 'utf8')
-  const alternate = (html.match(/<link\b[^>]*>/gi) ?? [])
+  const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]
+  assert.ok(head, 'Expected a document head')
+  const alternate = (head.match(/<link\b[^>]*>/gi) ?? [])
     .find(tag => getAttribute(tag, 'rel') === 'alternate' && getAttribute(tag, 'type') === 'application/rss+xml')
   assert.ok(alternate)
   assert.equal(getAttribute(alternate, 'title'), 'Caleb Smith')
